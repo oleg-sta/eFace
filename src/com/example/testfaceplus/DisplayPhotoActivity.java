@@ -37,16 +37,27 @@ public class DisplayPhotoActivity extends Activity {
             }
             myBitmap = myBitmap.copy(bitmapConfig, true);
 
+            int heightImg = myBitmap.getHeight();
+            int widthImg = myBitmap.getWidth();
+            
             Canvas canvas = new Canvas(myBitmap);
-            PointF tmp_point = new PointF();
+            //PointF tmp_point = new PointF();
             Paint tmp_paint = new Paint();
 
             for (int i = 0; i < info.faceCount; i++) {
-                FaceDetector.Face face = info.faces[i];
+                Face face = info.faces[i];
                 tmp_paint.setColor(Color.RED);
                 tmp_paint.setAlpha(100);
-                face.getMidPoint(tmp_point);
-                canvas.drawCircle(tmp_point.x, tmp_point.y, face.eyesDistance(), tmp_paint);
+                
+                int heightFace = (int) (face.height * heightImg) / 100;
+                int widthFace = (int) (face.width * widthImg) / 100;
+                int x = (int) (face.centerX * widthImg) / 100 - widthFace / 2;
+                int y = (int) (face.centerY * heightImg) / 100 - heightFace / 2;
+
+                
+                //face.getMidPoint(tmp_point);
+                canvas.drawRect(x, y, x + widthFace, y + heightFace, tmp_paint);
+                //canvas.drawCircle(tmp_point.x, tmp_point.y, face.eyesDistance(), tmp_paint);
             }
 
             ImageView myImage = (ImageView) findViewById(R.id.img);

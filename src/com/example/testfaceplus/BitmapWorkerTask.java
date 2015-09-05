@@ -22,7 +22,7 @@ public class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
     
     private String data = null;
     private int faceCount;
-    FaceDetector.Face[] faces = null;
+    Face[] faces = null;
 
     public BitmapWorkerTask(ImageView imageView, TextView numFaces) {
         // Use a WeakReference to ensure the ImageView can be garbage collected
@@ -32,6 +32,7 @@ public class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
     }
 
     // Decode image in background.
+    // не используется
     @Override
     protected Bitmap doInBackground(String... params) {
         data = params[0];
@@ -42,8 +43,8 @@ public class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
         bitmap_options.inPreferredConfig = Bitmap.Config.RGB_565;
         Bitmap background_image = BitmapFactory.decodeFile(data, bitmap_options);
         FaceDetector face_detector = new FaceDetector(background_image.getWidth(), background_image.getHeight(), 10);
-        faces = new FaceDetector.Face[MAX_FACES];
-        faceCount = face_detector.findFaces(background_image, faces);
+        faces = new Face[MAX_FACES];
+        //faceCount = face_detector.findFaces(background_image, faces);
         Log.v("BitmapWorkerTask", "faces " + faceCount);
         // уменьшение картинки
         return shrinkBitmap( data, 50, 50);
