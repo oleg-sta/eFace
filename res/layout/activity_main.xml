@@ -6,11 +6,35 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.testfaceplus.MainActivity" >
+    tools:context="com.example.test1.MainActivity" >
 
     <TextView
+        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:text="Лицепоиск" />
+
+
+    <Button
+        android:id="@+id/start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/linearLayout1"
+        android:layout_below="@+id/textView1"
+        android:gravity="center_horizontal"
+        android:padding="20px"
+        android:text="Найти все фотки"
+        android:textSize="30px" />
+
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/start"
+        android:layout_below="@+id/start"
+        android:layout_marginLeft="27dp"
+        android:layout_marginTop="37dp" >
+
+    </ListView>
 
 </RelativeLayout>
