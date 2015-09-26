@@ -15,8 +15,8 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE photos (guid text, path TEXT);");
-        db.execSQL("create table faces (guid text, photo_id text, person_id text);");
-        db.execSQL("create table person (person_id text);");
+        db.execSQL("create table faces (guid text primary key, photo_id text, person_id text, height real, width real, centerX real, centerY real);");
+        db.execSQL("create table person (person_id text primary key);");
     }
 
     @Override

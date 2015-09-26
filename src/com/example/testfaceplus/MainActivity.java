@@ -34,16 +34,15 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
     public static final String CAMERA_IMAGE_BUCKET_ID = getBucketId(CAMERA_IMAGE_BUCKET_NAME);
     public static final String EXTRA_MESSAGE = "com.example.test1.MESSAGE";
 
+    private PhotoList adapter;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         
         Log.v("MainActivity", "onCreate");
         dbHelper = new DictionaryOpenHelper(this);
         
-        
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        
-        
 
         //final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
 
@@ -64,6 +63,34 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         final Button button = (Button) findViewById(R.id.start);
         final Context context = this;
         final MainActivity d = this;
+        
+        List<String> photosArray = new ArrayList<String>();
+        Cursor c = db.rawQuery("select guid, path from photos", null);
+        while(c.moveToNext()) {
+            photosArray.add(c.getString(1));
+        }
+        c.close();
+        db.close();
+        
+        adapter = new PhotoList(MainActivity.this, photosArray);
+        final ListView listView = (ListView) findViewById(R.id.listView1);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String value = (String) parent.getItemAtPosition(position);
+                if (DataHolder.getInstance().infos.get(value) != null) {
+                    Log.v("MainActivity", "click " + id);
+                    Intent intent = new Intent(context, DisplayPhotoActivity.class);
+                    Log.v("MainActivity", "click2 " + id);
+                    intent.putExtra(EXTRA_MESSAGE, value);
+                    startActivity(intent);
+                }
+
+            }
+        });
+        
+        
         button.setOnClickListener(new Button.OnClickListener() {
 
             @Override
@@ -73,9 +100,6 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
                 final ListView listView = (ListView) findViewById(R.id.listView1);
 
                 List<String> photos = getCameraImages(getApplicationContext());
-                //dbHelper.getWritableDatabase().
-                Log.v("service222", "should be started");
-                //Intent sI = new Intent(this, FaceFinderService.class);
                 
                 Intent intent = new Intent(context, FaceFinderService.class);
                 NotificationReceiver receiver = new NotificationReceiver(new Handler());
@@ -83,28 +107,15 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
                 intent.putExtra("receiver", receiver);
                 
                 startService(intent);
-                Log.v("service222", "ended");
-                //photos.add("Заглушка");
 
-                // R.drawable.ic_launcher;
-                PhotoList adapter = new PhotoList(MainActivity.this, photos.toArray(new String[0]));
-
-                listView.setAdapter(adapter);
-                listView.setOnItemClickListener(new OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        String value = (String) parent.getItemAtPosition(position);
-                        if (DataHolder.getInstance().infos.get(value) != null) {
-                            Log.v("MainActivity", "click " + id);
-                            Intent intent = new Intent(context, DisplayPhotoActivity.class);
-                            Log.v("MainActivity", "click2 " + id);
-                            intent.putExtra(EXTRA_MESSAGE, value);
-                            startActivity(intent);
-                        }
-
+                // Так нехорошо делать
+                //PhotoList adapter = (PhotoList) listView.getAdapter();
+                for (String ph : photos) {
+                    if (!adapter.web.contains(ph)) {
+                        adapter.add(ph);
                     }
-                });
-
+                }
+                adapter.notifyDataSetChanged();
                 
             }
         });

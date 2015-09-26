@@ -91,13 +91,13 @@ public class FaceFinderService extends IntentService {
                         faceCur.width = position.get("width").toDouble();
                         faceCur.centerX = position.get("center").get("x").toDouble();
                         faceCur.centerY = position.get("center").get("y").toDouble();
-                        faceCur.faceId = face.get("face_id").toString();
+                        //faceCur.faceId = face.get("face_id").toString();
                         faceCur.guid = face.get("face_id").toString();
                         // get image photo
                         faceCur.littleFace = Bitmap.createBitmap(background_image, (int)(background_image.getWidth() * (faceCur.centerX - faceCur.width / 2) / 100), (int)(background_image.getHeight() * (faceCur.centerY - faceCur.height / 2) / 100), (int)(background_image.getWidth() * faceCur.width / 100) , (int)(background_image.getHeight() * faceCur.height / 100));
-                        dataHolder.photos.put(faceCur.guid, faceCur);
+                        //dataHolder.photos.put(faceCur.guid, faceCur);
                         
-                        s.execSQL("insert into faces (guid, photo_id) values ('"+faceCur.guid+"', '"+imgId+"')");
+                        s.execSQL("insert into faces (guid, photo_id, height, width, centerX, centerY) values ('"+faceCur.guid+"', '"+imgId+"', "+faceCur.height+", "+faceCur.width+", "+faceCur.centerX+", "+faceCur.centerY+")");
                     }
 
                     InfoPhoto infoPhoto = new InfoPhoto();
@@ -164,9 +164,6 @@ public class FaceFinderService extends IntentService {
                             s.execSQL("insert into person (person_id) values ('group"+i+"')");
                             Log.d("service222", "insert2");
                             
-                            Group groupFace = new Group();
-                            dataHolder.groupsFace.add(groupFace);
-                            System.out.println(groupRes.get("group"));
                             FaceppResult group = groupRes.get("group").getArray(i);
                             //new File("h:\\Garbage\\Sbt_small_res\\group" + i).mkdir();
                             //DataHolder.getInstance().catnames.add("group" + i);
@@ -190,6 +187,7 @@ public class FaceFinderService extends IntentService {
                 }
 
             }
+            s.close();
         } catch (FaceppParseException | IOException e) {
             // TODO Auto-generated catch block
             Log.d("service222", "error" + e.getMessage());

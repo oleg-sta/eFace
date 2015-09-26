@@ -9,4 +9,5 @@ public class InfoPhoto {
     public int faceCount;
     public int scaleFactor;
     public String guid;
+    public String path;
 }

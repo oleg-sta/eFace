@@ -45,6 +45,7 @@ public class DisplayFacesActivity extends Activity {
             person.add(c.getString(0));
         }
         c.close();
+        s.close();
         
         
         PersonList personList = new PersonList(this, person.toArray(new String[0]));

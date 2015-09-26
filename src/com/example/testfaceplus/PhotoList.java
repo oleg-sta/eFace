@@ -1,6 +1,7 @@
 package com.example.testfaceplus;
 
 import java.io.File;
+import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -27,11 +28,11 @@ public class PhotoList extends ArrayAdapter<String> {
     //private LruCache<String, InfoPhoto> mMemoryCache;
     
     private final Activity context;
-    private final String[] web;
+    public final List<String> web;
 
     // private final Integer[] imageId;
 
-    public PhotoList(Activity context, String[] web) {
+    public PhotoList(Activity context, List<String> web) {
         super(context, R.layout.list_single, web);
         this.context = context;
         this.web = web;
@@ -49,15 +50,15 @@ public class PhotoList extends ArrayAdapter<String> {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.list_single, null, true);
         TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
-        txtTitle.setText(web[position]);
+        txtTitle.setText(web.get(position));
 
         ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
         TextView numFaces = (TextView) rowView.findViewById(R.id.num_faces);
         
 
-        File f = new File(web[position]);
+        File f = new File(web.get(position));
         if (f.exists()) {
-            InfoPhoto infoPhoto = DataHolder.getInstance().infos.get(web[position]);
+            InfoPhoto infoPhoto = DataHolder.getInstance().infos.get(web.get(position));
             // Bitmap myBitmap = this.mMemoryCache.get(web[position]);
             if (infoPhoto != null) {
                 if (infoPhoto.littlePhoto != null) {

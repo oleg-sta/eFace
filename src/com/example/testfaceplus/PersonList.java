@@ -51,7 +51,8 @@ public class PersonList extends ArrayAdapter<String> {
         while (c2.moveToNext()) {
             String faceId = c2.getString(0);
             Log.w("PersonList", "face to linear " + i + " " + faceId);
-            Bitmap bm = DataHolder.getInstance().photos.get(faceId).littleFace;
+            //Bitmap bm = DataHolder.getInstance().photos.get(faceId).littleFace;
+            Bitmap bm = DataHolder.getInstance().getLittleFace(db, faceId);
             ImageView imageView2 = new ImageView(context);
             imageView2.setId(i);
             imageView2.setImageBitmap(bm);
@@ -61,6 +62,7 @@ public class PersonList extends ArrayAdapter<String> {
 
         }
         c2.close();
+        db.close();
         
         return rowView;
     }
