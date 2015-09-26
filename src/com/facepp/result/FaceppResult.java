@@ -162,7 +162,19 @@ public class FaceppResult {
 		return null;
 	}
 	
-	
+	// mine
+        public FaceppResult getArray(int index) throws FaceppParseException {
+                
+                if (this.type != JsonType.ARRAY) {
+                        throw new FaceppParseException("( " + json.toString() + " ) is not an array.");
+                }
+                
+                try {
+                        return new FaceppResult( ((JSONArray)json).getJSONArray(index), JsonType.ARRAY, httpResponseCode);
+                } catch (JSONException e) {     
+                        throw new FaceppParseException("Json string can not be parsed.");
+                }
+        }
 	
 	private JSONArray getArray(String key) {
 		return a(key);

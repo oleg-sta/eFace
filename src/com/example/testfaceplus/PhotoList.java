@@ -15,7 +15,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class CustomList extends ArrayAdapter<String> {
+/**
+ * Адаптер для просмотра фотографий с количеством найденых лиц
+ * 
+ * @author sov
+ *
+ */
+public class PhotoList extends ArrayAdapter<String> {
 
     // TODO use only for photos
     //private LruCache<String, InfoPhoto> mMemoryCache;
@@ -25,7 +31,7 @@ public class CustomList extends ArrayAdapter<String> {
 
     // private final Integer[] imageId;
 
-    public CustomList(Activity context, String[] web) {
+    public PhotoList(Activity context, String[] web) {
         super(context, R.layout.list_single, web);
         this.context = context;
         this.web = web;

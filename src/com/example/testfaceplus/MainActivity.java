@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import android.support.v4.app.NotificationBuilderWithBuilderAccessor;
 import android.util.Log;
 import android.util.LruCache;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -35,12 +37,18 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         
+        Log.v("MainActivity", "onCreate");
         dbHelper = new DictionaryOpenHelper(this);
+        
+        
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        
+        
 
-        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+        //final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
 
         // Use 1/8th of the available memory for this memory cache.
-        final int cacheSize = maxMemory / 8;
+        //final int cacheSize = maxMemory / 8;
 
 //        mMemoryCache = new LruCache<String, InfoPhoto>(cacheSize) {
 //            @Override
@@ -60,6 +68,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
 
             @Override
             public void onClick(View v) {
+                
                 // start Service for computing faces
                 final ListView listView = (ListView) findViewById(R.id.listView1);
 
@@ -78,7 +87,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
                 //photos.add("Заглушка");
 
                 // R.drawable.ic_launcher;
-                CustomList adapter = new CustomList(MainActivity.this, photos.toArray(new String[0]));
+                PhotoList adapter = new PhotoList(MainActivity.this, photos.toArray(new String[0]));
 
                 listView.setAdapter(adapter);
                 listView.setOnItemClickListener(new OnItemClickListener() {
@@ -99,6 +108,20 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
                 
             }
         });
+        
+        TextView textView1 = (TextView) findViewById(R.id.textView1);
+        textView1.setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, DisplayFacesActivity.class);
+                Log.v("MainActivity", "click3");
+                //intent.putExtra(EXTRA_MESSAGE, value);
+                startActivity(intent);
+                
+            }
+        });
+        
     }
 
     private static String getBucketId(String path) {

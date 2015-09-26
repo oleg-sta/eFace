@@ -8,4 +8,5 @@ public class InfoPhoto {
     public Face[] faces;
     public int faceCount;
     public int scaleFactor;
+    public String guid;
 }

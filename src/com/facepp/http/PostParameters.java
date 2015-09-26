@@ -384,4 +384,9 @@ public class PostParameters {
 		
 		return sb.toString();
 	}
+
+    public PostParameters setFaceSetId(String faceId) {
+                addString("faceset_id", faceId);
+                return this;
+                }
 }

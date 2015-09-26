@@ -9,25 +9,13 @@
     tools:context="com.example.test1.MainActivity" >
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="К лицам" />
-
-
-    <Button
-        android:id="@+id/start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/linearLayout1"
-        android:layout_below="@+id/textView1"
-        android:gravity="center_horizontal"
-        android:padding="20px"
-        android:text="Найти все фотки"
-        android:textSize="30px" />
+        android:text="К фотографиям" />
 
     <ListView
-        android:id="@+id/listView1"
+        android:id="@+id/listView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/start"
