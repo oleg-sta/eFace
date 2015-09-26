@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import com.example.testfaceplus.data.Face;
+import com.example.testfaceplus.data.InfoPhoto;
 import com.facepp.error.FaceppParseException;
 import com.facepp.http.HttpRequests;
 import com.facepp.http.PostParameters;
@@ -94,7 +96,8 @@ public class FaceFinderService extends IntentService {
                         //faceCur.faceId = face.get("face_id").toString();
                         faceCur.guid = face.get("face_id").toString();
                         // get image photo
-                        faceCur.littleFace = Bitmap.createBitmap(background_image, (int)(background_image.getWidth() * (faceCur.centerX - faceCur.width / 2) / 100), (int)(background_image.getHeight() * (faceCur.centerY - faceCur.height / 2) / 100), (int)(background_image.getWidth() * faceCur.width / 100) , (int)(background_image.getHeight() * faceCur.height / 100));
+                        // TODO lazy cache
+                        //faceCur.littleFace = Bitmap.createBitmap(background_image, (int)(background_image.getWidth() * (faceCur.centerX - faceCur.width / 2) / 100), (int)(background_image.getHeight() * (faceCur.centerY - faceCur.height / 2) / 100), (int)(background_image.getWidth() * faceCur.width / 100) , (int)(background_image.getHeight() * faceCur.height / 100));
                         //dataHolder.photos.put(faceCur.guid, faceCur);
                         
                         s.execSQL("insert into faces (guid, photo_id, height, width, centerX, centerY) values ('"+faceCur.guid+"', '"+imgId+"', "+faceCur.height+", "+faceCur.width+", "+faceCur.centerX+", "+faceCur.centerY+")");

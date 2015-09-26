@@ -1,5 +1,8 @@
 package com.example.testfaceplus;
 
+import com.example.testfaceplus.data.Face;
+import com.example.testfaceplus.data.InfoPhoto;
+
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

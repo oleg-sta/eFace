@@ -3,6 +3,8 @@ package com.example.testfaceplus;
 import java.io.File;
 import java.util.List;
 
+import com.example.testfaceplus.data.InfoPhoto;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Bitmap;

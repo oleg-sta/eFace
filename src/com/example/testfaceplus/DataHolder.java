@@ -3,6 +3,9 @@ package com.example.testfaceplus;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.example.testfaceplus.data.Face;
+import com.example.testfaceplus.data.InfoPhoto;
+
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -13,8 +16,8 @@ public class DataHolder {
 
     private static LruCache<String, Bitmap> mMemoryCache;
 
+    // TODO убрать infos
     public Map<String, InfoPhoto> infos = new HashMap<String, InfoPhoto>();
-    // public Map<String, Face> photos = new HashMap<String, Face>();
 
     private static final DataHolder holder = new DataHolder();
 

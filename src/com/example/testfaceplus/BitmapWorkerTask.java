@@ -3,6 +3,9 @@ package com.example.testfaceplus;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 
+import com.example.testfaceplus.data.Face;
+import com.example.testfaceplus.data.InfoPhoto;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.FaceDetector;

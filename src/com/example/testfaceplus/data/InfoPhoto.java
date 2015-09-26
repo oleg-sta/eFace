@@ -1,4 +1,5 @@
-package com.example.testfaceplus;
+package com.example.testfaceplus.data;
+
 
 import android.graphics.Bitmap;
 import android.media.FaceDetector;
