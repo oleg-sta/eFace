@@ -3,20 +3,19 @@ package com.example.testfaceplus;
 import java.io.File;
 import java.util.List;
 
-import com.example.testfaceplus.data.InfoPhoto;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.testfaceplus.data.InfoPhoto;
 
 /**
  * Адаптер для просмотра фотографий с количеством найденых лиц

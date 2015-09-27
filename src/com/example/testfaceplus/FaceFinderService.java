@@ -1,9 +1,19 @@
 package com.example.testfaceplus;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
+import android.app.IntentService;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
+import android.os.Bundle;
+import android.os.ResultReceiver;
+import android.util.Log;
 
 import com.example.testfaceplus.data.Face;
 import com.example.testfaceplus.data.InfoPhoto;
@@ -12,24 +22,6 @@ import com.facepp.http.HttpRequests;
 import com.facepp.http.PostParameters;
 import com.facepp.result.FaceppResult;
 import com.facepp.result.FaceppResult.JsonType;
-
-import android.app.IntentService;
-import android.app.Service;
-import android.content.ContentValues;
-import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
-import android.media.FaceDetector;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
-import android.os.RemoteException;
-import android.os.ResultReceiver;
-import android.util.Log;
 
 public class FaceFinderService extends IntentService {
 

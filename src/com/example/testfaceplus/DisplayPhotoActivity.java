@@ -1,20 +1,17 @@
 package com.example.testfaceplus;
 
-import com.example.testfaceplus.data.Face;
-import com.example.testfaceplus.data.InfoPhoto;
-
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
-import android.media.FaceDetector;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.LruCache;
 import android.widget.ImageView;
+
+import com.example.testfaceplus.data.Face;
+import com.example.testfaceplus.data.InfoPhoto;
 
 public class DisplayPhotoActivity extends Activity {
 

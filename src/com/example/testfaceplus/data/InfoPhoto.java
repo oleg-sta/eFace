@@ -2,7 +2,6 @@ package com.example.testfaceplus.data;
 
 
 import android.graphics.Bitmap;
-import android.media.FaceDetector;
 
 public class InfoPhoto {
     public Bitmap littlePhoto;

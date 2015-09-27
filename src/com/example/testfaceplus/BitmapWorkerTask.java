@@ -3,25 +3,22 @@ package com.example.testfaceplus;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 
-import com.example.testfaceplus.data.Face;
-import com.example.testfaceplus.data.InfoPhoto;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.FaceDetector;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.util.LruCache;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.testfaceplus.data.Face;
+import com.example.testfaceplus.data.InfoPhoto;
 
 public class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
     public static final int MAX_FACES = 10;
 
-    //private LruCache<String, Bitmap> mMemoryCache;
     private final WeakReference<ImageView> imageViewReference;
     private final WeakReference<TextView> txtViewReference;
-    //private final WeakReference<LruCache<String, InfoPhoto>> mMemoryCacheReference;
     
     private String data = null;
     private int faceCount;

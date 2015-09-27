@@ -13,9 +13,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
-import android.support.v4.app.NotificationBuilderWithBuilderAccessor;
 import android.util.Log;
-import android.util.LruCache;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -28,8 +26,6 @@ import android.widget.TextView;
 public class MainActivity extends Activity implements NotificationReceiver.Listener {
     
     DictionaryOpenHelper dbHelper;
-    // use cache only for photos
-    //private LruCache<String, InfoPhoto> mMemoryCache;
     public static final String CAMERA_IMAGE_BUCKET_NAME = Environment.getExternalStorageDirectory().toString() + "/DCIM/Camera";
     public static final String CAMERA_IMAGE_BUCKET_ID = getBucketId(CAMERA_IMAGE_BUCKET_NAME);
     public static final String EXTRA_MESSAGE = "com.example.test1.MESSAGE";
@@ -43,20 +39,6 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         dbHelper = new DictionaryOpenHelper(this);
         
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        //final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-
-        // Use 1/8th of the available memory for this memory cache.
-        //final int cacheSize = maxMemory / 8;
-
-//        mMemoryCache = new LruCache<String, InfoPhoto>(cacheSize) {
-//            @Override
-//            protected int sizeOf(String key, InfoPhoto bitmap) {
-//                // The cache size will be measured in kilobytes rather than
-//                // number of items.
-//                return bitmap.littlePhoto.getByteCount() / 1024;
-//            }
-//        };
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -75,6 +57,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         adapter = new PhotoList(MainActivity.this, photosArray);
         final ListView listView = (ListView) findViewById(R.id.listView1);
         listView.setAdapter(adapter);
+        // переход на большую фотографию
         listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -90,7 +73,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
             }
         });
         
-        
+        // кнопка "Поиск лиц"
         button.setOnClickListener(new Button.OnClickListener() {
 
             @Override
@@ -116,11 +99,12 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
                     }
                 }
                 adapter.notifyDataSetChanged();
-                
             }
         });
         
         TextView textView1 = (TextView) findViewById(R.id.textView1);
+        
+        // переход к лицам
         textView1.setOnClickListener(new OnClickListener() {
             
             @Override
