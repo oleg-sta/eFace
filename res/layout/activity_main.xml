@@ -13,18 +13,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="К лицам" />
-
-
-    <Button
+    
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
+        android:text="Сбросить" />
+    
+   <Button
         android:id="@+id/start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/linearLayout1"
-        android:layout_below="@+id/textView1"
+        android:layout_below="@+id/textView5"
         android:gravity="center_horizontal"
         android:padding="20px"
         android:text="Найти все фотки"
         android:textSize="30px" />
+   
 
     <ListView
         android:id="@+id/listView1"

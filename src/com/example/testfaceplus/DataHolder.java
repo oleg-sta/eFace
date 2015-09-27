@@ -14,10 +14,12 @@ import android.support.v4.util.LruCache;
 
 public class DataHolder {
 
+    // кэш фотографий лиц
     private static LruCache<String, Bitmap> mMemoryCache;
 
+    public boolean processPhotos = false;
     // TODO убрать infos
-    public Map<String, InfoPhoto> infos = new HashMap<String, InfoPhoto>();
+    // public Map<String, InfoPhoto> infos = new HashMap<String, InfoPhoto>();
 
     private static final DataHolder holder = new DataHolder();
 
@@ -73,6 +75,7 @@ public class DataHolder {
             Face faceCur = getFace(db, faceId);
             String path = getPathPhoto(db, faceCur.photoId);
             final BitmapFactory.Options options = new BitmapFactory.Options();
+            // уменьшаем полную фотографию
             Bitmap background_image = FaceFinderService.decodeSampledBitmapFromResource(path, 500, 500, options);
             bm = Bitmap.createBitmap(background_image, (int)(background_image.getWidth() * (faceCur.centerX - faceCur.width / 2) / 100), (int)(background_image.getHeight() * (faceCur.centerY - faceCur.height / 2) / 100), (int)(background_image.getWidth() * faceCur.width / 100) , (int)(background_image.getHeight() * faceCur.height / 100));
             mMemoryCache.put(faceId, bm);
@@ -80,5 +83,20 @@ public class DataHolder {
         return bm;
     }
 
+    /**
+     * Получить полную фотографию для отображении в общем списке
+     * 
+     * @param path
+     * @return
+     */
+    public Bitmap getLittlePhoto(String path) {
+        Bitmap bm = mMemoryCache.get(path);
+        if (bm == null) {
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            bm = FaceFinderService.decodeSampledBitmapFromResource(path, 50, 50, options);
+            mMemoryCache.put(path, bm);
+        }
+        return bm;
+    }
     
 }

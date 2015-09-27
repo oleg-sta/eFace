@@ -46,6 +46,7 @@ public class PhotoList extends ArrayAdapter<String> {
     @SuppressLint("NewApi")
     @Override
     public View getView(int position, View view, ViewGroup parent) {
+        DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(getContext());
         //System.out.println("pos"+position);
         Log.v("blah", "pos"+position);
         LayoutInflater inflater = context.getLayoutInflater();
@@ -59,13 +60,15 @@ public class PhotoList extends ArrayAdapter<String> {
 
         File f = new File(web.get(position));
         if (f.exists()) {
-            InfoPhoto infoPhoto = DataHolder.getInstance().infos.get(web.get(position));
+            InfoPhoto infoPhoto = dbHelper.getInfoPhotoFull(web.get(position));
+            //InfoPhoto infoPhoto = DataHolder.getInstance().infos.get(web.get(position));
             // Bitmap myBitmap = this.mMemoryCache.get(web[position]);
+            Log.v("PhotoList", "show phot " + web.get(position) + " " + infoPhoto);
             if (infoPhoto != null) {
-                if (infoPhoto.littlePhoto != null) {
-                imageView.setImageBitmap(infoPhoto.littlePhoto);
-                numFaces.setText("" + infoPhoto.faceCount);
-                }
+                //if (infoPhoto.littlePhoto != null) {
+                    imageView.setImageBitmap(DataHolder.getInstance().getLittlePhoto(web.get(position)));
+                    numFaces.setText("" + infoPhoto.faceCount);
+                //}
                 //imageView.setImageBitmap(infoPhoto.littlePhoto);
             } else {
                 //BitmapWorkerTask task = new BitmapWorkerTask(imageView, numFaces);

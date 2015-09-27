@@ -20,15 +20,16 @@ public class DisplayPhotoActivity extends Activity {
         Log.v("DisplayPhotoActivity", "start");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.show_pic);
-
+        
+        
         String message = getIntent().getStringExtra(MainActivity.EXTRA_MESSAGE);
-
-        InfoPhoto info = DataHolder.getInstance().infos.get(message);
+        DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
+        InfoPhoto info = dbHelper.getInfoPhotoFull(message);
 
         if (info != null) {
             final BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = info.scaleFactor;
-            Bitmap myBitmap = BitmapFactory.decodeFile(message, options);
+            //options.inSampleSize = info.scaleFactor;
+            Bitmap myBitmap = FaceFinderService.decodeSampledBitmapFromResource(message, 500, 500, options);
 
             android.graphics.Bitmap.Config bitmapConfig = myBitmap.getConfig();
             // set default bitmap config if none

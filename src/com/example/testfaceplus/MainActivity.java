@@ -3,6 +3,8 @@ package com.example.testfaceplus;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.testfaceplus.data.InfoPhoto;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -62,13 +64,13 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String value = (String) parent.getItemAtPosition(position);
-                if (DataHolder.getInstance().infos.get(value) != null) {
+                //if (DataHolder.getInstance().infos.get(value) != null) {
                     Log.v("MainActivity", "click " + id);
                     Intent intent = new Intent(context, DisplayPhotoActivity.class);
                     Log.v("MainActivity", "click2 " + id);
                     intent.putExtra(EXTRA_MESSAGE, value);
                     startActivity(intent);
-                }
+                //}
 
             }
         });
@@ -82,6 +84,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
                 // start Service for computing faces
                 final ListView listView = (ListView) findViewById(R.id.listView1);
 
+                // TODO всю работу с фоторграфиями переложить на сервис
                 List<String> photos = getCameraImages(getApplicationContext());
                 
                 Intent intent = new Intent(context, FaceFinderService.class);
@@ -103,7 +106,6 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         });
         
         TextView textView1 = (TextView) findViewById(R.id.textView1);
-        
         // переход к лицам
         textView1.setOnClickListener(new OnClickListener() {
             
@@ -114,6 +116,23 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
                 //intent.putExtra(EXTRA_MESSAGE, value);
                 startActivity(intent);
                 
+            }
+        });
+        
+        TextView textView5 = (TextView) findViewById(R.id.textView5);
+        // переход к лицам
+        textView5.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                Log.v("MainActivity", "reset button");
+                SQLiteDatabase s2 = dbHelper.getWritableDatabase();
+                dbHelper.onUpgrade(s2, 2, 2); // временно
+                s2.close();
+                adapter.web.clear();
+                adapter.notifyDataSetChanged();
+
             }
         });
         
@@ -152,8 +171,9 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
             if (photo.equals(tw.getText())) {
                 ImageView imageView = (ImageView) v.findViewById(R.id.img);
                 TextView numFaces = (TextView) v.findViewById(R.id.num_faces);
-                imageView.setImageBitmap(DataHolder.getInstance().infos.get(photo).littlePhoto);
-                numFaces.setText("" + DataHolder.getInstance().infos.get(photo).faceCount);
+                InfoPhoto info = dbHelper.getInfoPhotoFull(photo);
+                imageView.setImageBitmap(DataHolder.getInstance().getLittlePhoto(photo));
+                numFaces.setText("" + info.faceCount);
                 return;
             }
         }
