@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.testfaceplus.data.Face;
 import com.example.testfaceplus.data.InfoPhoto;
@@ -23,6 +24,10 @@ public class DisplayPhotoActivity extends Activity {
         
         
         String message = getIntent().getStringExtra(MainActivity.EXTRA_MESSAGE);
+        
+        TextView textView = (TextView) findViewById(R.id.txt);
+        textView.setText(message);
+        
         DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
         InfoPhoto info = dbHelper.getInfoPhotoFull(message);
 

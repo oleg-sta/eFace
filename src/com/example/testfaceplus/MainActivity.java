@@ -23,6 +23,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements NotificationReceiver.Listener {
@@ -163,21 +164,36 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
         String photo = resultData.getString("photo");
-        // не хорошо лезть в чужой view и дублировать логику
-        final ListView listView = (ListView) findViewById(R.id.listView1);
-        for (int i = 0; i < listView.getChildCount(); i++) {
-            View v = listView.getChildAt(i);
-            TextView tw = (TextView) v.findViewById(R.id.txt);
-            if (photo.equals(tw.getText())) {
-                ImageView imageView = (ImageView) v.findViewById(R.id.img);
-                TextView numFaces = (TextView) v.findViewById(R.id.num_faces);
-                InfoPhoto info = dbHelper.getInfoPhotoFull(photo);
-                imageView.setImageBitmap(DataHolder.getInstance().getLittlePhoto(photo));
-                numFaces.setText("" + info.faceCount);
-                return;
+        String message = resultData.getString("message");
+        String progressStr = resultData.getString("progress");
+        if (photo != null) {
+            // не хорошо лезть в чужой view и дублировать логику
+            final ListView listView = (ListView) findViewById(R.id.listView1);
+            for (int i = 0; i < listView.getChildCount(); i++) {
+                View v = listView.getChildAt(i);
+                TextView tw = (TextView) v.findViewById(R.id.txt);
+                if (photo.equals(tw.getText())) {
+                    ImageView imageView = (ImageView) v.findViewById(R.id.img);
+                    TextView numFaces = (TextView) v.findViewById(R.id.num_faces);
+                    InfoPhoto info = dbHelper.getInfoPhotoFull(photo);
+                    imageView.setImageBitmap(DataHolder.getInstance().getLittlePhoto(photo));
+                    numFaces.setText("" + info.faceCount);
+                    return;
+                }
             }
         }
-        
-        
+        if (message != null) {
+            int progress = 0;
+            if (progressStr != null) {
+                progress = Integer.valueOf(progressStr);
+            }
+            TextView text = (TextView) findViewById(R.id.text_message);
+            text.setText(message);
+            
+            ProgressBar bar = (ProgressBar) findViewById(R.id.progressBar);
+            bar.setVisibility(View.VISIBLE);
+            bar.setProgress(progress);
+        }
+
     }
 }

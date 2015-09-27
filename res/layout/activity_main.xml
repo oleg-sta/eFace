@@ -32,13 +32,28 @@
         android:text="Найти все фотки"
         android:textSize="30px" />
    
-
+    <TextView
+        android:id="@+id/text_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/start"
+        android:text="Состояние" />
+    
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:max="100"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_message"/>
+    
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/start"
-        android:layout_below="@+id/start"
+        android:layout_below="@+id/progressBar"
         android:layout_marginLeft="27dp"
         android:layout_marginTop="37dp" >
 

@@ -54,7 +54,7 @@ public class FaceFinderService extends IntentService {
                 return;
             }
             dataHolder.processPhotos = true;
-            
+            Bundle bundle = intent.getExtras();
 
             final ResultReceiver rec = (ResultReceiver) intent.getParcelableExtra("receiver");
             List<String> photos = MainActivity.getCameraImages(getApplicationContext());
@@ -67,7 +67,15 @@ public class FaceFinderService extends IntentService {
             // find faces on photos
             photos = dbHelper.getAllPhotosToBeProcessed();
             
+            int iPh = 0;
             for (String photo : photos) {
+                if (bundle != null) {
+                    Bundle b = new Bundle();
+                    b.putString("progress", ((iPh * 100)/ (photos.size() + 5)) + "");
+                    b.putString("message", iPh + " обработано из " + photos.size());
+                    rec.send(0, b);
+                }
+                iPh++;
                 Log.d("service222", "photo" + photo);
                 Bitmap littleBit = BitmapWorkerTask.shrinkBitmap(photo, 50, 50);
 
@@ -107,17 +115,11 @@ public class FaceFinderService extends IntentService {
                 }
 
                 // сообщения для UI о готовности фото
-                Bundle bundle = intent.getExtras();
                 if (bundle != null) {
-                    // Messenger messenger = (Messenger)
-                    // bundle.get("receiver");
-                    // Message msg = Message.obtain();
                     Bundle b = new Bundle();
                     b.putString("photo", photo);
                     rec.send(0, b);
-                    // messenger.send(msg);
                 }
-
             }
             // если нет новых лиц, то не надо ничего группировать
             if (newFaces == 0) {
@@ -138,6 +140,11 @@ public class FaceFinderService extends IntentService {
                 }
             }
 
+            if (bundle != null) {
+                Bundle b = new Bundle();
+                b.putString("message", "группировка фотографий...");
+                rec.send(0, b);
+            }
             if (!"".equals(facesToRequest)) {
                 FaceppResult result = httpRequests.request("faceset", "create", new PostParameters().setFaceId(facesToRequest));
                 String faceSet = result.get("faceset_id", JsonType.STRING).toString();
