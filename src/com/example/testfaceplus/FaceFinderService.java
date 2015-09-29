@@ -48,6 +48,8 @@ public class FaceFinderService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         Log.d("FaceFinderService", "onHandleIntent");
+        Bundle bundle = null;
+        ResultReceiver rec = null;
         try {
             // нельзя допускать повторного запуска
             DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
@@ -58,9 +60,9 @@ public class FaceFinderService extends IntentService {
                 return;
             }
             dataHolder.processPhotos = true;
-            Bundle bundle = intent.getExtras();
+            bundle = intent.getExtras();
 
-            final ResultReceiver rec = (ResultReceiver) intent.getParcelableExtra("receiver");
+            rec = (ResultReceiver) intent.getParcelableExtra("receiver");
             List<String> photos = MainActivity.getCameraImages(getApplicationContext());
             // положить фотки в БД
             int newFaces = dbHelper.addNewPhotos(photos);
@@ -124,6 +126,10 @@ public class FaceFinderService extends IntentService {
                     faceCur.centerY = position.get("center").get("y").toDouble();
                     faceCur.guid = face.get("face_id").toString();
                     dbHelper.addFace(faceCur, imgId);
+                    // сохраняем фотографию
+                    SQLiteDatabase db = dbHelper.getReadableDatabase();
+                    dataHolder.getLittleFace(db, faceCur.guid, getApplicationContext());
+                    db.close();
                 }
 
                 // сообщения для UI о готовности фото
@@ -202,7 +208,16 @@ public class FaceFinderService extends IntentService {
             // TODO Auto-generated catch block
             Log.d("service222", "error" + e.getMessage());
             e.printStackTrace();
-        } 
+        } finally {
+            DataHolder.getInstance().processPhotos = false;
+            if (bundle != null) {
+                Bundle b = new Bundle();
+                b.putString("progress", "100");
+                b.putString("message", "Состояние");
+                rec.send(0, b);
+            }
+            // TODO send status message
+        }
     }
 
     public static Bitmap decodeSampledBitmapFromResource(String photo, int reqWidth, int reqHeight, Options options) {

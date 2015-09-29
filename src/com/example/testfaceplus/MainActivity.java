@@ -1,5 +1,6 @@
 package com.example.testfaceplus;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,13 +127,18 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
 
             @Override
             public void onClick(View v) {
-
+                // TODO clear temporarily photo
                 Log.v("MainActivity", "reset button");
                 SQLiteDatabase s2 = dbHelper.getWritableDatabase();
                 dbHelper.onUpgrade(s2, 2, 2); // временно
                 s2.close();
                 adapter.web.clear();
                 adapter.notifyDataSetChanged();
+                for (File f : getFilesDir().listFiles()) {
+                    if (f.isFile()) {
+                        f.delete();
+                    }
+                }
 
             }
         });

@@ -1,16 +1,23 @@
 package com.example.testfaceplus;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.example.testfaceplus.data.Face;
 import com.example.testfaceplus.data.InfoPhoto;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.util.LruCache;
+import android.util.Log;
 
 public class DataHolder {
 
@@ -69,15 +76,47 @@ public class DataHolder {
     }
     
     // TODO методы работы с кэшированными фотографиями
-    public Bitmap getLittleFace(SQLiteDatabase db, String faceId) {
+    public Bitmap getLittleFace(SQLiteDatabase db, String faceId, Context context) {
+        // TODO save to disc
+        // TODO сохранения на диск делать не во время показа, делать во время поиска
         Bitmap bm = mMemoryCache.get(faceId);
         if (bm == null) {
             Face faceCur = getFace(db, faceId);
             String path = getPathPhoto(db, faceCur.photoId);
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            // уменьшаем полную фотографию
-            Bitmap background_image = FaceFinderService.decodeSampledBitmapFromResource(path, 500, 500, options);
-            bm = Bitmap.createBitmap(background_image, (int)(background_image.getWidth() * (faceCur.centerX - faceCur.width / 2) / 100), (int)(background_image.getHeight() * (faceCur.centerY - faceCur.height / 2) / 100), (int)(background_image.getWidth() * faceCur.width / 100) , (int)(background_image.getHeight() * faceCur.height / 100));
+            File file = new File(context.getFilesDir(), faceId + ".jpg");
+            if (file.exists()) {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.RGB_565;
+                try {
+                    bm = BitmapFactory.decodeStream(new FileInputStream(file), null, options);
+                } catch (FileNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            } else {
+                final BitmapFactory.Options options = new BitmapFactory.Options();
+                // уменьшаем полную фотографию
+                Bitmap background_image = FaceFinderService.decodeSampledBitmapFromResource(path, 500, 500, options);
+                bm = Bitmap.createBitmap(background_image, (int) (background_image.getWidth()
+                        * (faceCur.centerX - faceCur.width / 2) / 100), (int) (background_image.getHeight()
+                        * (faceCur.centerY - faceCur.height / 2) / 100),
+                        (int) (background_image.getWidth() * faceCur.width / 100), (int) (background_image.getHeight()
+                                * faceCur.height / 100));
+                Log.v("DataHolder", "file dir " + context.getFilesDir());
+                file = new File(context.getFilesDir(), faceId + ".jpg");
+                try {
+                    if (file.createNewFile()) {
+                        FileOutputStream os = new FileOutputStream(file);
+                        bm.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                        os.flush();
+                        os.close();
+                    }
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            
             mMemoryCache.put(faceId, bm);
         }
         return bm;
