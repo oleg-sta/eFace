@@ -5,12 +5,16 @@ import java.io.IOException;
 import java.util.List;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.util.Log;
@@ -95,7 +99,15 @@ public class FaceFinderService extends IntentService {
                 // try {
                 FaceppResult result;
 
-                result = httpRequests.detectionDetect(new PostParameters().setImg(imageInByte));
+                if (isAndroidEmulator() || isWifiOnline()) {
+                    Log.v("FaceFinderService", "wifi is on");
+                    result = httpRequests.detectionDetect(new PostParameters().setImg(imageInByte));
+                } else {
+                    // TODO return;
+                    Log.v("FaceFinderService", "wifi is off");
+                    dataHolder.processPhotos = false;
+                    return;
+                }
                 String imgId = result.get("img_id").toString();
                 Face[] faces = new Face[result.get("face").getCount()];
                 for (int i = 0; i < result.get("face").getCount(); ++i) {
@@ -229,6 +241,28 @@ public class FaceFinderService extends IntentService {
         }
 
         return inSampleSize;
+    }
+    
+    /**
+     * Есть ли wifi соединения
+     * @return
+     */
+    public boolean isWifiOnline() {
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return (networkInfo != null && networkInfo.isConnected());
+    }
+    public static boolean isAndroidEmulator() {
+        String model = Build.MODEL;
+        //Log.d(TAG, "model=" + model);
+        String product = Build.PRODUCT;
+        //Log.d(TAG, "product=" + product);
+        boolean isEmulator = false;
+        if (product != null) {
+            isEmulator = product.equals("sdk") || product.contains("_sdk") || product.contains("sdk_");
+        }
+        //Log.d(TAG, "isEmulator=" + isEmulator);
+        return isEmulator;
     }
 
 }
