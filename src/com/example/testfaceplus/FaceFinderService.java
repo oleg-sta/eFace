@@ -82,7 +82,7 @@ public class FaceFinderService extends IntentService {
                     rec.send(0, b);
                 }
                 iPh++;
-                Log.d("service222", "photo" + photo);
+                Log.d("FaceFinderService", "photo" + photo);
                 Bitmap littleBit = BitmapWorkerTask.shrinkBitmap(photo, 50, 50);
 
                 BitmapFactory.Options bitmap_options = new BitmapFactory.Options();
@@ -147,7 +147,7 @@ public class FaceFinderService extends IntentService {
             }
             dbHelper.removeGroups();
             String facesToRequest = "";
-            Log.d("service222", "onStartCommand grouping faces");
+            Log.d("FaceFinderService", "onStartCommand grouping faces");
             // grouping faces
             List<Face> faces = dbHelper.getAllFaces();
             for (Face face : faces) {
@@ -170,7 +170,7 @@ public class FaceFinderService extends IntentService {
                 result = httpRequests.request("grouping", "grouping", new PostParameters().setFaceSetId(faceSet));
                 String sessId = result.get("session_id").toString();
 
-                Log.d("service222", "onStartCommand get grouping result");
+                Log.d("FaceFinderService", "onStartCommand get grouping result");
                 for (int i1 = 0; i1 < 100; i1++) {
                     result = httpRequests.request("info", "get_session", new PostParameters().setSessionId(sessId));
                     System.out.println(result);
@@ -206,7 +206,7 @@ public class FaceFinderService extends IntentService {
             dataHolder.processPhotos = false;
         } catch (FaceppParseException | IOException e) {
             // TODO Auto-generated catch block
-            Log.d("service222", "error" + e.getMessage());
+            Log.d("FaceFinderService", "error" + e.getMessage());
             e.printStackTrace();
         } finally {
             DataHolder.getInstance().processPhotos = false;

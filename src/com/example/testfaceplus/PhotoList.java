@@ -38,7 +38,7 @@ public class PhotoList extends ArrayAdapter<String> {
         this.context = context;
         this.web = web;
         
-        Log.v("blah", "start");
+        Log.v("PhotoList", "start");
         //this.mMemoryCache =mMemoryCache;
 
     }
@@ -48,7 +48,7 @@ public class PhotoList extends ArrayAdapter<String> {
     public View getView(int position, View view, ViewGroup parent) {
         DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(getContext());
         //System.out.println("pos"+position);
-        Log.v("blah", "pos"+position);
+        Log.v("PhotoList", "pos"+position);
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.list_single, null, true);
         TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);

@@ -156,11 +156,16 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         final Cursor cursor = context.getContentResolver().query(Images.Media.EXTERNAL_CONTENT_URI, projection, selection,
                 selectionArgs, null);
         ArrayList<String> result = new ArrayList<String>(cursor.getCount());
+        int i = 0;
         if (cursor.moveToFirst()) {
             final int dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             do {
                 final String data = cursor.getString(dataColumn);
-                result.add(data);
+                // ограничение до 40 фоток
+                if (i < 40) {
+                    result.add(data);
+                }
+                i++;
             } while (cursor.moveToNext());
         }
         cursor.close();
