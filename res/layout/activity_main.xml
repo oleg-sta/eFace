@@ -8,35 +8,37 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.test1.MainActivity" >
 
-    <TextView
+    <Button
+        android:id="@+id/start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/linearLayout1"
+        android:gravity="center_horizontal"
+        android:padding="20px"
+        android:text="Запустить"
+        android:textSize="30px" />
+    
+    <Button
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/start"
+        android:gravity="center_horizontal"
+        android:padding="20px"
         android:text="К лицам" />
     
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/textView111"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView1"
         android:text="Сбросить" />
     
-   <Button
-        android:id="@+id/start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/linearLayout1"
-        android:layout_below="@+id/textView5"
-        android:gravity="center_horizontal"
-        android:padding="20px"
-        android:text="Найти все фотки"
-        android:textSize="30px" />
-   
     <TextView
         android:id="@+id/text_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/start"
+        android:layout_below="@+id/textView111"
         android:text="Состояние" />
     
     <ProgressBar

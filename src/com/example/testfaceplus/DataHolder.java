@@ -5,11 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.example.testfaceplus.data.Face;
-import com.example.testfaceplus.data.InfoPhoto;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -18,6 +13,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.util.LruCache;
 import android.util.Log;
+
+import com.example.testfaceplus.data.Face;
 
 public class DataHolder {
 

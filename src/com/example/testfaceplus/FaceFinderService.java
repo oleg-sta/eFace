@@ -108,6 +108,11 @@ public class FaceFinderService extends IntentService {
                     // TODO return;
                     Log.v("FaceFinderService", "wifi is off");
                     dataHolder.processPhotos = false;
+                    if (bundle != null) {
+                        Bundle b = new Bundle();
+                        b.putString("message", "wifi отключен");
+                        rec.send(0, b);
+                    }
                     return;
                 }
                 String imgId = result.get("img_id").toString();
@@ -182,20 +187,22 @@ public class FaceFinderService extends IntentService {
                     } else if ("SUCC".equals(res)) {
                         FaceppResult groupRes = result.get("result");
                         for (int i = 0; i < groupRes.get("group").getCount(); ++i) {
-                            dbHelper.addPerson("group"+i);
+                            String groupName = "группа" + (i + 1); 
+                            dbHelper.addPerson(groupName);
                             
                             FaceppResult group = groupRes.get("group").getArray(i);
                             for (int j = 0; j < group.getCount(); ++j) {
                                 String faceId = group.get(j).get("face_id").toString();
-                                dbHelper.addFaceToPerson(faceId, "group"+i);
+                                dbHelper.addFaceToPerson(faceId, groupName);
                             }
                         }  
                         FaceppResult group = groupRes.get("ungrouped", JsonType.JSON.ARRAY);
-                        dbHelper.addPerson("ungrouped");
+                        String groupName = "несгруппированные";
+                        dbHelper.addPerson(groupName);
                         //DataHolder.getInstance().catnames.add("ungrouped");
                         for (int j = 0; j < group.getCount(); ++j) {
                             String faceId = group.get(j).get("face_id").toString();
-                            dbHelper.addFaceToPerson(faceId, "ungrouped");
+                            dbHelper.addFaceToPerson(faceId, groupName);
                         }
                         dataHolder.processPhotos = false;
                         return;

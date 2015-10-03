@@ -107,9 +107,9 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
             }
         });
         
-        TextView textView1 = (TextView) findViewById(R.id.textView1);
+        Button textView1 = (Button) findViewById(R.id.textView1);
         // переход к лицам
-        textView1.setOnClickListener(new OnClickListener() {
+        textView1.setOnClickListener(new Button.OnClickListener() {
             
             @Override
             public void onClick(View v) {
@@ -121,8 +121,8 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
             }
         });
         
-        TextView textView5 = (TextView) findViewById(R.id.textView5);
-        // переход к лицам
+        TextView textView5 = (TextView) findViewById(R.id.textView111);
+        Log.v("MainActivity", "reset button " +textView5);
         textView5.setOnClickListener(new OnClickListener() {
 
             @Override
