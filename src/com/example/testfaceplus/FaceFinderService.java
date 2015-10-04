@@ -1,15 +1,15 @@
 package com.example.testfaceplus;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.UUID;
 
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.net.ConnectivityManager;
@@ -20,12 +20,9 @@ import android.os.ResultReceiver;
 import android.util.Log;
 
 import com.example.testfaceplus.data.Face;
-import com.example.testfaceplus.data.InfoPhoto;
-import com.facepp.error.FaceppParseException;
-import com.facepp.http.HttpRequests;
-import com.facepp.http.PostParameters;
-import com.facepp.result.FaceppResult;
-import com.facepp.result.FaceppResult.JsonType;
+
+import detection.Detector;
+import detection.Rectangle;
 
 /**
  * Сервис поиска лиц на фотографиях и их группировки. 
@@ -51,7 +48,7 @@ public class FaceFinderService extends IntentService {
         Bundle bundle = null;
         ResultReceiver rec = null;
         try {
-            // нельзя допускать повторного запуска
+            // нельзя допускать повторного запуска1
             DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
             
             DataHolder dataHolder = DataHolder.getInstance();
@@ -68,11 +65,14 @@ public class FaceFinderService extends IntentService {
             int newFaces = dbHelper.addNewPhotos(photos);
             
             
-            HttpRequests httpRequests = new HttpRequests("b6452a0139a94e5a2d7013b8d0146f01", "WU7c-QNzVteqO3JREDOkfcZXw-qj2CVp");
-            
             // find faces on photos
             photos = dbHelper.getAllPhotosToBeProcessed();
             
+            Log.d("FaceFinderService", "loading casade...");
+            InputStream inputHaas = getResources().openRawResource(R.raw.haarcascade_frontalface_default);
+            Detector detector = Detector.create(inputHaas);
+            Log.d("FaceFinderService", "casade loaded");
+            inputHaas.close();
             int iPh = 0;
             for (String photo : photos) {
                 if (bundle != null) {
@@ -91,45 +91,52 @@ public class FaceFinderService extends IntentService {
                 // bitmap_options);
 
                 final BitmapFactory.Options options = new BitmapFactory.Options();
-                Bitmap background_image = decodeSampledBitmapFromResource(photo, 500, 500, options);
+                Bitmap background_image = decodeSampledBitmapFromResource(photo, 200, 200, options);
 
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                background_image.compress(CompressFormat.JPEG, 90, baos);
-                byte[] imageInByte = baos.toByteArray();
-                baos.close();
-                // use different methods
-                // try {
-                FaceppResult result;
-
-                if (isAndroidEmulator() || isWifiOnline()) {
-                    Log.v("FaceFinderService", "wifi is on");
-                    result = httpRequests.detectionDetect(new PostParameters().setImg(imageInByte));
-                } else {
-                    // TODO return;
-                    Log.v("FaceFinderService", "wifi is off");
-                    dataHolder.processPhotos = false;
-                    if (bundle != null) {
-                        Bundle b = new Bundle();
-                        b.putString("message", "wifi отключен");
-                        rec.send(0, b);
-                    }
-                    return;
+//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                background_image.compress(CompressFormat.JPEG, 90, baos);
+//                byte[] imageInByte = baos.toByteArray();
+//                baos.close();
+                // face finder
+                Log.i("FaceFinderService", "size " + background_image.getWidth() + " " + background_image.getHeight());
+                long time = System.currentTimeMillis();
+                List<Rectangle> res = detector.getFaces(background_image, 1.2f, 1.1f, .05f, 2, true);
+                time = (System.currentTimeMillis() - time) / 1000;
+                Log.i("FaceFinderService", "foune " + res.size() + " faces");
+                
+//                if (isAndroidEmulator() || isWifiOnline()) {
+//                    Log.v("FaceFinderService", "wifi is on");
+//                    result = httpRequests.detectionDetect(new PostParameters().setImg(imageInByte));
+//                } else {
+//                    // TODO return;
+//                    Log.v("FaceFinderService", "wifi is off");
+//                    dataHolder.processPhotos = false;
+//                    if (bundle != null) {
+//                        Bundle b = new Bundle();
+//                        b.putString("message", "wifi отключен");
+//                        rec.send(0, b);
+//                    }
+//                    return;
+//                }
+                String imgId = UUID.randomUUID().toString();
+                Face[] faces = new Face[res.size()];
+                if (res.size() == 0) {
+                    dbHelper.updatePhoto(photo, time);
                 }
-                String imgId = result.get("img_id").toString();
-                Face[] faces = new Face[result.get("face").getCount()];
-                for (int i = 0; i < result.get("face").getCount(); ++i) {
+                for (int i = 0; i < res.size(); ++i) {
                     if (i == 0) {
-                        dbHelper.updatePhoto(photo, imgId);
+                        dbHelper.updatePhoto(photo, imgId, time);
                     }
-                    FaceppResult face = result.get("face").get(i);
-                    FaceppResult position = face.get("position");
+                    //FaceppResult face = result.get("face").get(i);
+                    Rectangle face = res.get(i);
+                    //FaceppResult position = face.get("position");
                     Face faceCur = new Face();
                     faces[i] = faceCur;
-                    faceCur.height = position.get("height").toDouble();
-                    faceCur.width = position.get("width").toDouble();
-                    faceCur.centerX = position.get("center").get("x").toDouble();
-                    faceCur.centerY = position.get("center").get("y").toDouble();
-                    faceCur.guid = face.get("face_id").toString();
+                    faceCur.height = 100 * face.height / (double) background_image.getHeight();
+                    faceCur.width = 100 * face.width / (double) background_image.getWidth();
+                    faceCur.centerY = 100 * (face.y + face.height / 2) / (double) background_image.getHeight();
+                    faceCur.centerX = 100 * (face.x + face.width / 2) / (double) background_image.getWidth();
+                    faceCur.guid = UUID.randomUUID().toString();
                     dbHelper.addFace(faceCur, imgId);
                     // сохраняем фотографию
                     SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -144,74 +151,8 @@ public class FaceFinderService extends IntentService {
                     rec.send(0, b);
                 }
             }
-            // если нет новых лиц, то не надо ничего группировать
-            if (newFaces == 0) {
-                Log.d("FaceFinderService", "onHandleIntent no new photos");
-                dataHolder.processPhotos = false;
-                return;
-            }
-            dbHelper.removeGroups();
-            String facesToRequest = "";
-            Log.d("FaceFinderService", "onStartCommand grouping faces");
-            // grouping faces
-            List<Face> faces = dbHelper.getAllFaces();
-            for (Face face : faces) {
-                if ("".equals(facesToRequest)) {
-                    facesToRequest = face.guid;
-                } else {
-                    facesToRequest += "," + face.guid;
-                }
-            }
-
-            if (bundle != null) {
-                Bundle b = new Bundle();
-                b.putString("message", "группировка фотографий...");
-                rec.send(0, b);
-            }
-            if (!"".equals(facesToRequest)) {
-                FaceppResult result = httpRequests.request("faceset", "create", new PostParameters().setFaceId(facesToRequest));
-                String faceSet = result.get("faceset_id", JsonType.STRING).toString();
-
-                result = httpRequests.request("grouping", "grouping", new PostParameters().setFaceSetId(faceSet));
-                String sessId = result.get("session_id").toString();
-
-                Log.d("FaceFinderService", "onStartCommand get grouping result");
-                for (int i1 = 0; i1 < 100; i1++) {
-                    result = httpRequests.request("info", "get_session", new PostParameters().setSessionId(sessId));
-                    System.out.println(result);
-                    String res = result.get("status").toString();
-                    if ("FAILED".equals(res)) {
-                        dataHolder.processPhotos = false;
-                        return;
-                    } else if ("INQUEUE".equals(res)) {
-                    } else if ("SUCC".equals(res)) {
-                        FaceppResult groupRes = result.get("result");
-                        for (int i = 0; i < groupRes.get("group").getCount(); ++i) {
-                            String groupName = "группа" + (i + 1); 
-                            dbHelper.addPerson(groupName);
-                            
-                            FaceppResult group = groupRes.get("group").getArray(i);
-                            for (int j = 0; j < group.getCount(); ++j) {
-                                String faceId = group.get(j).get("face_id").toString();
-                                dbHelper.addFaceToPerson(faceId, groupName);
-                            }
-                        }  
-                        FaceppResult group = groupRes.get("ungrouped", JsonType.JSON.ARRAY);
-                        String groupName = "несгруппированные";
-                        dbHelper.addPerson(groupName);
-                        //DataHolder.getInstance().catnames.add("ungrouped");
-                        for (int j = 0; j < group.getCount(); ++j) {
-                            String faceId = group.get(j).get("face_id").toString();
-                            dbHelper.addFaceToPerson(faceId, groupName);
-                        }
-                        dataHolder.processPhotos = false;
-                        return;
-                    }
-                }
-
-            }
             dataHolder.processPhotos = false;
-        } catch (FaceppParseException | IOException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             Log.d("FaceFinderService", "error" + e.getMessage());
             e.printStackTrace();

@@ -56,6 +56,7 @@ public class PhotoList extends ArrayAdapter<String> {
 
         ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
         TextView numFaces = (TextView) rowView.findViewById(R.id.num_faces);
+        TextView time = (TextView) rowView.findViewById(R.id.time);
         
 
         File f = new File(web.get(position));
@@ -68,6 +69,7 @@ public class PhotoList extends ArrayAdapter<String> {
                 //if (infoPhoto.littlePhoto != null) {
                     imageView.setImageBitmap(DataHolder.getInstance().getLittlePhoto(web.get(position)));
                     numFaces.setText("" + infoPhoto.faceCount);
+                    time.setText("" + infoPhoto.timeProccessed);
                 //}
                 //imageView.setImageBitmap(infoPhoto.littlePhoto);
             } else {

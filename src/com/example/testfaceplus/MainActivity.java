@@ -41,8 +41,8 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         
         Log.v("MainActivity", "onCreate");
         dbHelper = new DictionaryOpenHelper(this);
-        
         SQLiteDatabase db = dbHelper.getReadableDatabase();
+        //dbHelper.onUpgrade(db, 1, 1);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -186,9 +186,11 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
                 if (photo.equals(tw.getText())) {
                     ImageView imageView = (ImageView) v.findViewById(R.id.img);
                     TextView numFaces = (TextView) v.findViewById(R.id.num_faces);
+                    TextView time = (TextView) v.findViewById(R.id.time);
                     InfoPhoto info = dbHelper.getInfoPhotoFull(photo);
                     imageView.setImageBitmap(DataHolder.getInstance().getLittlePhoto(photo));
                     numFaces.setText("" + info.faceCount);
+                    time.setText("" + info.timeProccessed);
                     return;
                 }
             }

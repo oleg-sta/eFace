@@ -10,4 +10,5 @@ public class InfoPhoto {
     //public int scaleFactor;
     public String guid;
     public String path;
+    public long timeProccessed;
 }

@@ -22,7 +22,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE photos (guid text, path TEXT primary key);");
+        db.execSQL("CREATE TABLE photos (guid text, path TEXT primary key, time_processed real);");
         db.execSQL("create table faces (guid text primary key, photo_id text, person_id text, height real, width real, centerX real, centerY real);");
         db.execSQL("create table person (person_id text primary key);");
     }
@@ -88,15 +88,20 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         s.close();
     }
 
+    public void updatePhoto(String photo, long time) {
+        SQLiteDatabase s = getWritableDatabase();
+        s.execSQL("update photos set time_processed = "+time+" where path = '" + photo + "'");
+        s.close();
+    }
     /**
      * обновление информации по фото
      * 
      * @param photo
      * @param guid
      */
-    public void updatePhoto(String photo, String guid) {
+    public void updatePhoto(String photo, String guid, long time) {
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("update photos set guid = '" + guid + "' where path = '" + photo + "'");
+        s.execSQL("update photos set guid = '" + guid + "', time_processed = "+time+" where path = '" + photo + "'");
         s.close();
     }
 
@@ -143,9 +148,10 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         InfoPhoto info = new InfoPhoto();
         info.path = path;
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select guid from photos where path = '" + path + "'", null);
+        Cursor c = s.rawQuery("select guid, time_processed from photos where path = '" + path + "'", null);
         if (c.moveToNext()) {
             info.guid = c.getString(0);
+            info.timeProccessed = c.getLong(1);
             Log.v("DictionaryOpenHelper", "" + info.guid);
         }
         c.close();
