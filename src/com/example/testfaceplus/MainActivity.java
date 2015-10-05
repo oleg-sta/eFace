@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.Computations;
 import com.example.testfaceplus.data.InfoPhoto;
 
 import android.app.Activity;
@@ -38,7 +39,15 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        
+        Computations s = new Computations();
+    	Log.i("MainActivity", "jni " + s.stringFromJNI());
+    	int[] d22 = new int[] {33};
+    	Log.i("MainActivity", "jni3 " + d22[0]);
+    	s.intFromJni2(d22);
+    	Log.i("MainActivity", "jni5 " + d22[0]);
+    	Log.i("MainActivity", "jni2 " + s.intFromJni(new int[] {33,43}));
+    	Log.i("MainActivity", "jni55 " + s.findFaces(new int[][] {{1,2}, {3,4}}, 0, 0, true));
+    	//Log.i("MainActivity", "jni7 " + s.findFaces(new int[][] {{33,43}, {33,43}, {33,43}}));
         Log.v("MainActivity", "onCreate");
         dbHelper = new DictionaryOpenHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();

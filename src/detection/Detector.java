@@ -6,6 +6,8 @@ import org.jdom.*;
 import org.jdom.input.*;
 import org.jdom.filter.*;
 
+import com.example.Computations;
+
 import android.graphics.Bitmap;
 import android.util.Log;
 
@@ -170,6 +172,7 @@ public class Detector {
 
     public List<Rectangle> getFaces(Bitmap image,float baseScale, float scale_inc,float increment, int min_neighbors,boolean doCannyPruning)
 	{
+    	Computations comp = new Computations();
         Log.i("Detector", "getFaces");
 	    
 			//StopWatch sw = new StopWatch();
@@ -182,8 +185,8 @@ public class Detector {
 			
 			/* Compute the grayscale image, the integral image and the squared integral image.*/
 			int[][] grayImage=new int[width][height]; // интенсивность пикселей
-			int[][] img = new int[width][height]; // интенсивноть квадратов пикселей
-			int[][] squares=new int[width][height];
+			int[][] img = new int[width][height]; // оригинальное ч\б изображение
+			int[][] squares=new int[width][height]; // интенсивноть квадратов пикселей
 			for(int i=0;i<width;i++)
 			{
 				int col=0;
@@ -209,6 +212,11 @@ public class Detector {
 			if(doCannyPruning)
 				canny = CannyPruner.getIntegralCanny(img);
 			Log.i("Detector", "getFaces3");
+			
+			
+			// Используем нативную библиотеку
+			//int i22 = comp.findFaces(img);
+			//Log.i("Detector", i22);
 			/*Heart of the algorithm : detection */
 			/*For each scale of the detection window */
 			for(float scale=baseScale;scale<maxScale;scale*=scale_inc)
