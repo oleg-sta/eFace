@@ -69,7 +69,7 @@ VectorRects* Detector::getFaces(float baseScale, float scale_inc, float incremen
 				for (int iStage = 0; iStage < sizeStages; iStage++) {
 					//__android_log_print(ANDROID_LOG_INFO, "Detector", "gettFaces2 stageI %d", iStage);
 					Stage* s = stages[iStage];
-					if (!s->pass2(imageLocal, imageLocal, i, j, scale)) {
+					if (!s->pass2(grayImage, squares, i, j, scale)) {
 						pass = false;
 						break;
 					}

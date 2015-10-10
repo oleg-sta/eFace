@@ -13,6 +13,8 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Iterator;
@@ -172,7 +174,7 @@ public class Detector {
     // return null;
     // }
 
-    public List<Rectangle> getFaces(Bitmap image,float baseScale, float scale_inc,float increment, int min_neighbors,boolean doCannyPruning)
+    public List<Rectangle> getFaces(Bitmap image,float baseScale, float scale_inc,float increment, int min_neighbors,boolean doCannyPruning, boolean useC)
 	{
     	Computations comp = new Computations();
     	
@@ -188,7 +190,8 @@ public class Detector {
 			
 			/* Compute the grayscale image, the integral image and the squared integral image.*/
 			int[][] grayImage=new int[width][height]; // интенсивность пикселей
-			int[][] img = new int[width][height]; // оригинальное ч\б изображение
+			int[][] origImg = new int[width][height]; // оригинальное цветное изображение
+			int[][] img = new int[width][height]; // ч\б изображение
 			int[][] squares=new int[width][height]; // интенсивноть квадратов пикселей
 			for(int i=0;i<width;i++)
 			{
@@ -197,6 +200,7 @@ public class Detector {
 				for(int j=0;j<height;j++)
 				{
 					int c = image.getPixel(i, j);//getRGB(i,j);
+					origImg[i][j] = c;
 					int  red = (c & 0x00ff0000) >> 16;
 					int  green = (c & 0x0000ff00) >> 8;
 					int  blue = c & 0x000000ff;
@@ -209,10 +213,13 @@ public class Detector {
 				}
 			}
 			
-			Log.i("Detector", "calling Computations...");
-			faces = new ArrayList<Rectangle>();
-			comp.findFaces(grayImage, baseScale, increment, min_neighbors, scale_inc, doCannyPruning, this);
-			Log.i("Detector", "return from Computations " + faces.size());
+			if (useC) {
+				Log.i("Detector", "calling Computations...");
+				faces = new ArrayList<Rectangle>();
+				Rectangle[] facs = comp.findFaces(origImg, baseScale, increment, min_neighbors, scale_inc, doCannyPruning, this);
+				Log.i("Detector", "return from Computations " + facs.length);
+				return Arrays.asList(facs);
+			}
 			
 			Log.i("Detector", "getFaces2");
 			/* Eventually compute the gradient of the image, if option is on. */

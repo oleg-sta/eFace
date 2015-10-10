@@ -10,6 +10,7 @@ int Feature::getLeftOrRight(int** grayImage, int** squares, int i, int j,
 	int w = (int) (scale * size->x);
 	int h = (int) (scale * size->y);
 	double inv_area = 1. / (w * h);
+	//__android_log_print(ANDROID_LOG_INFO, "Feature", "sum=%f w=%d h=%d", inv_area, w, h);
 
 	/* Compute the sum (and squared sum) of the pixel values in the window, and get the mean and variance of pixel values
 	 * in the window. */
@@ -18,6 +19,7 @@ int Feature::getLeftOrRight(int** grayImage, int** squares, int i, int j,
 	int total_x2 = squares[i + w][j + h] + squares[i][j] - squares[i][j + h]
 			- squares[i + w][j];
 	double moy = total_x * inv_area;
+	//__android_log_print(ANDROID_LOG_INFO, "Feature", "moy=%f total_x=%d inv_area=%f", moy, total_x, inv_area);
 	double vnorm = total_x2 * inv_area - moy * moy;
 	vnorm = (vnorm > 1) ? sqrt(vnorm) : 1;
 

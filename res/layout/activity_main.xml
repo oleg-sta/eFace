@@ -8,12 +8,18 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.test1.MainActivity" >
 
+    <CheckBox android:id="@+id/checkbox_meat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="C++"/>
+    
     <Button
         android:id="@+id/start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/linearLayout1"
         android:gravity="center_horizontal"
+        android:layout_below="@+id/checkbox_meat"
         android:padding="20px"
         android:text="Запустить"
         android:textSize="30px" />

@@ -60,6 +60,8 @@ public class FaceFinderService extends IntentService {
             bundle = intent.getExtras();
 
             rec = (ResultReceiver) intent.getParcelableExtra("receiver");
+            boolean useCpp = intent.getBooleanExtra("useCpp", false);
+            Log.d("FaceFinderService", "onHandleIntent useCpp " + useCpp);
             List<String> photos = MainActivity.getCameraImages(getApplicationContext());
             // положить фотки в БД
             int newFaces = dbHelper.addNewPhotos(photos);
@@ -100,7 +102,7 @@ public class FaceFinderService extends IntentService {
                 // face finder
                 Log.i("FaceFinderService", "size " + background_image.getWidth() + " " + background_image.getHeight());
                 long time = System.currentTimeMillis();
-                List<Rectangle> res = detector.getFaces(background_image, 1.2f, 1.1f, .05f, 2, true);
+                List<Rectangle> res = detector.getFaces(background_image, 1.2f, 1.1f, .05f, 2, true, useCpp);
                 time = (System.currentTimeMillis() - time) / 1000;
                 Log.i("FaceFinderService", "foune " + res.size() + " faces");
                 

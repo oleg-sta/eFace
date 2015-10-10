@@ -208,7 +208,7 @@ Rect* Computations::getRect(JNIEnv* env, jobject rectObj) {
 	rect->y1 = getObjectField(env, rectObj, clsFeature, "y1");
 	rect->y2 = getObjectField(env, rectObj, clsFeature, "y2");
 	rect->weight = getObjectFieldF(env, rectObj, clsFeature, "weight");
-	__android_log_print(ANDROID_LOG_INFO, "Computations", "getRect18 %d %d %d %d %f", rect->x1, rect->x2, rect->y1, rect->y2, rect->weight);
+	//__android_log_print(ANDROID_LOG_INFO, "Computations", "getRect18 %d %d %d %d %f", rect->x1, rect->x2, rect->y1, rect->y2, rect->weight);
 	env->DeleteLocalRef(clsFeature);
 	return rect;
 }

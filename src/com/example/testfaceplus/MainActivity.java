@@ -25,6 +25,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -94,6 +95,9 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
             @Override
             public void onClick(View v) {
                 
+            	final CheckBox checkBox = (CheckBox) findViewById(R.id.checkbox_meat);
+            	boolean useCpp = checkBox.isChecked(); 
+
                 // start Service for computing faces
                 final ListView listView = (ListView) findViewById(R.id.listView1);
 
@@ -104,6 +108,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
                 NotificationReceiver receiver = new NotificationReceiver(new Handler());
                 receiver.setListener(d);
                 intent.putExtra("receiver", receiver);
+                intent.putExtra("useCpp", useCpp);
                 
                 startService(intent);
 
