@@ -2,6 +2,8 @@ package com.example;
 
 import java.util.List;
 
+import detection.Detector;
+import detection.Rectangle;
 import detection.Stage;
 
 public class Computations {
@@ -15,6 +17,7 @@ public class Computations {
 	
 	public native int intFromJni2(int[] f);
 
-	public native int findFaces(int[][] grayImage, float baseScale, float scale_inc, boolean doCannyPruning);
+	public native Rectangle[] findFaces(int[][] grayImage, float baseScale, float increment, int min_neighbors, float scale_inc,
+			boolean doCannyPruning, Detector detector);
 	
 }

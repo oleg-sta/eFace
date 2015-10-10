@@ -24,7 +24,9 @@ public class Detector {
      * as an image.
      */
     List<Stage> stages;
-    Point size;
+    public Point size;
+    
+    List<Rectangle> faces;
 
     /**
      * Factory method. Builds a detector from an XML file.
@@ -173,6 +175,7 @@ public class Detector {
     public List<Rectangle> getFaces(Bitmap image,float baseScale, float scale_inc,float increment, int min_neighbors,boolean doCannyPruning)
 	{
     	Computations comp = new Computations();
+    	
         Log.i("Detector", "getFaces");
 	    
 			//StopWatch sw = new StopWatch();
@@ -205,6 +208,11 @@ public class Detector {
 					col2+=value*value;
 				}
 			}
+			
+			Log.i("Detector", "calling Computations...");
+			faces = new ArrayList<Rectangle>();
+			comp.findFaces(grayImage, baseScale, increment, min_neighbors, scale_inc, doCannyPruning, this);
+			Log.i("Detector", "return from Computations " + faces.size());
 			
 			Log.i("Detector", "getFaces2");
 			/* Eventually compute the gradient of the image, if option is on. */

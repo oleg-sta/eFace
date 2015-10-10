@@ -7,6 +7,8 @@ import java.util.List;
 import com.example.Computations;
 import com.example.testfaceplus.data.InfoPhoto;
 
+import detection.Stage;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -46,7 +48,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
     	s.intFromJni2(d22);
     	Log.i("MainActivity", "jni5 " + d22[0]);
     	Log.i("MainActivity", "jni2 " + s.intFromJni(new int[] {33,43}));
-    	Log.i("MainActivity", "jni55 " + s.findFaces(new int[][] {{1,2}, {3,4}}, 0, 0, true));
+    	//Log.i("MainActivity", "jni55 " + s.findFaces(new int[][] {{1,2}, {3,4}}, 0, 0, 0, 0, true, new ArrayList<Stage>()));
     	//Log.i("MainActivity", "jni7 " + s.findFaces(new int[][] {{33,43}, {33,43}, {33,43}}));
         Log.v("MainActivity", "onCreate");
         dbHelper = new DictionaryOpenHelper(this);
