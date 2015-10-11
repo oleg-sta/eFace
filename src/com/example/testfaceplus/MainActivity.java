@@ -24,11 +24,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements NotificationReceiver.Listener {
@@ -43,14 +45,6 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Computations s = new Computations();
-    	Log.i("MainActivity", "jni " + s.stringFromJNI());
-    	int[] d22 = new int[] {33};
-    	Log.i("MainActivity", "jni3 " + d22[0]);
-    	s.intFromJni2(d22);
-    	Log.i("MainActivity", "jni5 " + d22[0]);
-    	Log.i("MainActivity", "jni2 " + s.intFromJni(new int[] {33,43}));
-    	//Log.i("MainActivity", "jni55 " + s.findFaces(new int[][] {{1,2}, {3,4}}, 0, 0, 0, 0, true, new ArrayList<Stage>()));
-    	//Log.i("MainActivity", "jni7 " + s.findFaces(new int[][] {{33,43}, {33,43}, {33,43}}));
         Log.v("MainActivity", "onCreate");
         dbHelper = new DictionaryOpenHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -61,6 +55,13 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         final Button button = (Button) findViewById(R.id.start);
         final Context context = this;
         final MainActivity d = this;
+        
+        
+        ArrayAdapter<String> adapter22 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new String[]{"1","2","3","4","5","6","7"});
+        adapter22.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        Spinner spinner = (Spinner) findViewById(R.id.cores_spinner);
+        spinner.setAdapter(adapter22);
+        
         
         List<String> photosArray = new ArrayList<String>();
         Cursor c = db.rawQuery("select guid, path from photos", null);
@@ -97,6 +98,9 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
                 
             	final CheckBox checkBox = (CheckBox) findViewById(R.id.checkbox_meat);
             	boolean useCpp = checkBox.isChecked(); 
+            	
+            	Spinner spinner = (Spinner) findViewById(R.id.cores_spinner);
+            	//Integer.valueOf(spinner.getSelectedItem());
 
                 // start Service for computing faces
                 final ListView listView = (ListView) findViewById(R.id.listView1);
@@ -109,6 +113,8 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
                 receiver.setListener(d);
                 intent.putExtra("receiver", receiver);
                 intent.putExtra("useCpp", useCpp);
+                Log.i("MainActivity", "num thre " + spinner.getSelectedItem().toString());
+                intent.putExtra("threads", Integer.valueOf(spinner.getSelectedItem().toString()));
                 
                 startService(intent);
 

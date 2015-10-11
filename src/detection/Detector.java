@@ -158,6 +158,7 @@ public class Detector {
      * @param increment
      *            The shift of the window at each sub-step, in terms of
      *            percentage of the window size.
+     * @param threadsNum 
      * @return the list of rectangles containing searched objects, expressed in
      *         pixels.
      */
@@ -174,7 +175,7 @@ public class Detector {
     // return null;
     // }
 
-    public List<Rectangle> getFaces(Bitmap image,float baseScale, float scale_inc,float increment, int min_neighbors,boolean doCannyPruning, boolean useC)
+    public List<Rectangle> getFaces(Bitmap image,float baseScale, float scale_inc,float increment, int min_neighbors,boolean doCannyPruning, boolean useC, int threadsNum)
 	{
     	Computations comp = new Computations();
     	
@@ -216,7 +217,7 @@ public class Detector {
 			if (useC) {
 				Log.i("Detector", "calling Computations...");
 				faces = new ArrayList<Rectangle>();
-				Rectangle[] facs = comp.findFaces(origImg, baseScale, increment, min_neighbors, scale_inc, doCannyPruning, this);
+				Rectangle[] facs = comp.findFaces(origImg, baseScale, increment, min_neighbors, scale_inc, doCannyPruning, this, threadsNum);
 				Log.i("Detector", "return from Computations " + facs.length);
 				return Arrays.asList(facs);
 			}

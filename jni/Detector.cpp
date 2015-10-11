@@ -1,4 +1,18 @@
+#ifndef _DETECTOR_CPP_
+#define _DETECTOR_CPP_
+
 #include "Detector.h"
+#include <pthread.h>
+
+
+extern "C" {
+void *worker_thread(void *arg)
+{
+	//__android_log_print(ANDROID_LOG_INFO, "Detector", "thread started!!!!");
+	((Detector*)arg)->worker22();
+        pthread_exit(NULL);
+}
+}
 
 Detector::Detector() {
 }
@@ -11,15 +25,22 @@ VectorRects* Detector::getFaces(float baseScale, float scale_inc, float incremen
 		int min_neighbors, bool doCannyPruning, int **imageLocal, int width,
 		int height) {
 
+	this->baseScale = baseScale;
+	this->scale_inc = scale_inc;
+	this->increment = increment;
+	this->doCannyPruning = doCannyPruning;
+	this->width = width;
+	this->height = height;
+
 	__android_log_print(ANDROID_LOG_INFO, "Detector", "getFaces baseScale=%f scale_inc=%f increment=%f min_neighbors=%d width=%d height=%d", baseScale, scale_inc, increment, min_neighbors, width, height);
 
 	VectorRects* ret = new VectorRects();
-	float maxScale = fmin((float) width / size->x, (float) height / size->y);
+	maxScale = fmin((float) width / size->x, (float) height / size->y);
 	//Stage* s = new Stage();
 	/* Compute the grayscale image, the integral image and the squared integral image.*/
-	int** grayImage = new int*[width]; // интенсивность пикселей
-	int** img = new int*[width]; // интенсивноть квадратов пикселей
-	int** squares = new int*[width];
+	grayImage = new int*[width]; // интенсивность пикселей
+	img = new int*[width]; // интенсивноть квадратов пикселей
+	squares = new int*[width];
 	for (int i = 0; i < width; i++) {
 		grayImage[i] = new int[height];
 		img[i] = new int[height];
@@ -40,25 +61,60 @@ VectorRects* Detector::getFaces(float baseScale, float scale_inc, float incremen
 			col2 += value * value;
 		}
 	}
-	int** canny;
 	if (doCannyPruning) {
 		canny = getIntegralCanny(img, width, height);
 	}
 
+	pthread_t m_pt[threadsNum - 1];
+	if (threadsNum > 1) {
+		res2 = new VectorRects*[threadsNum - 1];
+		//pthread_t* = new pthread_t*[threadsNum - 1];
+		for (int l = 0; l < threadsNum - 1; l++) {
+			int success = pthread_create(&m_pt[l], NULL, worker_thread, (void*) this);
+			if (success == 0) {
+				__android_log_print(ANDROID_LOG_INFO, "Detector", "thread %d started", l);
+			}
+		}
+
+	}
 	__android_log_print(ANDROID_LOG_INFO, "Detector", "gettFaces3 baseScale=%f maxScale=%f scale_inc=%f", baseScale, maxScale, scale_inc);
+	ret = getResult(0);
+	if (threadsNum > 1) {
+		for (int l = 0; l < threadsNum - 1; l++) {
+			int success = pthread_join(m_pt[l], NULL);
+			for (int b = 0; b < res2[l]->currIndex; b++) {
+				ret->addRect(res2[l]->rects[b]);
+			}
+		}
+	}
+	__android_log_print(ANDROID_LOG_INFO, "Detector", "gettFaces3 faces before=%d", ret->currIndex);
+
+	return merge(ret, min_neighbors);
+}
+
+VectorRects* Detector::getResult(int thrN) {
+	VectorRects* ret = new VectorRects();
 	for (float scale = baseScale; scale < maxScale; scale *= scale_inc) {
 		int step = (int) (scale * size->x * increment);
 		int sizeI = (int) (scale * size->x * 1);
-		__android_log_print(ANDROID_LOG_INFO, "Detector", "gettFaces2 %f %d %d", scale, step, sizeI);
+
+		// TODO правильно разбить ширину по потокам
+		//int start = ((int)(thrN * (width - sizeI) / threadsNum / step)) * step;
+		//int end = ((int)((thrN + 1) * (width - sizeI) / threadsNum / step)) * step;
+		int start = step * thrN;
+
+		__android_log_print(ANDROID_LOG_INFO, "Detector", "gettFaces2 %d %f %d %d %d", thrN,
+						scale, step, sizeI, start);
 		/*For each position of the window on the image, check whether the object is detected there.*/
-		for (int i = 0; i < width - sizeI; i += step) {
+		for (int i = start; i < width - sizeI; i += (step * threadsNum)) {
 			//__android_log_print(ANDROID_LOG_INFO, "Detector", "gettFaces2 i=%d", i);
 			for (int j = 0; j < height - sizeI; j += step) {
 				/* If Canny pruning is on, compute the edge density of the zone.
 				 * If it is too low, the object should not be there so skip the region.*/
 				if (doCannyPruning) {
-					int edges_density = canny[i + sizeI][j + sizeI] + canny[i][j]
-							- canny[i][j + sizeI] - canny[i + sizeI][j];
+					int edges_density = canny[i + sizeI][j + sizeI]
+							+ canny[i][j] - canny[i][j + sizeI]
+							- canny[i + sizeI][j];
 					int d = edges_density / sizeI / sizeI;
 					if (d < 20 || d > 100)
 						continue;
@@ -77,15 +133,22 @@ VectorRects* Detector::getFaces(float baseScale, float scale_inc, float incremen
 
 				/* If the window passed all stages, add it to the results. */
 				if (pass) {
-					__android_log_print(ANDROID_LOG_INFO, "Detector", "we pass!");
 					Rectangle* r = new Rectangle(i, j, sizeI, sizeI);
 					ret->addRect(r);
 				}
 			}
 		}
-
 	}
-	return merge(ret, min_neighbors);
+	return ret;
+}
+
+VectorRects* Detector::worker22()
+{
+	int e = curThread;
+	curThread++;
+	__android_log_print(ANDROID_LOG_INFO, "Detector", "thread running11111 %d", e);
+	res2[e - 1] = getResult(e);
+	return NULL;
 }
 
 int** Detector::getIntegralCanny(int** grayImage, int width, int height) {
@@ -215,3 +278,7 @@ bool Detector::equals(Rectangle* r1, Rectangle* r2) {
 		return true;
 	return false;
 }
+
+
+
+#endif

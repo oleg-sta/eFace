@@ -38,7 +38,7 @@ int Feature::getLeftOrRight(int** grayImage, int** squares, int i, int j,
 	}
 	double rect_sum2 = rect_sum * inv_area;
 	/* Return LEFT or RIGHT depending on how the total sum compares to the threshold. */
-	return (rect_sum2 < threshold * vnorm) ? Tree::LEFT : Tree::RIGHT; //Tree::LEFT : Tree.RIGHT;
+	return (rect_sum2 < threshold * vnorm) ? Tree::LEFT : Tree::RIGHT;
 }
 
 

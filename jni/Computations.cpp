@@ -40,7 +40,7 @@ JNIEXPORT jint JNICALL Java_com_example_Computations_intFromJni2(JNIEnv* env, jo
 }
 
 JNIEXPORT jobjectArray JNICALL Java_com_example_Computations_findFaces(JNIEnv* env, jobject thiz, jobjectArray image, jfloat baseScale, jfloat increment,
-		jint min_neighbors, jfloat scale_inc, jboolean doCannyPruning, jobject detectorJObj) {
+		jint min_neighbors, jfloat scale_inc, jboolean doCannyPruning, jobject detectorJObj, jint threadsNum) {
 
 	// копирование изображения в С массив
 	//int res = 0;
@@ -64,6 +64,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_example_Computations_findFaces(JNIEnv* e
 		env->DeleteLocalRef(oneDim);
 	}
 	Detector* d = new Detector();
+	d->threadsNum = threadsNum;
 	Computations* comp = new Computations();
 
 	jclass clsDetector = env->GetObjectClass(detectorJObj);
@@ -225,6 +226,5 @@ float Computations::getObjectFieldF(JNIEnv* env, jobject obj, jclass clsFeature,
 int getVal() {
 	return 155;
 }
-
 
 }

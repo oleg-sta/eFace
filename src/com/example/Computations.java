@@ -18,6 +18,6 @@ public class Computations {
 	public native int intFromJni2(int[] f);
 
 	public native Rectangle[] findFaces(int[][] grayImage, float baseScale, float increment, int min_neighbors, float scale_inc,
-			boolean doCannyPruning, Detector detector);
+			boolean doCannyPruning, Detector detector, int threadsNum);
 	
 }
