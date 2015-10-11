@@ -1,6 +1,7 @@
 #include <jni.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <pthread.h>
 #include <android/log.h>
 #include "Computations.h"
 
@@ -67,24 +68,19 @@ JNIEXPORT jobjectArray JNICALL Java_com_example_Computations_findFaces(JNIEnv* e
 
 	jclass clsDetector = env->GetObjectClass(detectorJObj);
 
-	jfieldID sizeFieldId3 = env->GetFieldID(clsDetector, "size",
+	jfieldID sizeFieldDetector = env->GetFieldID(clsDetector, "size",
 			"Ldetection/Point;");
-	jobject jobjarray = env->GetObjectField(detectorJObj, sizeFieldId3);
-	d->size = comp->getPoint(env, jobjarray);
-	env->DeleteLocalRef(jobjarray);
+	jobject jobjSize = env->GetObjectField(detectorJObj, sizeFieldDetector);
+	d->size = comp->getPoint(env, jobjSize);
+	env->DeleteLocalRef(jobjSize);
 
-	__android_log_write(ANDROID_LOG_INFO, "Computations", "1");
-	jfieldID stagesFieldId2 = env->GetFieldID(clsDetector, "stages", "Ljava/util/List;");
-	__android_log_write(ANDROID_LOG_INFO, "Computations", "4");
-	jobject stagesList = env->GetObjectField(detectorJObj, stagesFieldId2);
-	__android_log_write(ANDROID_LOG_INFO, "Computations", "5");
+	jfieldID stagesFieldDetector = env->GetFieldID(clsDetector, "stages", "Ljava/util/List;");
+	jobject stagesList = env->GetObjectField(detectorJObj, stagesFieldDetector);
 
 	jclass listClass = env->FindClass( "java/util/List" );
 	jmethodID getMethodIDList = env->GetMethodID( listClass, "get", "(I)Ljava/lang/Object;" );
 	jmethodID sizeMethodIDList = env->GetMethodID( listClass, "size", "()I" );
 	int listStagesCount = (int)env->CallIntMethod( stagesList, sizeMethodIDList );
-
-	__android_log_write(ANDROID_LOG_INFO, "Computations", "6");
 
 	Stage** stages = new Stage*[listStagesCount];
 	d->stages = stages;
@@ -92,8 +88,6 @@ JNIEXPORT jobjectArray JNICALL Java_com_example_Computations_findFaces(JNIEnv* e
 	for( int i=0; i < listStagesCount; ++i )
 	{
 		stages[i] = new Stage();
-		//stagesList[i] = new Stage();
-		// Call "java.util.List.get" method and get IdentParams object by index.
 		jobject stage = env->CallObjectMethod( stagesList, getMethodIDList, i);
 		jclass cls = env->GetObjectClass(stage);
 		stages[i]->threshold = comp->getObjectFieldF(env, stage, cls, "threshold");
@@ -120,10 +114,8 @@ JNIEXPORT jobjectArray JNICALL Java_com_example_Computations_findFaces(JNIEnv* e
 			env->DeleteLocalRef(clsTree);
 			env->DeleteLocalRef(treeJObject);
 		}
-		//stages[i] = new Stage();
 		stages[i]->trees = trees;
 		stages[i]->lengthTrees = listTreesCount;
-		//stages[i]->threshold = threshold;
 		env->DeleteLocalRef(listTreeJOjbect);
 		env->DeleteLocalRef(cls);
 		env->DeleteLocalRef(stage);
@@ -139,7 +131,6 @@ JNIEXPORT jobjectArray JNICALL Java_com_example_Computations_findFaces(JNIEnv* e
 
 	jclass cls = env->FindClass("detection/Rectangle");
 	jobjectArray jobAr =env->NewObjectArray(faces->currIndex, cls, NULL);
-
 	jmethodID constructor = env->GetMethodID(cls, "<init>", "(IIII)V");
 	for (int i = 0; i < faces->currIndex; i++) {
 		Rectangle* re = faces->rects[i];
