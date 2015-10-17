@@ -10,19 +10,26 @@ public class Tree {
 final static int LEFT = 0;
 final static int RIGHT=1;
 
-List<Feature> features;
+Feature[] features;
+List<Feature> featuresTmp;
 
 public Tree()
 {
-	features = new ArrayList<Feature>();
+	featuresTmp = new ArrayList<Feature>();
 }
 public void addFeature(Feature f)
 {
-	features.add(f);
+	featuresTmp.add(f);
 }
 
+public void comm()
+{
+	features= featuresTmp.toArray(new Feature[0]);
+}
+
+
 public float getVal(int[][] grayImage, int[][] squares, int i, int j, float scale) {
-	Feature cur_node = features.get(0);
+	Feature cur_node = features[0];
 	while(true)
 	{
 		/* Compute the feature to see if we should go to the left or right child on the node.*/
@@ -37,7 +44,7 @@ public float getVal(int[][] grayImage, int[][] squares, int i, int j, float scal
 			else
 			{
 				/* Else move to the left child node. */
-				cur_node = features.get(cur_node.left_node);
+				cur_node = features[cur_node.left_node];
 			}
 		}
 		else
@@ -50,7 +57,7 @@ public float getVal(int[][] grayImage, int[][] squares, int i, int j, float scal
 			else
 			{
 				/* Else move to the right child node. */
-				cur_node = features.get(cur_node.right_node);
+				cur_node = features[cur_node.right_node];
 			}
 		}
 	}

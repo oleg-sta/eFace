@@ -11,17 +11,18 @@ import java.util.List;
  * 
  */
 public class Stage {
-	List<Tree> trees;
+	List<Tree> treesTmp;
+	Tree[] trees;
 	float threshold;
 
 	public Stage(float threshold) {
 		this.threshold = threshold;
-		trees = new LinkedList<Tree>();
+		treesTmp = new LinkedList<Tree>();
 		// features = new LinkedList<Feature>();
 	}
 
 	public void addTree(Tree t) {
-		trees.add(t);
+		treesTmp.add(t);
 	}
 
 	public boolean pass(int[][] grayImage, int[][] squares, int i, int j,
@@ -36,6 +37,10 @@ public class Stage {
 		 * otherwise.
 		 */
 		return sum > threshold;
+	}
+
+	public void comm() {
+		trees = treesTmp.toArray(new Tree[0]);
 	}
 
 }

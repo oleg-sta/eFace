@@ -25,7 +25,8 @@ public class Detector {
      * The list of classifiers that the test image should pass to be considered
      * as an image.
      */
-    List<Stage> stages;
+    //List<Stage> stages;
+    Stage[] stages;
     public Point size;
     
     List<Rectangle> faces;
@@ -77,7 +78,7 @@ public class Detector {
          * greater than 0.5. If a zone passes all stages, it is considered as
          * representing the object.
          */
-        stages = new LinkedList<Stage>();
+        List<Stage> stagesTmp = new LinkedList<Stage>();
 
         /* Read the size (in pixels) of the detector. */
         Element racine = (Element) document.getRootElement().getChildren().get(0);
@@ -132,11 +133,14 @@ public class Detector {
                     }
 
                     t.addFeature(f);
+                    t.comm();
                 }
                 st.addTree(t);
+                st.comm();
             }
-            stages.add(st);
+            stagesTmp.add(st);
         }
+        stages = stagesTmp.toArray(new Stage[0]);
     }
 
     /**
