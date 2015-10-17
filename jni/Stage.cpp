@@ -5,6 +5,12 @@
 //	lengthTrees = lengthTrees2;
 //	threshold = threshold2;
 //}
+Stage::~Stage() {
+	for (int i = 0; i < lengthTrees; i++) {
+		delete trees[i];
+	}
+	delete[] trees;
+}
 
 bool Stage::pass2(int** grayImage, int** squares, int i, int j, float scale) {
 	float sum = 0;

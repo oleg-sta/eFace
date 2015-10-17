@@ -1,5 +1,12 @@
 #include "Tree.h"
 
+Tree::~Tree() {
+	for (int i = 0; i < lengthFeatures; i++) {
+			delete features[i];
+		}
+	delete[] features;
+}
+
 float Tree::getVal(int** grayImage, int** squares, int i, int j, float scale) {
 	Feature* cur_node = features[0];
 	while (true) {

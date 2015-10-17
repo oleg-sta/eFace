@@ -6,10 +6,17 @@
 
 
 extern "C" {
+
+struct ThreadArgument {
+	void *array;
+    int threadNum;
+};
+
 void *worker_thread(void *arg)
 {
+	ThreadArgument *arg1 = (ThreadArgument*)arg;
 	//__android_log_print(ANDROID_LOG_INFO, "Detector", "thread started!!!!");
-	((Detector*)arg)->worker22();
+	((Detector*)(arg1->array))->workerTansient(arg1->threadNum);
         pthread_exit(NULL);
 }
 }
@@ -18,6 +25,9 @@ Detector::Detector() {
 }
 
 Detector::~Detector() {
+	for (int i = 0; i < sizeStages; i++) {
+		delete stages[i];
+	}
 	delete[] stages;
 }
 
@@ -70,7 +80,10 @@ VectorRects* Detector::getFaces(float baseScale, float scale_inc, float incremen
 		res2 = new VectorRects*[threadsNum - 1];
 		//pthread_t* = new pthread_t*[threadsNum - 1];
 		for (int l = 0; l < threadsNum - 1; l++) {
-			int success = pthread_create(&m_pt[l], NULL, worker_thread, (void*) this);
+			ThreadArgument* args = new ThreadArgument;
+			args->array = (void*)this;
+			args->threadNum = l + 1;
+			int success = pthread_create(&m_pt[l], NULL, worker_thread, args);
 			if (success == 0) {
 				__android_log_print(ANDROID_LOG_INFO, "Detector", "thread %d started", l);
 			}
@@ -142,12 +155,12 @@ VectorRects* Detector::getResult(int thrN) {
 	return ret;
 }
 
-VectorRects* Detector::worker22()
+VectorRects* Detector::workerTansient(int threadNum)
 {
-	int e = curThread;
-	curThread++;
-	__android_log_print(ANDROID_LOG_INFO, "Detector", "thread running11111 %d", e);
-	res2[e - 1] = getResult(e);
+	//int e = curThread;
+	//curThread++;
+	__android_log_print(ANDROID_LOG_INFO, "Detector", "workerTansient thread running %d", threadNum);
+	res2[threadNum - 1] = getResult(threadNum);
 	return NULL;
 }
 

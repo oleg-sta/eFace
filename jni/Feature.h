@@ -5,6 +5,7 @@
 
 class Feature {
 public:
+	~Feature();
 	Rect** rects;
 	int nb_rects;
 	float threshold;

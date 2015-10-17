@@ -6,6 +6,7 @@
 
 class Tree {
 public:
+	~Tree();
 	int lengthFeatures;
 	Feature** features;
 	const static int LEFT = 0;

@@ -13,7 +13,6 @@ public:
 	~Detector();
 
 	int threadsNum;
-	int curThread = 1;
 	VectorRects** res2;
 
 	float baseScale, scale_inc, increment, maxScale;
@@ -32,7 +31,7 @@ public:
     VectorRects* merge(VectorRects* rects, int min_neighbors);
     VectorRects* getResult(int thrN);
     bool equals(Rectangle* r1, Rectangle* r2);
-    VectorRects* worker22( void);
+    VectorRects* workerTansient(int threadNum);
 };
 
 

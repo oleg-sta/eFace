@@ -75,13 +75,17 @@ JNIEXPORT jobjectArray JNICALL Java_com_example_Computations_findFaces(JNIEnv* e
 	d->size = comp->getPoint(env, jobjSize);
 	env->DeleteLocalRef(jobjSize);
 
-	jfieldID stagesFieldDetector = env->GetFieldID(clsDetector, "stages", "Ljava/util/List;");
-	jobject stagesList = env->GetObjectField(detectorJObj, stagesFieldDetector);
+	//jfieldID stagesFieldDetector = env->GetFieldID(clsDetector, "stages", "Ljava/util/List;");
+	//jobject stagesList = env->GetObjectField(detectorJObj, stagesFieldDetector);
 
-	jclass listClass = env->FindClass( "java/util/List" );
-	jmethodID getMethodIDList = env->GetMethodID( listClass, "get", "(I)Ljava/lang/Object;" );
-	jmethodID sizeMethodIDList = env->GetMethodID( listClass, "size", "()I" );
-	int listStagesCount = (int)env->CallIntMethod( stagesList, sizeMethodIDList );
+	//jclass listClass = env->FindClass( "java/util/List" );
+	//jmethodID getMethodIDList = env->GetMethodID( listClass, "get", "(I)Ljava/lang/Object;" );
+	//jmethodID sizeMethodIDList = env->GetMethodID( listClass, "size", "()I" );
+	jfieldID stagesFieldDetector = env->GetFieldID(clsDetector, "stages",
+				"[Ldetection/Stage;");
+	jobject stagesList = env->GetObjectField(detectorJObj, stagesFieldDetector);
+	int listStagesCount = env->GetArrayLength((jobjectArray) stagesList);
+	//int listStagesCount = (int)env->CallIntMethod( stagesList, sizeMethodIDList );
 
 	Stage** stages = new Stage*[listStagesCount];
 	d->stages = stages;
@@ -89,23 +93,25 @@ JNIEXPORT jobjectArray JNICALL Java_com_example_Computations_findFaces(JNIEnv* e
 	for( int i=0; i < listStagesCount; ++i )
 	{
 		stages[i] = new Stage();
-		jobject stage = env->CallObjectMethod( stagesList, getMethodIDList, i);
+		jobject stage = env->GetObjectArrayElement((jobjectArray) stagesList,
+						i);
+		//jobject stage = env->CallObjectMethod( stagesList, getMethodIDList, i);
 		jclass cls = env->GetObjectClass(stage);
 		stages[i]->threshold = comp->getObjectFieldF(env, stage, cls, "threshold");
-		jfieldID listTree = env->GetFieldID(cls, "trees", "Ljava/util/List;");
+		jfieldID listTree = env->GetFieldID(cls, "trees", "[Ldetection/Tree;");
 		jobject listTreeJOjbect = env->GetObjectField(stage, listTree);
-		int listTreesCount = (int)env->CallIntMethod( listTreeJOjbect, sizeMethodIDList );
+		int listTreesCount = (int)env->GetArrayLength( (jobjectArray)listTreeJOjbect);
 		Tree** trees = new Tree*[listTreesCount];
 		for (int j = 0; j < listTreesCount; j++) {
 			trees[j] = new Tree();
-			jobject treeJObject = env->CallObjectMethod(listTreeJOjbect, getMethodIDList, j);
+			jobject treeJObject = env->GetObjectArrayElement((jobjectArray)listTreeJOjbect, j);
 			jclass clsTree = env->GetObjectClass(treeJObject);
-			jfieldID listFeaturesField = env->GetFieldID(clsTree, "features", "Ljava/util/List;");
+			jfieldID listFeaturesField = env->GetFieldID(clsTree, "features", "[Ldetection/Feature;");
 			jobject listFeaturesTreeJOjbect = env->GetObjectField(treeJObject, listFeaturesField);
-			int listFeatures = (int)env->CallIntMethod( listFeaturesTreeJOjbect, sizeMethodIDList );
+			int listFeatures = (int)env->GetArrayLength( (jobjectArray)listFeaturesTreeJOjbect );
 			Feature** features = new Feature*[listFeatures];
 			for (int k = 0; k < listFeatures; k++) {
-				jobject featureJObject = env->CallObjectMethod(listFeaturesTreeJOjbect, getMethodIDList, k);
+				jobject featureJObject = env->GetObjectArrayElement((jobjectArray)listFeaturesTreeJOjbect, k);
 				features[k] = comp->getFeature(env, featureJObject);
 				env->DeleteLocalRef(featureJObject);
 			}

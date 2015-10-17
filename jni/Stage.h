@@ -6,6 +6,7 @@
 class Stage {
 public:
 	//Stage(Tree** trees, int lengthTrees, float threshold);
+	~Stage();
 	int lengthTrees;
 	Tree** trees;
 	float threshold;

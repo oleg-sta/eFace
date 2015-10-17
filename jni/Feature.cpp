@@ -5,6 +5,13 @@
 #include "Tree.h"
 #include <math.h>
 
+Feature::~Feature() {
+	for (int i = 0; i < nb_rects; i++) {
+		delete rects[i];
+	}
+	delete[] rects;
+}
+
 int Feature::getLeftOrRight(int** grayImage, int** squares, int i, int j,
 		float scale) {
 	int w = (int) (scale * size->x);
