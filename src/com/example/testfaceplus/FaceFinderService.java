@@ -120,6 +120,9 @@ public class FaceFinderService extends IntentService {
                     faceCur.centerX = 100 * (face.x + face.width / 2) / (double) background_image.getWidth();
                     faceCur.guid = UUID.randomUUID().toString();
                     dbHelper.addFace(faceCur, imgId);
+                    String personGuid = UUID.randomUUID().toString();
+                    dbHelper.addPerson(personGuid);
+                    dbHelper.addFaceToPerson(faceCur.guid, personGuid);
                     // сохраняем фотографию
                     SQLiteDatabase db = dbHelper.getReadableDatabase();
                     dataHolder.getLittleFace(db, faceCur.guid, getApplicationContext());

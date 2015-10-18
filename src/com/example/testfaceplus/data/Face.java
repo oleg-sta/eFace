@@ -8,5 +8,5 @@ public class Face {
     public String photoId;
     public String guid;
     public Bitmap littleFace;
-	public String name;
+	//public String name;
 }

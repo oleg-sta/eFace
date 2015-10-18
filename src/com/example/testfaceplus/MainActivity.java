@@ -47,14 +47,14 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         Log.v("MainActivity", "onCreate");
         dbHelper = new DictionaryOpenHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        //dbHelper.onUpgrade(db, 1, 1);
+        dbHelper.onUpgrade(db, 1, 1);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final Context context = this;
         final MainActivity d = this;
         
-        adapter = new PersonList(MainActivity.this, dbHelper.getAllIdsFaces());
+        adapter = new PersonList(MainActivity.this, dbHelper.getAllIdsPerson());
         final ListView listView = (ListView) findViewById(R.id.listFaces);
         listView.setAdapter(adapter);
         

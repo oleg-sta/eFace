@@ -181,6 +181,13 @@ public class Detector {
 
     public List<Rectangle> getFaces(Bitmap image,float baseScale, float scale_inc,float increment, int min_neighbors,boolean doCannyPruning, boolean useC, int threadsNum)
 	{
+    	// dummy
+    	if (true) {
+    		Rectangle r = new Rectangle(10, 10, 100, 100);
+    		List<Rectangle> w = new ArrayList<Rectangle>();
+    		w.add(r);
+    		return w; 
+    	}
     	Computations comp = new Computations();
     	
         Log.i("Detector", "getFaces");

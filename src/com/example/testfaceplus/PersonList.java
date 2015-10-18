@@ -21,6 +21,7 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 /**
@@ -46,8 +47,9 @@ public class PersonList extends ArrayAdapter<Integer> {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.my_list_item, null, true);
         final TextView txtTitle = (TextView) rowView.findViewById(R.id.person_name);
-        ImageView personImg = (ImageView) rowView.findViewById(R.id.person_img);
+        //ImageView personImg = (ImageView) rowView.findViewById(R.id.person_img);
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
+        ListView faces = (ListView)rowView.findViewById(R.id.listFaces22);
         
         txtTitle.setOnClickListener(new OnClickListener() {
 			
@@ -59,7 +61,7 @@ public class PersonList extends ArrayAdapter<Integer> {
 		        builder.setView(input)
 		               .setPositiveButton("Да", new DialogInterface.OnClickListener() {
 		                   public void onClick(DialogInterface dialog, int id) {
-		                       dbHelper.updateFaceName(persons.get(position), input.getText().toString());
+		                       dbHelper.updatePersonName(persons.get(position), input.getText().toString());
 		                       txtTitle.setText(input.getText().toString());
 		                   }
 		               })
@@ -77,14 +79,16 @@ public class PersonList extends ArrayAdapter<Integer> {
         
         
         
+        String personName = dbHelper.getPersonName(persons.get(position));
+        List<Integer> face = dbHelper.getAllIdsFacesForPerson(persons.get(position));
+        //SQLiteDatabase db = dbHelper.getReadableDatabase();
+        //Bitmap bm = DataHolder.getInstance().getLittleFace(db, face.guid, getContext());
+        //db.close();
         
-        Face face = dbHelper.getFaceForId(persons.get(position));
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Bitmap bm = DataHolder.getInstance().getLittleFace(db, face.guid, getContext());
-        db.close();
-        
-        txtTitle.setText(face.name);
-        personImg.setImageBitmap(bm);
+        txtTitle.setText(personName);
+        FacesList adapter = new FacesList(context, face);
+        faces.setAdapter(adapter);
+//        personImg.setImageBitmap(bm);
        
         return rowView;
     }  
