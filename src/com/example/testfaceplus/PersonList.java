@@ -35,7 +35,7 @@ public class PersonList extends ArrayAdapter<Integer> {
     private final List<Integer> persons;
     
     public PersonList(Activity context, List<Integer> persons) {
-        super(context, R.layout.show_faces, persons);
+        super(context, R.layout.my_list_item, persons);
         this.persons = persons;
         this.context = context;
     }

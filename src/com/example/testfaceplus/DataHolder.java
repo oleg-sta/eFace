@@ -100,7 +100,7 @@ public class DataHolder {
                         * (faceCur.centerY - faceCur.height / 2) / 100),
                         (int) (background_image.getWidth() * faceCur.width / 100), (int) (background_image.getHeight()
                                 * faceCur.height / 100));
-                bm = getResizedBitmap(bmTmp, 50, 50);
+                bm = getResizedBitmap(bmTmp, 150, 150);
                 Log.v("DataHolder", "file dir " + context.getFilesDir());
                 file = new File(context.getFilesDir(), faceId + ".jpg");
                 try {
