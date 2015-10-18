@@ -47,12 +47,12 @@ public class DisplayFacesActivity extends Activity {
         s.close();
         
         
-        PersonList personList = new PersonList(this, person.toArray(new String[0]));
+        //PersonList personList = new PersonList(this, person.toArray(new String[0]));
         
         
         //final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, DataHolder.getInstance().catnames);
-        final ListView listView = (ListView) findViewById(R.id.listView2);
-        listView.setAdapter(personList);
+//        final ListView listView = (ListView) findViewById(R.id.listView2);
+//        listView.setAdapter(personList);
         
     }
 

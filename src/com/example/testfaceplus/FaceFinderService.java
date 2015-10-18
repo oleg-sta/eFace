@@ -87,41 +87,19 @@ public class FaceFinderService extends IntentService {
                 }
                 iPh++;
                 Log.d("FaceFinderService", "photo" + photo);
-                Bitmap littleBit = BitmapWorkerTask.shrinkBitmap(photo, 50, 50);
 
                 BitmapFactory.Options bitmap_options = new BitmapFactory.Options();
                 bitmap_options.inPreferredConfig = Bitmap.Config.RGB_565;
-                // Bitmap background_image = BitmapFactory.decodeFile(photo,
-                // bitmap_options);
 
                 final BitmapFactory.Options options = new BitmapFactory.Options();
                 Bitmap background_image = decodeSampledBitmapFromResource(photo, 200, 200, options);
 
-//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                background_image.compress(CompressFormat.JPEG, 90, baos);
-//                byte[] imageInByte = baos.toByteArray();
-//                baos.close();
-                // face finder
                 Log.i("FaceFinderService", "size " + background_image.getWidth() + " " + background_image.getHeight());
                 long time = System.currentTimeMillis();
                 List<Rectangle> res = detector.getFaces(background_image, 1.2f, 1.1f, .05f, 2, true, useCpp, threadsNum);
                 time = (System.currentTimeMillis() - time) / 1000;
                 Log.i("FaceFinderService", "foune " + res.size() + " faces");
                 
-//                if (isAndroidEmulator() || isWifiOnline()) {
-//                    Log.v("FaceFinderService", "wifi is on");
-//                    result = httpRequests.detectionDetect(new PostParameters().setImg(imageInByte));
-//                } else {
-//                    // TODO return;
-//                    Log.v("FaceFinderService", "wifi is off");
-//                    dataHolder.processPhotos = false;
-//                    if (bundle != null) {
-//                        Bundle b = new Bundle();
-//                        b.putString("message", "wifi отключен");
-//                        rec.send(0, b);
-//                    }
-//                    return;
-//                }
                 String imgId = UUID.randomUUID().toString();
                 Face[] faces = new Face[res.size()];
                 if (res.size() == 0) {

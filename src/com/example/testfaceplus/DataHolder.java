@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.support.v4.util.LruCache;
 import android.util.Log;
 
@@ -94,11 +95,12 @@ public class DataHolder {
                 final BitmapFactory.Options options = new BitmapFactory.Options();
                 // уменьшаем полную фотографию
                 Bitmap background_image = FaceFinderService.decodeSampledBitmapFromResource(path, 500, 500, options);
-                bm = Bitmap.createBitmap(background_image, (int) (background_image.getWidth()
+                Bitmap bmTmp = Bitmap.createBitmap(background_image, (int) (background_image.getWidth()
                         * (faceCur.centerX - faceCur.width / 2) / 100), (int) (background_image.getHeight()
                         * (faceCur.centerY - faceCur.height / 2) / 100),
                         (int) (background_image.getWidth() * faceCur.width / 100), (int) (background_image.getHeight()
                                 * faceCur.height / 100));
+                bm = getResizedBitmap(bmTmp, 50, 50);
                 Log.v("DataHolder", "file dir " + context.getFilesDir());
                 file = new File(context.getFilesDir(), faceId + ".jpg");
                 try {
@@ -119,6 +121,22 @@ public class DataHolder {
         return bm;
     }
 
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+            bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
+    }
     /**
      * Получить полную фотографию для отображении в общем списке
      * 
@@ -129,7 +147,7 @@ public class DataHolder {
         Bitmap bm = mMemoryCache.get(path);
         if (bm == null) {
             final BitmapFactory.Options options = new BitmapFactory.Options();
-            bm = FaceFinderService.decodeSampledBitmapFromResource(path, 50, 50, options);
+            bm = FaceFinderService.decodeSampledBitmapFromResource(path, 150, 150, options);
             mMemoryCache.put(path, bm);
         }
         return bm;

@@ -6,19 +6,16 @@
 
 
 extern "C" {
+	struct ThreadArgument {
+		void *array;
+		int threadNum;
+	};
 
-struct ThreadArgument {
-	void *array;
-    int threadNum;
-};
-
-void *worker_thread(void *arg)
-{
-	ThreadArgument *arg1 = (ThreadArgument*)arg;
-	//__android_log_print(ANDROID_LOG_INFO, "Detector", "thread started!!!!");
-	((Detector*)(arg1->array))->workerTansient(arg1->threadNum);
-        pthread_exit(NULL);
-}
+	void *worker_thread(void *arg) {
+		ThreadArgument *arg1 = (ThreadArgument*) arg;
+		((Detector*) (arg1->array))->workerTansient(arg1->threadNum);
+		pthread_exit(NULL);
+	}
 }
 
 Detector::Detector() {
@@ -157,8 +154,6 @@ VectorRects* Detector::getResult(int thrN) {
 
 VectorRects* Detector::workerTansient(int threadNum)
 {
-	//int e = curThread;
-	//curThread++;
 	__android_log_print(ANDROID_LOG_INFO, "Detector", "workerTansient thread running %d", threadNum);
 	res2[threadNum - 1] = getResult(threadNum);
 	return NULL;
@@ -241,7 +236,7 @@ VectorRects* Detector::merge(VectorRects* rects, int min_neighbors) {
 	for (int i = 0; i < rects->currIndex; i++) {
 		bool found = false;
 		for (int j = 0; j < i; j++) {
-			if (equals(rects->rects[i], rects->rects[j])) {
+			if (equals(rects->rects[i], rects->rects[j]) || equals(rects->rects[j], rects->rects[i])) {
 				found = true;
 				ret[i] = ret[j];
 			}

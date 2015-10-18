@@ -40,11 +40,10 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
     public static final String CAMERA_IMAGE_BUCKET_ID = getBucketId(CAMERA_IMAGE_BUCKET_NAME);
     public static final String EXTRA_MESSAGE = "com.example.test1.MESSAGE";
 
-    private PhotoList adapter;
+    private PersonList adapter;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Computations s = new Computations();
         Log.v("MainActivity", "onCreate");
         dbHelper = new DictionaryOpenHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -52,118 +51,35 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final Button button = (Button) findViewById(R.id.start);
         final Context context = this;
         final MainActivity d = this;
         
-        
-        ArrayAdapter<String> adapter22 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new String[]{"1","2","3","4","5","6","7"});
-        adapter22.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        Spinner spinner = (Spinner) findViewById(R.id.cores_spinner);
-        spinner.setAdapter(adapter22);
-        
-        
-        List<String> photosArray = new ArrayList<String>();
-        Cursor c = db.rawQuery("select guid, path from photos", null);
-        while(c.moveToNext()) {
-            photosArray.add(c.getString(1));
-        }
-        c.close();
-        db.close();
-        
-        adapter = new PhotoList(MainActivity.this, photosArray);
-        final ListView listView = (ListView) findViewById(R.id.listView1);
+        adapter = new PersonList(MainActivity.this, dbHelper.getAllIdsFaces());
+        final ListView listView = (ListView) findViewById(R.id.listFaces);
         listView.setAdapter(adapter);
-        // переход на большую фотографию
-        listView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String value = (String) parent.getItemAtPosition(position);
-                //if (DataHolder.getInstance().infos.get(value) != null) {
-                    Log.v("MainActivity", "click " + id);
-                    Intent intent = new Intent(context, DisplayPhotoActivity.class);
-                    Log.v("MainActivity", "click2 " + id);
-                    intent.putExtra(EXTRA_MESSAGE, value);
-                    startActivity(intent);
-                //}
-
-            }
-        });
         
-        // кнопка "Поиск лиц"
-        button.setOnClickListener(new Button.OnClickListener() {
+        // запускаем поиск лиц
+		{
+			boolean useCpp = true;
+			int cores = 4;
+			int coresTh = Runtime.getRuntime().availableProcessors();
+			Log.i("MainActivity", "num cores " + coresTh);
 
-            @Override
-            public void onClick(View v) {
-                
-            	final CheckBox checkBox = (CheckBox) findViewById(R.id.checkbox_meat);
-            	boolean useCpp = checkBox.isChecked(); 
-            	
-            	Spinner spinner = (Spinner) findViewById(R.id.cores_spinner);
-            	//Integer.valueOf(spinner.getSelectedItem());
+			// TODO всю работу с фоторграфиями переложить на сервис
+			List<String> photos = getCameraImages(getApplicationContext());
 
-                // start Service for computing faces
-                final ListView listView = (ListView) findViewById(R.id.listView1);
+			Intent intent = new Intent(context, FaceFinderService.class);
+			NotificationReceiver receiver = new NotificationReceiver(new Handler());
+			receiver.setListener(d);
+			intent.putExtra("receiver", receiver);
+			intent.putExtra("useCpp", useCpp);
+			Log.i("MainActivity", "num thre " + cores);
+			intent.putExtra("threads", cores);
 
-                // TODO всю работу с фоторграфиями переложить на сервис
-                List<String> photos = getCameraImages(getApplicationContext());
-                
-                Intent intent = new Intent(context, FaceFinderService.class);
-                NotificationReceiver receiver = new NotificationReceiver(new Handler());
-                receiver.setListener(d);
-                intent.putExtra("receiver", receiver);
-                intent.putExtra("useCpp", useCpp);
-                Log.i("MainActivity", "num thre " + spinner.getSelectedItem().toString());
-                intent.putExtra("threads", Integer.valueOf(spinner.getSelectedItem().toString()));
-                
-                startService(intent);
+			startService(intent);
 
-                // Так нехорошо делать
-                //PhotoList adapter = (PhotoList) listView.getAdapter();
-                for (String ph : photos) {
-                    if (!adapter.web.contains(ph)) {
-                        adapter.add(ph);
-                    }
-                }
-                adapter.notifyDataSetChanged();
-            }
-        });
-        
-        Button textView1 = (Button) findViewById(R.id.textView1);
-        // переход к лицам
-        textView1.setOnClickListener(new Button.OnClickListener() {
-            
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, DisplayFacesActivity.class);
-                Log.v("MainActivity", "click3");
-                //intent.putExtra(EXTRA_MESSAGE, value);
-                startActivity(intent);
-                
-            }
-        });
-        
-        TextView textView5 = (TextView) findViewById(R.id.textView111);
-        Log.v("MainActivity", "reset button " +textView5);
-        textView5.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO clear temporarily photo
-                Log.v("MainActivity", "reset button");
-                SQLiteDatabase s2 = dbHelper.getWritableDatabase();
-                dbHelper.onUpgrade(s2, 2, 2); // временно
-                s2.close();
-                adapter.web.clear();
-                adapter.notifyDataSetChanged();
-                for (File f : getFilesDir().listFiles()) {
-                    if (f.isFile()) {
-                        f.delete();
-                    }
-                }
-
-            }
-        });
+			adapter.notifyDataSetChanged();
+		}
         
     }
 
@@ -200,22 +116,9 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         String message = resultData.getString("message");
         String progressStr = resultData.getString("progress");
         if (photo != null) {
-            // не хорошо лезть в чужой view и дублировать логику
-            final ListView listView = (ListView) findViewById(R.id.listView1);
-            for (int i = 0; i < listView.getChildCount(); i++) {
-                View v = listView.getChildAt(i);
-                TextView tw = (TextView) v.findViewById(R.id.txt);
-                if (photo.equals(tw.getText())) {
-                    ImageView imageView = (ImageView) v.findViewById(R.id.img);
-                    TextView numFaces = (TextView) v.findViewById(R.id.num_faces);
-                    TextView time = (TextView) v.findViewById(R.id.time);
-                    InfoPhoto info = dbHelper.getInfoPhotoFull(photo);
-                    imageView.setImageBitmap(DataHolder.getInstance().getLittlePhoto(photo));
-                    numFaces.setText("" + info.faceCount);
-                    time.setText("" + info.timeProccessed);
-                    return;
-                }
-            }
+        	adapter.addAll(dbHelper.getIdsFacesForPhoto(photo));
+        	adapter.notifyDataSetChanged();
+
         }
         if (message != null) {
             int progress = 0;
@@ -229,6 +132,6 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
             bar.setVisibility(View.VISIBLE);
             bar.setProgress(progress);
         }
-
+        adapter.notifyDataSetChanged();
     }
 }
