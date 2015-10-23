@@ -20,6 +20,9 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -34,31 +37,32 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements NotificationReceiver.Listener {
-    
-    DictionaryOpenHelper dbHelper;
-    public static final String CAMERA_IMAGE_BUCKET_NAME = Environment.getExternalStorageDirectory().toString() + "/DCIM/Camera";
-    public static final String CAMERA_IMAGE_BUCKET_ID = getBucketId(CAMERA_IMAGE_BUCKET_NAME);
-    public static final String EXTRA_MESSAGE = "com.example.test1.MESSAGE";
 
-    private PersonList adapter;
-    
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        Log.v("MainActivity", "onCreate");
-        dbHelper = new DictionaryOpenHelper(this);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        dbHelper.onUpgrade(db, 1, 1);
+	DictionaryOpenHelper dbHelper;
+	public static final String CAMERA_IMAGE_BUCKET_NAME = Environment.getExternalStorageDirectory().toString()
+			+ "/DCIM/Camera";
+	public static final String CAMERA_IMAGE_BUCKET_ID = getBucketId(CAMERA_IMAGE_BUCKET_NAME);
+	public static final String EXTRA_MESSAGE = "com.example.test1.MESSAGE";
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        final Context context = this;
-        final MainActivity d = this;
-        
-        adapter = new PersonList(MainActivity.this, dbHelper.getAllIdsPerson());
-        final ListView listView = (ListView) findViewById(R.id.listFaces);
-        listView.setAdapter(adapter);
-        
-        // запускаем поиск лиц
+	private PersonList adapter;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		Log.v("MainActivity", "onCreate");
+		dbHelper = new DictionaryOpenHelper(this);
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		dbHelper.onUpgrade(db, 1, 1);
+
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		final Context context = this;
+		final MainActivity d = this;
+
+		adapter = new PersonList(MainActivity.this, dbHelper.getAllIdsPerson());
+		final ListView listView = (ListView) findViewById(R.id.listFaces);
+		listView.setAdapter(adapter);
+
+		// запускаем поиск лиц
 		{
 			boolean useCpp = true;
 			int cores = 4;
@@ -80,58 +84,95 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
 
 			adapter.notifyDataSetChanged();
 		}
-        
-    }
 
-    private static String getBucketId(String path) {
-        return String.valueOf(path.toLowerCase().hashCode());
-    }
+	}
 
-    public static List<String> getCameraImages(Context context) {
-        final String[] projection = { MediaStore.Images.Media.DATA };
-        final String selection = MediaStore.Images.Media.BUCKET_ID + " = ?";
-        final String[] selectionArgs = { CAMERA_IMAGE_BUCKET_ID };
-        final Cursor cursor = context.getContentResolver().query(Images.Media.EXTERNAL_CONTENT_URI, projection, selection,
-                selectionArgs, null);
-        ArrayList<String> result = new ArrayList<String>(cursor.getCount());
-        int i = 0;
-        if (cursor.moveToFirst()) {
-            final int dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            do {
-                final String data = cursor.getString(dataColumn);
-                // ограничение до 40 фоток
-                if (i < 40) {
-                    result.add(data);
-                }
-                i++;
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return result;
-    }
+	private static String getBucketId(String path) {
+		return String.valueOf(path.toLowerCase().hashCode());
+	}
 
-    @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-        String photo = resultData.getString("photo");
-        String message = resultData.getString("message");
-        String progressStr = resultData.getString("progress");
-        if (photo != null) {
-        	adapter.addAll(dbHelper.getIdsFacesForPhoto(photo));
-        	adapter.notifyDataSetChanged();
+	public static List<String> getCameraImages(Context context) {
+		final String[] projection = { MediaStore.Images.Media.DATA };
+		final String selection = MediaStore.Images.Media.BUCKET_ID + " = ?";
+		final String[] selectionArgs = { CAMERA_IMAGE_BUCKET_ID };
+		final Cursor cursor = context.getContentResolver().query(Images.Media.EXTERNAL_CONTENT_URI, projection,
+				selection, selectionArgs, null);
+		ArrayList<String> result = new ArrayList<String>(cursor.getCount());
+		int i = 0;
+		if (cursor.moveToFirst()) {
+			final int dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+			do {
+				final String data = cursor.getString(dataColumn);
+				// ограничение до 40 фоток
+				if (i < 40) {
+					result.add(data);
+				}
+				i++;
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return result;
+	}
 
-        }
-        if (message != null) {
-            int progress = 0;
-            if (progressStr != null) {
-                progress = Integer.valueOf(progressStr);
-            }
-            TextView text = (TextView) findViewById(R.id.text_message);
-            text.setText(message);
-            
-            ProgressBar bar = (ProgressBar) findViewById(R.id.progressBar);
-            bar.setVisibility(View.VISIBLE);
-            bar.setProgress(progress);
-        }
-        adapter.notifyDataSetChanged();
-    }
+	@Override
+	public void onReceiveResult(int resultCode, Bundle resultData) {
+		String photo = resultData.getString("photo");
+		String message = resultData.getString("message");
+		String progressStr = resultData.getString("progress");
+		if (photo != null) {
+			adapter.addAll(dbHelper.getIdsFacesForPhoto(photo));
+			adapter.notifyDataSetChanged();
+
+		}
+		if (message != null) {
+			int progress = 0;
+			if (progressStr != null) {
+				progress = Integer.valueOf(progressStr);
+			}
+			TextView text = (TextView) findViewById(R.id.text_message);
+			text.setText(message);
+
+			ProgressBar bar = (ProgressBar) findViewById(R.id.progressBar);
+			bar.setVisibility(View.VISIBLE);
+			bar.setProgress(progress);
+		}
+		adapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.merge:
+			combine();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+
+		}
+	}
+	
+	private void combine() {
+		Integer toPersonId = null;
+		//String personId = null;
+		for (Integer i : adapter.checked) {
+			if (toPersonId == null) {
+				toPersonId = adapter.persons.get(i);
+//				personId = dbHelper.getPersonIdByIdFace(idIn);
+			} else {
+				Integer old = adapter.persons.get(i);
+				dbHelper.updatePersonsFacesToNew(toPersonId, old);
+				adapter.persons.remove(old);
+				adapter.notifyDataSetChanged();
+			}
+		}
+	}
+	
+
 }

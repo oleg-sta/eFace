@@ -252,7 +252,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public List<Integer> getAllIdsFacesForPerson(Integer personId) {
     	List<Integer> faces = new ArrayList<Integer>();
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select f.id from faces f inner join person p on p.person_id = f.person_id and p.id = " + personId, null);
+        Cursor c = s.rawQuery("select f.id from faces f inner join person p on p.person_id = f.person_id where p.id = " + personId, null);
         while (c.moveToNext()) {
             faces.add(c.getInt(0));
         }
@@ -265,6 +265,30 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         Log.v("DictionaryOpenHelper", "removeGroups");
         SQLiteDatabase s = getWritableDatabase();
         s.execSQL("delete from person");
+        s.close();
+    }
+
+    public String getPersStrById(Integer id) {
+    	String res = null;
+        SQLiteDatabase s = getReadableDatabase();
+        Cursor c = s.rawQuery("select person_id from person where id = " + id, null);
+        while (c.moveToNext()) {
+            res = c.getString(0);
+        }
+        c.close();
+        s.close();
+        return res;
+    }
+	public void updatePersonsFacesToNew(Integer toPersonId, Integer fromPersonId) {
+		String toPerStr = getPersStrById(toPersonId);
+		String personStr = getPersStrById(fromPersonId);
+		SQLiteDatabase s = getWritableDatabase();
+        s.execSQL("update faces set person_id = '" + toPerStr + "' where person_id = '" + personStr + "'");
+        s.close();
+	}
+	public void addFaceToPersonId(Integer faceId, String personId) {
+        SQLiteDatabase s = getWritableDatabase();
+        s.execSQL("update faces set person_id = '" + personId + "' where id = " + faceId + "");
         s.close();
     }
 }

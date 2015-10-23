@@ -7,6 +7,7 @@ import org.jdom.input.*;
 import org.jdom.filter.*;
 
 import com.example.Computations;
+import com.example.testfaceplus.FaceFinderService;
 
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -182,10 +183,17 @@ public class Detector {
     public List<Rectangle> getFaces(Bitmap image,float baseScale, float scale_inc,float increment, int min_neighbors,boolean doCannyPruning, boolean useC, int threadsNum)
 	{
     	// dummy
-    	if (true) {
-    		Rectangle r = new Rectangle(10, 10, 100, 100);
+    	if (FaceFinderService.isAndroidEmulator()) {
     		List<Rectangle> w = new ArrayList<Rectangle>();
-    		w.add(r);
+    		w.add(new Rectangle(10, 10, 100, 100));
+    		w.add(new Rectangle(50, 10, 100, 100));
+    		w.add(new Rectangle(80, 10, 100, 100));
+    		w.add(new Rectangle(10, 10, 100, 100));
+    		w.add(new Rectangle(50, 10, 100, 100));
+    		w.add(new Rectangle(80, 10, 100, 100));
+    		w.add(new Rectangle(10, 10, 100, 100));
+    		w.add(new Rectangle(50, 10, 100, 100));
+    		w.add(new Rectangle(80, 10, 100, 100));
     		return w; 
     	}
     	Computations comp = new Computations();
