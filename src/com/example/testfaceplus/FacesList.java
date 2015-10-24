@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -91,7 +92,11 @@ public class FacesList extends ArrayAdapter<Integer>{
 				
 				@Override
 				public void onClick(View v) {
-					// TODO просмотр фотки
+					Log.i("FacesList", "imageView2.setOnClickListener");
+					Intent personIntent = new Intent(context, DisplayCommonPhoto.class);
+					personIntent.putExtra(DisplayPersonPhotos.FACE_ID, faceId);
+					//((DisplayPersonPhotos)context).startActivity(personIntent);
+					context.startActivity(personIntent);
 					
 				}
 			});
