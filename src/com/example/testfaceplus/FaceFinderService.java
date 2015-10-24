@@ -71,6 +71,12 @@ public class FaceFinderService extends IntentService {
             
             // find faces on photos
             photos = dbHelper.getAllPhotosToBeProcessed();
+            if (bundle != null) {
+                Bundle b = new Bundle();
+                b.putString("progress", "0");
+                b.putString("message", "Найдено " + photos.size() + " фотографий.");
+                rec.send(0, b);
+            }
             
             Log.d("FaceFinderService", "loading casade...");
             InputStream inputHaas = getResources().openRawResource(R.raw.haarcascade_frontalface_default);
@@ -81,8 +87,8 @@ public class FaceFinderService extends IntentService {
             for (String photo : photos) {
                 if (bundle != null) {
                     Bundle b = new Bundle();
-                    b.putString("progress", ((iPh * 100)/ (photos.size() + 5)) + "");
-                    b.putString("message", iPh + " обработано из " + photos.size());
+                    b.putString("progress", ((iPh * 100) / photos.size()) + "");
+                    b.putString("message", iPh + " из " + photos.size() + " обработано");
                     rec.send(0, b);
                 }
                 iPh++;
@@ -146,7 +152,7 @@ public class FaceFinderService extends IntentService {
             if (bundle != null) {
                 Bundle b = new Bundle();
                 b.putString("progress", "100");
-                b.putString("message", "Состояние");
+                b.putString("message", "Завершенно");
                 rec.send(0, b);
             }
             // TODO send status message

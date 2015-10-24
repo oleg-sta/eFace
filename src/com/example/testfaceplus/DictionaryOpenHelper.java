@@ -138,7 +138,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
 
     public void addPerson(String id) {
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("insert into person (person_id, name) values ('" + id + "', 'им€')");
+        s.execSQL("insert into person (person_id, name) values ('" + id + "', '¬ведите им€')");
         s.close();
     }
 
@@ -279,6 +279,12 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         s.close();
         return res;
     }
+    /**
+     * ѕеренос лица из одной персоны в другую
+     * 
+     * @param toPersonId
+     * @param fromPersonId
+     */
 	public void updatePersonsFacesToNew(Integer toPersonId, Integer fromPersonId) {
 		String toPerStr = getPersStrById(toPersonId);
 		String personStr = getPersStrById(fromPersonId);

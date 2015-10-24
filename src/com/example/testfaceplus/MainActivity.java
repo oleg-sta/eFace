@@ -51,7 +51,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
 		Log.v("MainActivity", "onCreate");
 		dbHelper = new DictionaryOpenHelper(this);
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		dbHelper.onUpgrade(db, 1, 1);
+		dbHelper.onUpgrade(db, 1, 1); // временно
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
@@ -63,28 +63,20 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
 		listView.setAdapter(adapter);
 
 		// запускаем поиск лиц
-		{
-			boolean useCpp = true;
-			int cores = 4;
-			int coresTh = Runtime.getRuntime().availableProcessors();
-			Log.i("MainActivity", "num cores " + coresTh);
+		boolean useCpp = true;
+		int cores = 4;
+		int coresTh = Runtime.getRuntime().availableProcessors();
+		Log.i("MainActivity", "num cores " + coresTh);
 
-			// TODO всю работу с фоторграфиями переложить на сервис
-			List<String> photos = getCameraImages(getApplicationContext());
-
-			Intent intent = new Intent(context, FaceFinderService.class);
-			NotificationReceiver receiver = new NotificationReceiver(new Handler());
-			receiver.setListener(d);
-			intent.putExtra("receiver", receiver);
-			intent.putExtra("useCpp", useCpp);
-			Log.i("MainActivity", "num thre " + cores);
-			intent.putExtra("threads", cores);
-
-			startService(intent);
-
-			adapter.notifyDataSetChanged();
-		}
-
+		Intent intent = new Intent(context, FaceFinderService.class);
+		NotificationReceiver receiver = new NotificationReceiver(new Handler());
+		receiver.setListener(d);
+		intent.putExtra("receiver", receiver);
+		intent.putExtra("useCpp", useCpp);
+		Log.i("MainActivity", "num thre " + cores);
+		intent.putExtra("threads", cores);
+		startService(intent);
+		adapter.notifyDataSetChanged();
 	}
 
 	private static String getBucketId(String path) {
@@ -122,7 +114,6 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
 		if (photo != null) {
 			adapter.addAll(dbHelper.getIdsFacesForPhoto(photo));
 			adapter.notifyDataSetChanged();
-
 		}
 		if (message != null) {
 			int progress = 0;
@@ -154,25 +145,29 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
-
 		}
 	}
 	
+	/**
+	 * Объединение выделенных персон в одну персону
+	 */
 	private void combine() {
 		Integer toPersonId = null;
-		//String personId = null;
+		boolean changed = false;
 		for (Integer i : adapter.checked) {
 			if (toPersonId == null) {
-				toPersonId = adapter.persons.get(i);
-//				personId = dbHelper.getPersonIdByIdFace(idIn);
+				toPersonId = adapter.personsId.get(i);
 			} else {
-				Integer old = adapter.persons.get(i);
+				Integer old = adapter.personsId.get(i);
 				dbHelper.updatePersonsFacesToNew(toPersonId, old);
-				adapter.persons.remove(old);
-				adapter.notifyDataSetChanged();
+				adapter.personsId.remove(old);
+				changed = true;
 			}
 		}
+		adapter.checked.clear();
+		if (changed) {
+			adapter.notifyDataSetChanged();
+		}
 	}
-	
 
 }
