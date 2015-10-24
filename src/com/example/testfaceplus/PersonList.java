@@ -1,33 +1,29 @@
 package com.example.testfaceplus;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.example.testfaceplus.data.Face;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.database.Cursor;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
+
+import com.example.testfaceplus.data.Face;
 
 /**
  * Адаптер для просмотра сгруппированых лиц, т.е. персон
@@ -36,6 +32,7 @@ import android.widget.TextView;
  *
  */
 public class PersonList extends ArrayAdapter<Integer> {
+	
 
     private final Activity context;
     public final List<Integer> personsId; // идентификаторы персон
@@ -74,24 +71,24 @@ public class PersonList extends ArrayAdapter<Integer> {
 	
 		final TextView txtTitle = mViewHolder.txtTitle;
 		CheckBox box = mViewHolder.box;
-		box.setChecked(checked.contains(position));
 		box.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			
+
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if (isChecked) {
-					checked.add(position);
+					checked.add(personsId.get(position));
 				} else {
-					checked.remove(position);
+					checked.remove(personsId.get(position));
 				}
-				
+
 			}
 		});
+		box.setChecked(checked.contains(personsId.get(position)));
+		
 		
 		final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
 		LinearLayout facesLayout = mViewHolder.linearLayout;
 
-		// TODO check box should be saved
 		txtTitle.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -118,9 +115,8 @@ public class PersonList extends ArrayAdapter<Integer> {
 
 		String personName = dbHelper.getPersonName(personsId.get(position));
 		List<Integer> faceIds = dbHelper.getAllIdsFacesForPerson(personsId.get(position));
-		Log.i("3333", "ed " + faceIds.size());
         int i = 0;
-		for (Integer d : faceIds) {
+		for (final Integer d : faceIds) {
 			Face face = dbHelper.getFaceForId(d);
 			SQLiteDatabase db = dbHelper.getReadableDatabase();
             Bitmap bm = DataHolder.getInstance().getLittleFace(db, face.guid, getContext());
@@ -130,18 +126,19 @@ public class PersonList extends ArrayAdapter<Integer> {
             imageView2.setImageBitmap(bm);
             facesLayout.addView(imageView2);
             imageView2.setOnClickListener(new OnClickListener() {
-				
 				@Override
 				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					
+					Intent personIntent = new Intent(context, DisplayPersonPhotos.class);
+					personIntent.putExtra(DisplayPersonPhotos.FACE_ID, d);
+					((MainActivity)context).startActivity(personIntent);
 				}
 			});
             i++;
+            if (i > (MainActivity.FACES_VERTICAL + 1)) {
+            	break;
+            }
 		}
-		
 		txtTitle.setText(personName);
-
 		return convertView;
 	}
 

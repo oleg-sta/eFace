@@ -2,6 +2,7 @@ package com.example.testfaceplus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.example.testfaceplus.data.Face;
 import com.example.testfaceplus.data.InfoPhoto;
@@ -137,11 +138,16 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     }
 
     public void addPerson(String id) {
+        addPerson(id, "¬ведите им€");
+    }
+
+    public void addPerson(String id, String name) {
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("insert into person (person_id, name) values ('" + id + "', '¬ведите им€')");
+        s.execSQL("insert into person (person_id, name) values ('" + id + "', '"+name+"')");
         s.close();
     }
 
+    
     public void addFaceToPerson(String faceId, String personId) {
         SQLiteDatabase s = getWritableDatabase();
         s.execSQL("update faces set person_id = '" + personId + "' where guid = '" + faceId + "'");
@@ -290,6 +296,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
 		String personStr = getPersStrById(fromPersonId);
 		SQLiteDatabase s = getWritableDatabase();
         s.execSQL("update faces set person_id = '" + toPerStr + "' where person_id = '" + personStr + "'");
+        s.execSQL("delete from person where person_id = '" + personStr + "'");
         s.close();
 	}
 	public void addFaceToPersonId(Integer faceId, String personId) {
@@ -297,4 +304,35 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         s.execSQL("update faces set person_id = '" + personId + "' where id = " + faceId + "");
         s.close();
     }
+
+	public String getPhotoPathByFaceId(Integer faceId) {
+		String res = null;
+        SQLiteDatabase s = getReadableDatabase();
+        Cursor c = s.rawQuery("select path from photos p inner join faces f on f.photo_id = p.guid where f.id = " + faceId, null);
+        while (c.moveToNext()) {
+            res = c.getString(0);
+        }
+        c.close();
+        s.close();
+        return res;
+	}
+
+	public Integer getPersonIdByFaceId(Integer faceId) {
+		Integer res = null;
+        SQLiteDatabase s = getReadableDatabase();
+        Cursor c = s.rawQuery("select p.id from person p inner join faces f on f.person_id = p.person_id where f.id = " + faceId, null);
+        while (c.moveToNext()) {
+            res = c.getInt(0);
+        }
+        c.close();
+        s.close();
+        return res;
+	}
+
+	public void removeFromPerson(int faceId) {
+		String guidNewPerson = UUID.randomUUID().toString();
+		addPerson(guidNewPerson);
+		Face face = getFaceForId(faceId);
+		addFaceToPerson(face.guid, guidNewPerson);
+	}
 }

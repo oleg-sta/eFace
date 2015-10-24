@@ -19,6 +19,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,6 +39,8 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity implements NotificationReceiver.Listener {
 
+	public static int FACES_VERTICAL;
+	
 	DictionaryOpenHelper dbHelper;
 	public static final String CAMERA_IMAGE_BUCKET_NAME = Environment.getExternalStorageDirectory().toString()
 			+ "/DCIM/Camera";
@@ -47,11 +50,23 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
 	private PersonList adapter;
 
 	@Override
+	protected void onResume() {
+		super.onResume();
+		adapter.clear();
+		adapter.addAll(dbHelper.getAllIdsPerson());
+		adapter.notifyDataSetChanged();
+	}
+
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.v("MainActivity", "onCreate");
 		dbHelper = new DictionaryOpenHelper(this);
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		dbHelper.onUpgrade(db, 1, 1); // временно
+		
+		DisplayMetrics metrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		FACES_VERTICAL = metrics.widthPixels / FacesList.FACES_SIZE;
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
@@ -156,11 +171,11 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
 		boolean changed = false;
 		for (Integer i : adapter.checked) {
 			if (toPersonId == null) {
-				toPersonId = adapter.personsId.get(i);
+				toPersonId = i;
 			} else {
-				Integer old = adapter.personsId.get(i);
+				Integer old = i;
 				dbHelper.updatePersonsFacesToNew(toPersonId, old);
-				adapter.personsId.remove(old);
+				adapter.remove(old);
 				changed = true;
 			}
 		}

@@ -19,6 +19,7 @@ import com.example.testfaceplus.data.Face;
 
 public class DataHolder {
 
+	public static int SIZE_PHOTO_TO_FIND_FACES = 500;
     // кэш фотографий лиц
     private static LruCache<String, Bitmap> mMemoryCache;
 
@@ -94,13 +95,13 @@ public class DataHolder {
             } else {
                 final BitmapFactory.Options options = new BitmapFactory.Options();
                 // уменьшаем полную фотографию
-                Bitmap background_image = FaceFinderService.decodeSampledBitmapFromResource(path, 500, 500, options);
+                Bitmap background_image = FaceFinderService.decodeSampledBitmapFromResource(path, SIZE_PHOTO_TO_FIND_FACES, SIZE_PHOTO_TO_FIND_FACES, options);
                 Bitmap bmTmp = Bitmap.createBitmap(background_image, (int) (background_image.getWidth()
                         * (faceCur.centerX - faceCur.width / 2) / 100), (int) (background_image.getHeight()
                         * (faceCur.centerY - faceCur.height / 2) / 100),
                         (int) (background_image.getWidth() * faceCur.width / 100), (int) (background_image.getHeight()
                                 * faceCur.height / 100));
-                bm = getResizedBitmap(bmTmp, 150, 150);
+                bm = getResizedBitmap(bmTmp, FacesList.FACES_SIZE, FacesList.FACES_SIZE);
                 Log.v("DataHolder", "file dir " + context.getFilesDir());
                 file = new File(context.getFilesDir(), faceId + ".jpg");
                 try {
