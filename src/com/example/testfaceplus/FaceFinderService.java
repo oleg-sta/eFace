@@ -33,6 +33,9 @@ import detection.Rectangle;
  */
 public class FaceFinderService extends IntentService {
 
+	public final static int PHOTOS_LIMIT = 300; // максимальное количество фотографий для обработки
+	public final static int PHOTOS_SIZE_TO_BE_PROCESSED = 300; // размер фото в пикселях для обработки
+	
     public FaceFinderService() {
         super("FaceFinderService");
     }
@@ -93,12 +96,15 @@ public class FaceFinderService extends IntentService {
                 }
                 iPh++;
                 Log.d("FaceFinderService", "photo" + photo);
+                if (dbHelper.photoProcessed(photo)) {
+                	continue;
+                }
 
                 BitmapFactory.Options bitmap_options = new BitmapFactory.Options();
                 bitmap_options.inPreferredConfig = Bitmap.Config.RGB_565;
 
                 final BitmapFactory.Options options = new BitmapFactory.Options();
-                Bitmap background_image = decodeSampledBitmapFromResource(photo, 200, 200, options);
+                Bitmap background_image = decodeSampledBitmapFromResource(photo, PHOTOS_SIZE_TO_BE_PROCESSED, PHOTOS_SIZE_TO_BE_PROCESSED, options);
 
                 Log.i("FaceFinderService", "size " + background_image.getWidth() + " " + background_image.getHeight());
                 long time = System.currentTimeMillis();
@@ -131,11 +137,12 @@ public class FaceFinderService extends IntentService {
                     dbHelper.addFaceToPerson(faceCur.guid, personGuid);
                     // сохраняем фотографию
                     SQLiteDatabase db = dbHelper.getReadableDatabase();
+                    // кэшируем фото лица
                     dataHolder.getLittleFace(db, faceCur.guid, getApplicationContext());
                     db.close();
                 }
 
-                // сообщения для UI о готовности фото
+                // сообщения для UI о готовности фото с лицами
                 if (bundle != null) {
                     Bundle b = new Bundle();
                     b.putString("photo", photo);

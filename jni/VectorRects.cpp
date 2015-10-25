@@ -13,9 +13,9 @@ void VectorRects::addRect(Rectangle* rect) {
 		Rectangle** newRects = new Rectangle*[newSize];
 		for (int i = 0; i < limit; i++) {
 			newRects[i] = rects[i];
-			free(rects);
-			rects = newRects;
 		}
+		free(rects);
+		rects = newRects;
 		limit = newSize;
 	}
 	rects[currIndex] = rect;

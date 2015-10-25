@@ -1,13 +1,7 @@
 package com.example.testfaceplus;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.example.Computations;
-import com.example.testfaceplus.data.InfoPhoto;
-
-import detection.Stage;
 
 import android.app.Activity;
 import android.content.Context;
@@ -25,16 +19,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements NotificationReceiver.Listener {
@@ -52,17 +38,36 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
 	@Override
 	protected void onResume() {
 		super.onResume();
+		final Context context = this;
+		final MainActivity d = this;
 		adapter.clear();
 		adapter.addAll(dbHelper.getAllIdsPerson());
 		adapter.notifyDataSetChanged();
+		// запускаем поиск лиц
+		boolean useCpp = true;
+		int cores = 4;
+		int coresTh = Runtime.getRuntime().availableProcessors();
+		cores = coresTh;
+		Log.i("MainActivity", "num cores " + coresTh);
+
+		Intent intent = new Intent(context, FaceFinderService.class);
+		NotificationReceiver receiver = new NotificationReceiver(new Handler());
+		receiver.setListener(d);
+		intent.putExtra("receiver", receiver);
+		intent.putExtra("useCpp", useCpp);
+		Log.i("MainActivity", "num thre " + cores);
+		intent.putExtra("threads", cores);
+		startService(intent);
+		// поиск новых фотографий
+		
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.v("MainActivity", "onCreate");
 		dbHelper = new DictionaryOpenHelper(this);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		dbHelper.onUpgrade(db, 1, 1); // временно
+		//SQLiteDatabase db = dbHelper.getReadableDatabase();
+		//dbHelper.onUpgrade(db, 1, 1); // временно
 		
 		DisplayMetrics metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -76,21 +81,6 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
 		adapter = new PersonList(MainActivity.this, dbHelper.getAllIdsPerson());
 		final ListView listView = (ListView) findViewById(R.id.listFaces);
 		listView.setAdapter(adapter);
-
-		// запускаем поиск лиц
-		boolean useCpp = true;
-		int cores = 4;
-		int coresTh = Runtime.getRuntime().availableProcessors();
-		Log.i("MainActivity", "num cores " + coresTh);
-
-		Intent intent = new Intent(context, FaceFinderService.class);
-		NotificationReceiver receiver = new NotificationReceiver(new Handler());
-		receiver.setListener(d);
-		intent.putExtra("receiver", receiver);
-		intent.putExtra("useCpp", useCpp);
-		Log.i("MainActivity", "num thre " + cores);
-		intent.putExtra("threads", cores);
-		startService(intent);
 		adapter.notifyDataSetChanged();
 	}
 
@@ -111,7 +101,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
 			do {
 				final String data = cursor.getString(dataColumn);
 				// ограничение до 40 фоток
-				if (i < 40) {
+				if (i < FaceFinderService.PHOTOS_LIMIT) {
 					result.add(data);
 				}
 				i++;

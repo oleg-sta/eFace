@@ -335,4 +335,22 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
 		Face face = getFaceForId(faceId);
 		addFaceToPerson(face.guid, guidNewPerson);
 	}
+
+	
+	/**
+	 * Было ли уже обработано фото
+	 * @param photo
+	 * @return
+	 */
+	public boolean photoProcessed(String photo) {
+		boolean res = false;
+		SQLiteDatabase s = getReadableDatabase();
+        Cursor c = s.rawQuery("select time_processed from photos where path = '" + photo + "'", null);
+        while (c.moveToNext()) {
+            res = !c.isNull(0);
+        }
+        c.close();
+        s.close();
+        return res;
+	}
 }

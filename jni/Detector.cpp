@@ -92,6 +92,7 @@ VectorRects* Detector::getFaces(float baseScale, float scale_inc, float incremen
 	if (threadsNum > 1) {
 		for (int l = 0; l < threadsNum - 1; l++) {
 			int success = pthread_join(m_pt[l], NULL);
+			__android_log_print(ANDROID_LOG_INFO, "Detector", "gettFaces3 thread %d joined %d %d", l, success, res2[l]->currIndex);
 			for (int b = 0; b < res2[l]->currIndex; b++) {
 				ret->addRect(res2[l]->rects[b]);
 			}
@@ -149,6 +150,7 @@ VectorRects* Detector::getResult(int thrN) {
 			}
 		}
 	}
+	__android_log_print(ANDROID_LOG_INFO, "Detector", "gettFaces3 thread %d is finished", thrN);
 	return ret;
 }
 
@@ -156,6 +158,7 @@ VectorRects* Detector::workerTansient(int threadNum)
 {
 	__android_log_print(ANDROID_LOG_INFO, "Detector", "workerTansient thread running %d", threadNum);
 	res2[threadNum - 1] = getResult(threadNum);
+	__android_log_print(ANDROID_LOG_INFO, "Detector", "workerTansient thread stopped %d", threadNum);
 	return NULL;
 }
 

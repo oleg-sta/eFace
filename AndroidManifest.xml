@@ -14,7 +14,7 @@
         android:label="@string/app_name" android:theme="@android:style/Theme.DeviceDefault.Light">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" 
+            android:label="@string/act_people_name"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,12 +23,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DisplayPersonPhotos"
-            android:label="@string/app_name" >
+            android:label="@string/act_faces_name" 
+            android:name=".DisplayPersonPhotos">
         </activity>
         <activity
-            android:name=".DisplayCommonPhoto"
-            android:label="@string/app_name" >
+            android:label="@string/act_common_photo_name"
+            android:name=".DisplayCommonPhoto">
         </activity>
         <service android:name=".FaceFinderService" />
                 
