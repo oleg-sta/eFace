@@ -1,7 +1,9 @@
-package com.example.testfaceplus;
+package ru.trolleg.faces;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.example.testfaceplus.R;
 
 import android.app.Activity;
 import android.content.Context;

@@ -1,8 +1,10 @@
-package com.example.testfaceplus;
+package ru.trolleg.faces;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import ru.trolleg.faces.data.Face;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -23,7 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.testfaceplus.data.Face;
+import com.example.testfaceplus.R;
 
 /**
  * Адаптер для просмотра сгруппированых лиц, т.е. персон

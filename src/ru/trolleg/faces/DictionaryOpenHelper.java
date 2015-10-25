@@ -1,11 +1,12 @@
-package com.example.testfaceplus;
+package ru.trolleg.faces;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.example.testfaceplus.data.Face;
-import com.example.testfaceplus.data.InfoPhoto;
+import ru.trolleg.faces.data.Face;
+import ru.trolleg.faces.data.InfoPhoto;
+
 
 import android.content.Context;
 import android.database.Cursor;

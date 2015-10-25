@@ -1,10 +1,12 @@
-package com.example.testfaceplus;
+package ru.trolleg.faces;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import ru.trolleg.faces.data.Face;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -15,7 +17,6 @@ import android.graphics.Matrix;
 import android.support.v4.util.LruCache;
 import android.util.Log;
 
-import com.example.testfaceplus.data.Face;
 
 public class DataHolder {
 

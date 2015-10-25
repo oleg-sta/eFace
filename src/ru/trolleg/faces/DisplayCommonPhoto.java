@@ -1,4 +1,6 @@
-package com.example.testfaceplus;
+package ru.trolleg.faces;
+
+import com.example.testfaceplus.R;
 
 import android.app.Activity;
 import android.graphics.Bitmap;

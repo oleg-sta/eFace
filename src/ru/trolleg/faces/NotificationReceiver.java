@@ -1,4 +1,4 @@
-package com.example.testfaceplus;
+package ru.trolleg.faces;
 
 import android.os.Bundle;
 import android.os.Handler;
