@@ -1,4 +1,4 @@
-package com.example.testfaceplus.data;
+package ru.trolleg.faces.data;
 
 import android.graphics.Bitmap;
 
