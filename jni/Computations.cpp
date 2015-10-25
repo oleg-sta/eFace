@@ -9,37 +9,9 @@
 Computations::Computations() {
 }
 
-//void Computations::getFaces(JNIEnv* env, jobject thiz, jobjectArray image, jfloat baseScale, jfloat increment,
-//		jint min_neighbors, jfloat scale_inc, jboolean doCannyPruning, jobject detectorJObj) {
-//	Detector* de = new Detector();
-//	de->getFaces(baseScale, scale_inc, increment,
-//			min_neighbors, doCannyPruning, imageLocal, len1, len2);
-//}
-
 extern "C" {
 
-int getVal();
-
-JNIEXPORT jint JNICALL Java_com_example_Computations_stringFromJNI(JNIEnv* env, jobject thiz) {
-	return getVal();
-}
-
-JNIEXPORT jint JNICALL Java_com_example_Computations_intFromJni(JNIEnv* env, jobject thiz, jintArray arr) {
-	jsize d = env->GetArrayLength(arr);
-	jboolean j;
-	int * p = env->GetIntArrayElements(arr, &j);
-	jint e = p[0];
-	return e;
-}
-
-JNIEXPORT jint JNICALL Java_com_example_Computations_intFromJni2(JNIEnv* env, jobject thiz, jintArray arr) {
-	jboolean j;
-	int * p = env->GetIntArrayElements(arr, &j);
-	p[0] = 22;
-	return 0;
-}
-
-JNIEXPORT jobjectArray JNICALL Java_com_example_Computations_findFaces(JNIEnv* env, jobject thiz, jobjectArray image, jfloat baseScale, jfloat increment,
+JNIEXPORT jobjectArray JNICALL Java_ru_trolleg_faces_jni_Computations_findFaces(JNIEnv* env, jobject thiz, jobjectArray image, jfloat baseScale, jfloat increment,
 		jint min_neighbors, jfloat scale_inc, jboolean doCannyPruning, jobject detectorJObj, jint threadsNum) {
 
 	// копирование изображения в С массив
@@ -75,17 +47,10 @@ JNIEXPORT jobjectArray JNICALL Java_com_example_Computations_findFaces(JNIEnv* e
 	d->size = comp->getPoint(env, jobjSize);
 	env->DeleteLocalRef(jobjSize);
 
-	//jfieldID stagesFieldDetector = env->GetFieldID(clsDetector, "stages", "Ljava/util/List;");
-	//jobject stagesList = env->GetObjectField(detectorJObj, stagesFieldDetector);
-
-	//jclass listClass = env->FindClass( "java/util/List" );
-	//jmethodID getMethodIDList = env->GetMethodID( listClass, "get", "(I)Ljava/lang/Object;" );
-	//jmethodID sizeMethodIDList = env->GetMethodID( listClass, "size", "()I" );
 	jfieldID stagesFieldDetector = env->GetFieldID(clsDetector, "stages",
 				"[Ldetection/Stage;");
 	jobject stagesList = env->GetObjectField(detectorJObj, stagesFieldDetector);
 	int listStagesCount = env->GetArrayLength((jobjectArray) stagesList);
-	//int listStagesCount = (int)env->CallIntMethod( stagesList, sizeMethodIDList );
 
 	Stage** stages = new Stage*[listStagesCount];
 	d->stages = stages;
@@ -95,7 +60,6 @@ JNIEXPORT jobjectArray JNICALL Java_com_example_Computations_findFaces(JNIEnv* e
 		stages[i] = new Stage();
 		jobject stage = env->GetObjectArrayElement((jobjectArray) stagesList,
 						i);
-		//jobject stage = env->CallObjectMethod( stagesList, getMethodIDList, i);
 		jclass cls = env->GetObjectClass(stage);
 		stages[i]->threshold = comp->getObjectFieldF(env, stage, cls, "threshold");
 		jfieldID listTree = env->GetFieldID(cls, "trees", "[Ldetection/Tree;");
@@ -206,7 +170,6 @@ Rect* Computations::getRect(JNIEnv* env, jobject rectObj) {
 	rect->y1 = getObjectField(env, rectObj, clsFeature, "y1");
 	rect->y2 = getObjectField(env, rectObj, clsFeature, "y2");
 	rect->weight = getObjectFieldF(env, rectObj, clsFeature, "weight");
-	//__android_log_print(ANDROID_LOG_INFO, "Computations", "getRect18 %d %d %d %d %f", rect->x1, rect->x2, rect->y1, rect->y2, rect->weight);
 	env->DeleteLocalRef(clsFeature);
 	return rect;
 }
@@ -227,10 +190,6 @@ int Computations::getObjectField(JNIEnv* env, jobject obj, jclass clsFeature, co
 float Computations::getObjectFieldF(JNIEnv* env, jobject obj, jclass clsFeature, const char* name) {
 	jfieldID x1FieldId2 = env->GetFieldID(clsFeature, name, "F");
 	return env->GetFloatField(obj, x1FieldId2);
-}
-
-int getVal() {
-	return 155;
 }
 
 }

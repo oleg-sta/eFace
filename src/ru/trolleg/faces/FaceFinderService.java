@@ -1,12 +1,10 @@
 package ru.trolleg.faces;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
 import ru.trolleg.faces.data.Face;
-
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
@@ -20,9 +18,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.util.Log;
-
-import com.example.testfaceplus.R;
-
 import detection.Detector;
 import detection.Rectangle;
 

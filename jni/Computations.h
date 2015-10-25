@@ -13,8 +13,6 @@ public:
 	Rect* getRect(JNIEnv* env, jobject rectObj);
 	int getObjectField(JNIEnv* env, jobject obj, jclass clsFeature, const char* name);
 	float getObjectFieldF(JNIEnv* env, jobject obj, jclass clsFeature, const char* name);
-//    void getFaces(JNIEnv* env, jobject thiz, jobjectArray image, jfloat baseScale, jfloat increment,
-//    		jint min_neighbors, jfloat scale_inc, jboolean doCannyPruning, jobject detectorJObj);
 };
 
 #endif
