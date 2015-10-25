@@ -15,7 +15,7 @@ import android.util.Log;
 
 public class DictionaryOpenHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 10;
 
     DictionaryOpenHelper(Context context) {
         super(context, "faces.db", null, DATABASE_VERSION);
@@ -25,15 +25,22 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE photos (guid text, path TEXT primary key, time_processed real);");
         db.execSQL("create table faces (guid text, photo_id text, person_id text, height real, width real, centerX real, centerY real, id integer PRIMARY KEY AUTOINCREMENT NOT NULL);");
-        db.execSQL("create table person (person_id text, id integer PRIMARY KEY AUTOINCREMENT NOT NULL, name text);");
+        db.execSQL("create table person (person_id text, id integer PRIMARY KEY AUTOINCREMENT NOT NULL, name text, deleted INTEGER);");
+    }
+    
+    public void recreate() {
+    	SQLiteDatabase db = getWritableDatabase();
+    	db.execSQL("drop table photos;");
+    	db.execSQL("drop table faces;");
+    	db.execSQL("drop table person;");
+    	onCreate(db);
+    	db.close();
     }
 
+    
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS photos");
-        db.execSQL("DROP TABLE IF EXISTS faces");
-        db.execSQL("DROP TABLE IF EXISTS person");
-        onCreate(db);
+    	Log.i("DictionaryOpenHelper", "onUpgrade from " + oldVersion + " " + newVersion);
     }
 
     /**
@@ -285,6 +292,26 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         s.close();
         return res;
     }
+    public Integer getOrCreatePerson(String name) {
+    	Integer res = getPersonByName(name);
+    	if (res != null) {
+    		return res;
+    	}
+        addPerson(UUID.randomUUID().toString(), name);
+        return getPersonByName(name);
+    }
+    
+    public Integer getPersonByName(String name) {
+    	Integer res = null;
+    	SQLiteDatabase s = getReadableDatabase();
+    	Cursor c = s.rawQuery("select id from person where name = '" + name + "'", null);
+        if (c.moveToNext()) {
+            res = c.getInt(0);
+        }
+        c.close();
+        s.close();
+        return res;
+    }
     /**
      * Перенос лица из одной персоны в другую
      * 
@@ -352,5 +379,16 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         c.close();
         s.close();
         return res;
+	}
+
+	/**
+	 * Вы лица не привязанные к персоне будут привязаны к "Не лица"
+	 */
+	public void repairBugs() {
+		Integer personId = getOrCreatePerson(MainActivity.NO_FACES);
+		String personGuid = getPersStrById(personId);
+		SQLiteDatabase s = getWritableDatabase();
+		s.execSQL("update faces set person_id = '" + personGuid + "' where person_id is null or person_id not in (select person_id from person)");
+		s.close();
 	}
 }

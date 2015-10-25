@@ -26,6 +26,7 @@ import android.widget.TextView;
 public class MainActivity extends Activity implements NotificationReceiver.Listener {
 
 	public static int FACES_VERTICAL;
+	public final static String NO_FACES = "Не лица";
 	
 	DictionaryOpenHelper dbHelper;
 	public static final String CAMERA_IMAGE_BUCKET_NAME = Environment.getExternalStorageDirectory().toString()
@@ -66,6 +67,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.v("MainActivity", "onCreate");
 		dbHelper = new DictionaryOpenHelper(this);
+		dbHelper.repairBugs();
 		//SQLiteDatabase db = dbHelper.getReadableDatabase();
 		//dbHelper.onUpgrade(db, 1, 1); // временно
 		
@@ -148,6 +150,13 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
 		case R.id.merge:
 			combine();
 			return true;
+		case R.id.delete:
+			delete();
+			return true;
+		case R.id.reset:
+			adapter.clear();
+			dbHelper.recreate();
+			adapter.notifyDataSetChanged();
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -175,4 +184,27 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
 		}
 	}
 
+	/**
+	 * "удаление" лиц, лица добавляются в персону с именем "Не лица"
+	 */
+	private void delete() {
+		Integer toPersonId = dbHelper.getOrCreatePerson(NO_FACES);
+		boolean changed = false;
+		if (!adapter.personsId.contains(toPersonId)) {
+			adapter.add(toPersonId);
+			changed = true;
+		}
+		for (Integer i : adapter.checked) {
+			Integer old = i;
+			if (old != toPersonId) {
+				dbHelper.updatePersonsFacesToNew(toPersonId, old);
+				adapter.remove(old);
+				changed = true;
+			}
+		}
+		adapter.checked.clear();
+		if (changed) {
+			adapter.notifyDataSetChanged();
+		}
+	}
 }

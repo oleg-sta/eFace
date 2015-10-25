@@ -7,15 +7,13 @@
         <menu>
             <item
                 android:id="@+id/merge"
-                android:title="Объединить"/>
-            <!-- 
+                android:title="Объединить лица"/>
             <item
                 android:id="@+id/delete"
-                android:title="Удалить"/>
+                android:title="Не лица"/>
             <item
                 android:id="@+id/reset"
                 android:title="Сбросить"/>
-                -->
         </menu>
     </item>
 

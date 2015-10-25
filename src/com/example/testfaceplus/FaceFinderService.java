@@ -33,7 +33,7 @@ import detection.Rectangle;
  */
 public class FaceFinderService extends IntentService {
 
-	public final static int PHOTOS_LIMIT = 300; // максимальное количество фотографий для обработки
+	public final static int PHOTOS_LIMIT = 3000; // максимальное количество фотографий для обработки
 	public final static int PHOTOS_SIZE_TO_BE_PROCESSED = 300; // размер фото в пикселях для обработки
 	
     public FaceFinderService() {
@@ -74,6 +74,9 @@ public class FaceFinderService extends IntentService {
             
             // find faces on photos
             photos = dbHelper.getAllPhotosToBeProcessed();
+            if (photos.size() == 0) {
+            	return;
+            }
             if (bundle != null) {
                 Bundle b = new Bundle();
                 b.putString("progress", "0");
@@ -88,6 +91,7 @@ public class FaceFinderService extends IntentService {
             inputHaas.close();
             int iPh = 0;
             for (String photo : photos) {
+            	try {
                 if (bundle != null) {
                     Bundle b = new Bundle();
                     b.putString("progress", ((iPh * 100) / photos.size()) + "");
@@ -96,9 +100,6 @@ public class FaceFinderService extends IntentService {
                 }
                 iPh++;
                 Log.d("FaceFinderService", "photo" + photo);
-                if (dbHelper.photoProcessed(photo)) {
-                	continue;
-                }
 
                 BitmapFactory.Options bitmap_options = new BitmapFactory.Options();
                 bitmap_options.inPreferredConfig = Bitmap.Config.RGB_565;
@@ -115,7 +116,7 @@ public class FaceFinderService extends IntentService {
                 String imgId = UUID.randomUUID().toString();
                 Face[] faces = new Face[res.size()];
                 if (res.size() == 0) {
-                    dbHelper.updatePhoto(photo, time);
+                    dbHelper.updatePhoto(photo, imgId, time);
                 }
                 for (int i = 0; i < res.size(); ++i) {
                     if (i == 0) {
@@ -148,6 +149,13 @@ public class FaceFinderService extends IntentService {
                     b.putString("photo", photo);
                     rec.send(0, b);
                 }
+            	} catch(Exception e) {
+            		Log.d("FaceFinderService", "error" + e.getMessage());
+                    e.printStackTrace();
+                    // помечаем фотку как обработанную
+                    // TODO кидать фото в статус ошибки
+                    dbHelper.updatePhoto(photo, UUID.randomUUID().toString(), -1);
+            	}
             }
             dataHolder.processPhotos = false;
         } catch (Exception e) {
