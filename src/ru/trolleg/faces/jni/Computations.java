@@ -1,4 +1,4 @@
-package com.example;
+package ru.trolleg.faces.jni;
 
 import java.util.List;
 

@@ -6,7 +6,8 @@ import org.jdom.*;
 import org.jdom.input.*;
 import org.jdom.filter.*;
 
-import com.example.Computations;
+import ru.trolleg.faces.jni.Computations;
+
 import com.example.testfaceplus.FaceFinderService;
 
 import android.graphics.Bitmap;
