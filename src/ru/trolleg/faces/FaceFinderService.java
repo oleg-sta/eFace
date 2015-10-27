@@ -44,7 +44,7 @@ public class FaceFinderService extends IntentService {
     
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d("FaceFinderService", "onHandleIntent");
+        Log.d("FaceFinderService", "onHandleIntent " + intent);
         Bundle bundle = null;
         ResultReceiver rec = null;
         try {
@@ -57,12 +57,18 @@ public class FaceFinderService extends IntentService {
                 return;
             }
             dataHolder.processPhotos = true;
-            bundle = intent.getExtras();
-
-            rec = (ResultReceiver) intent.getParcelableExtra("receiver");
-            boolean useCpp = intent.getBooleanExtra("useCpp", false);
-            Log.d("FaceFinderService", "onHandleIntent useCpp " + useCpp);
-            int threadsNum = intent.getIntExtra("threads", 1);
+            boolean useCpp = true;
+            int threadsNum = Runtime.getRuntime().availableProcessors();
+            if (intent != null) {
+                bundle = intent.getExtras();
+                rec = (ResultReceiver) intent.getParcelableExtra("receiver");
+                useCpp = intent.getBooleanExtra("useCpp", true);
+                Log.d("FaceFinderService", "onHandleIntent useCpp " + useCpp);
+                threadsNum = intent.getIntExtra("threads", threadsNum);
+            } else {
+                
+            }
+            
             Log.d("FaceFinderService", "onHandleIntent threads " + threadsNum);
             List<String> photos = MainActivity.getCameraImages(getApplicationContext());
             // положить фотки в БД
@@ -209,6 +215,32 @@ public class FaceFinderService extends IntentService {
         return inSampleSize;
     }
     
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i("FaceFinderService", "onStartCommand22");
+        int ret = super.onStartCommand(intent, flags, startId);
+        Log.i("FaceFinderService", "onStartCommand22 "  +ret);
+        return START_STICKY;
+    }
+
+    @Override
+    public void onCreate() {
+        Log.i("FaceFinderService", "onCreate22");
+        super.onCreate();
+    }
+
+    @Override
+    public void onStart(Intent intent, int startId) {
+        Log.i("FaceFinderService", "onStart22");
+        super.onStart(intent, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.i("FaceFinderService", "onDestroy22");
+        super.onDestroy();
+    }
+
     /**
      * Есть ли wifi соединения
      * @return
