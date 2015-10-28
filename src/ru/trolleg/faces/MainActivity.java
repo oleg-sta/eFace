@@ -3,10 +3,14 @@ package ru.trolleg.faces;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.trolleg.faces.data.Face;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -18,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -49,15 +54,26 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         int coresTh = Runtime.getRuntime().availableProcessors();
         cores = coresTh;
         Log.i("MainActivity", "num cores " + coresTh);
-
-        Intent intent = new Intent(context, FaceFinderService.class);
-        NotificationReceiver receiver = new NotificationReceiver(new Handler());
-        receiver.setListener(d);
-        intent.putExtra("receiver", receiver);
-        intent.putExtra("useCpp", useCpp);
-        Log.i("MainActivity", "num thre " + cores);
-        intent.putExtra("threads", cores);
-        startService(intent);
+        
+        // TODO возможно неверный способ запуска единственной сущности IntentService
+        FaceFinderService instance = FaceFinderService.getInstance();
+        if (instance == null) {
+            Intent intent = new Intent(context, FaceFinderService.class);
+            NotificationReceiver receiver = new NotificationReceiver(new Handler());
+            receiver.setListener(d);
+            intent.putExtra("receiver", receiver);
+            intent.putExtra("useCpp", useCpp);
+            Log.i("MainActivity", "num thre " + cores);
+            intent.putExtra("threads", cores);
+            startService(intent);
+        } else {
+            NotificationReceiver receiver = new NotificationReceiver(new Handler());
+            receiver.setListener(d);
+            instance.setReceiver(receiver);
+            if (instance.b != null) {
+                onReceiveResult(0, instance.b);
+            }
+        }
         // поиск новых фотографий
 
     }
@@ -79,7 +95,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         final Context context = this;
         final MainActivity d = this;
 
-        adapter = new PersonList(MainActivity.this, dbHelper.getAllIdsPerson());
+        adapter = new PersonList(this, dbHelper.getAllIdsPerson());
         final ListView listView = (ListView) findViewById(R.id.listFaces);
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -177,6 +193,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
                 changed = true;
             }
         }
+        releaseFirstFace();
         adapter.checked.clear();
         if (changed) {
             adapter.notifyDataSetChanged();
@@ -201,9 +218,26 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
                 changed = true;
             }
         }
+        releaseFirstFace();
         adapter.checked.clear();
         if (changed) {
             adapter.notifyDataSetChanged();
         }
+    }
+
+    public void setFistFace(Integer integer) {
+        List<Integer> faceIds = dbHelper.getAllIdsFacesForPerson(integer);
+        Face face = dbHelper.getFaceForId(faceIds.get(0));
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Bitmap bm = DataHolder.getInstance().getLittleFace(db, face.guid, this);
+        db.close();
+        ImageView im = (ImageView) findViewById(R.id.first_face);
+        im.setImageBitmap(bm);
+        
+    }
+    public void releaseFirstFace() {
+        ImageView im = (ImageView) findViewById(R.id.first_face);
+        im.setImageBitmap(null);
+        
     }
 }

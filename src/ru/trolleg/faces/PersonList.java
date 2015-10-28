@@ -32,11 +32,11 @@ import android.widget.TextView;
  */
 public class PersonList extends ArrayAdapter<Integer> {
 
-    private final Activity context;
+    private final MainActivity context;
     public final List<Integer> personsId; // идентификаторы персон
     public final Set<Integer> checked = new HashSet<Integer>();
 
-    public PersonList(Activity context, List<Integer> persons) {
+    public PersonList(MainActivity context, List<Integer> persons) {
         super(context, R.layout.my_list_item, persons);
         this.personsId = persons;
         this.context = context;
@@ -75,8 +75,14 @@ public class PersonList extends ArrayAdapter<Integer> {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     checked.add(personsId.get(position));
+                    if (checked.size() == 1) {
+                        context.setFistFace(personsId.get(position));
+                    }
                 } else {
                     checked.remove(personsId.get(position));
+                    if (checked.size() == 0) {
+                        context.releaseFirstFace();
+                    }
                 }
 
             }

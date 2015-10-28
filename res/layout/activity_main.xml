@@ -12,21 +12,34 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Состояние" />
-    
+
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
-        android:max="100"
-        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/text_message"/>
-    
+        android:layout_below="@+id/text_message"
+        android:max="100"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/first_face"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/progressBar" />
+
+    <View
+        android:id="@+id/face_first_separator"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/first_face"
+        android:background="@android:color/darker_gray" />
+
     <ListView
         android:id="@+id/listFaces"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/progressBar" >
+        android:layout_below="@+id/face_first_separator" >
     </ListView>
 
 </RelativeLayout>

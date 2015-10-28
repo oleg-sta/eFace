@@ -30,8 +30,13 @@ import detection.Rectangle;
  */
 public class FaceFinderService extends IntentService {
 
-	public final static int PHOTOS_LIMIT = 3000; // максимальное количество фотографий для обработки
+
+    static FaceFinderService instance;
+    public final static int PHOTOS_LIMIT = 3000; // максимальное количество фотографий для обработки
 	public final static int PHOTOS_SIZE_TO_BE_PROCESSED = 300; // размер фото в пикселях для обработки
+	
+	ResultReceiver rec = null;
+	public Bundle b; // last Bundle
 	
     public FaceFinderService() {
         super("FaceFinderService");
@@ -42,11 +47,12 @@ public class FaceFinderService extends IntentService {
         // TODO Auto-generated constructor stub
     }
     
+    
     @Override
     protected void onHandleIntent(Intent intent) {
         Log.d("FaceFinderService", "onHandleIntent " + intent);
-        Bundle bundle = null;
-        ResultReceiver rec = null;
+        //Bundle bundle = null;
+        //ResultReceiver rec = null;
         try {
             // нельзя допускать повторного запуска1
             DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
@@ -60,7 +66,7 @@ public class FaceFinderService extends IntentService {
             boolean useCpp = true;
             int threadsNum = Runtime.getRuntime().availableProcessors();
             if (intent != null) {
-                bundle = intent.getExtras();
+                //bundle = intent.getExtras();
                 rec = (ResultReceiver) intent.getParcelableExtra("receiver");
                 useCpp = intent.getBooleanExtra("useCpp", true);
                 Log.d("FaceFinderService", "onHandleIntent useCpp " + useCpp);
@@ -80,8 +86,8 @@ public class FaceFinderService extends IntentService {
             if (photos.size() == 0) {
             	return;
             }
-            if (bundle != null) {
-                Bundle b = new Bundle();
+            if (rec != null) {
+                b = new Bundle();
                 b.putString("progress", "0");
                 b.putString("message", "Найдено " + photos.size() + " фотографий.");
                 rec.send(0, b);
@@ -95,8 +101,8 @@ public class FaceFinderService extends IntentService {
             int iPh = 0;
             for (String photo : photos) {
             	try {
-                if (bundle != null) {
-                    Bundle b = new Bundle();
+                if (rec != null) {
+                    b = new Bundle();
                     b.putString("progress", ((iPh * 100) / photos.size()) + "");
                     b.putString("message", iPh + " из " + photos.size() + " обработано");
                     rec.send(0, b);
@@ -147,8 +153,8 @@ public class FaceFinderService extends IntentService {
                 }
 
                 // сообщения для UI о готовности фото с лицами
-                if (bundle != null) {
-                    Bundle b = new Bundle();
+                if (rec != null) {
+                    b = new Bundle();
                     b.putString("photo", photo);
                     rec.send(0, b);
                 }
@@ -167,7 +173,7 @@ public class FaceFinderService extends IntentService {
             e.printStackTrace();
         } finally {
             DataHolder.getInstance().processPhotos = false;
-            if (bundle != null) {
+            if (rec != null) {
                 Bundle b = new Bundle();
                 b.putString("progress", "100");
                 b.putString("message", "Завершенно");
@@ -218,8 +224,7 @@ public class FaceFinderService extends IntentService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i("FaceFinderService", "onStartCommand22");
-        int ret = super.onStartCommand(intent, flags, startId);
-        Log.i("FaceFinderService", "onStartCommand22 "  +ret);
+        super.onStartCommand(intent, flags, startId);
         return START_STICKY;
     }
 
@@ -227,8 +232,12 @@ public class FaceFinderService extends IntentService {
     public void onCreate() {
         Log.i("FaceFinderService", "onCreate22");
         super.onCreate();
+        instance = this;
     }
 
+    static FaceFinderService getInstance() {
+        return instance;
+    }
     @Override
     public void onStart(Intent intent, int startId) {
         Log.i("FaceFinderService", "onStart22");
@@ -238,6 +247,7 @@ public class FaceFinderService extends IntentService {
     @Override
     public void onDestroy() {
         Log.i("FaceFinderService", "onDestroy22");
+        instance = null;
         super.onDestroy();
     }
 
@@ -261,6 +271,11 @@ public class FaceFinderService extends IntentService {
         }
         //Log.d(TAG, "isEmulator=" + isEmulator);
         return isEmulator;
+    }
+
+    public void setReceiver(NotificationReceiver receiver) {
+        rec = receiver;
+        
     }
 
 }
