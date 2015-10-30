@@ -95,9 +95,25 @@ VectorRects* Detector::getFaces(float baseScale, float scale_inc, float incremen
 			__android_log_print(ANDROID_LOG_INFO, "Detector", "gettFaces3 thread %d joined %d %d", l, success, res2[l]->currIndex);
 			for (int b = 0; b < res2[l]->currIndex; b++) {
 				ret->addRect(res2[l]->rects[b]);
+				//delete[] res2[l]->rects[b];
 			}
 		}
 	}
+	for (int i = 0; i < width; i++) {
+		if (doCannyPruning) {
+			free(canny[i]);
+		}
+		free(grayImage[i]);
+		free(img[i]);
+		free(squares[i]);
+	}
+	if (doCannyPruning) {
+		free(canny);
+	}
+	free(grayImage);
+	free(img);
+	free(squares);
+
 	__android_log_print(ANDROID_LOG_INFO, "Detector", "gettFaces3 faces before=%d", ret->currIndex);
 
 	return merge(ret, min_neighbors);
@@ -222,6 +238,10 @@ int** Detector::getIntegralCanny(int** grayImage, int width, int height) {
 			col += value;
 		}
 	}
+	for (int i = 0; i < width; i++) {
+		free(grad[i]);
+	}
+	free(grad);
 	return canny;
 }
 

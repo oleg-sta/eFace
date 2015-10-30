@@ -44,12 +44,14 @@ public class FaceFinderService extends IntentService {
 
     public FaceFinderService(String name) {
         super(name);
+        Logger1.log("FaceFinderService");
         // TODO Auto-generated constructor stub
     }
     
     
     @Override
     protected void onHandleIntent(Intent intent) {
+        Logger1.log("onHandleIntent");
         Log.d("FaceFinderService", "onHandleIntent " + intent);
         //Bundle bundle = null;
         //ResultReceiver rec = null;
@@ -64,7 +66,8 @@ public class FaceFinderService extends IntentService {
             }
             dataHolder.processPhotos = true;
             boolean useCpp = true;
-            int threadsNum = Runtime.getRuntime().availableProcessors();
+            Runtime info = Runtime.getRuntime();
+            int threadsNum = info.availableProcessors();
             if (intent != null) {
                 //bundle = intent.getExtras();
                 rec = (ResultReceiver) intent.getParcelableExtra("receiver");
@@ -76,6 +79,7 @@ public class FaceFinderService extends IntentService {
             }
             
             Log.d("FaceFinderService", "onHandleIntent threads " + threadsNum);
+            Logger1.log("onHandleIntent threads " + threadsNum + " useCpp " + useCpp);
             List<String> photos = MainActivity.getCameraImages(getApplicationContext());
             // положить фотки в БД
             int newFaces = dbHelper.addNewPhotos(photos);
@@ -86,85 +90,93 @@ public class FaceFinderService extends IntentService {
             if (photos.size() == 0) {
             	return;
             }
+            b = new Bundle();
+            b.putString("progress", "0");
+            b.putString("message", "Найдено " + photos.size() + " фотографий.");
             if (rec != null) {
-                b = new Bundle();
-                b.putString("progress", "0");
-                b.putString("message", "Найдено " + photos.size() + " фотографий.");
                 rec.send(0, b);
             }
             
             Log.d("FaceFinderService", "loading casade...");
+            Logger1.log("loading casade...");
             InputStream inputHaas = getResources().openRawResource(R.raw.haarcascade_frontalface_default);
             Detector detector = Detector.create(inputHaas);
             Log.d("FaceFinderService", "casade loaded");
+            Logger1.log("casade loaded");
             inputHaas.close();
             int iPh = 0;
             for (String photo : photos) {
-            	try {
-                if (rec != null) {
+                try {
+
                     b = new Bundle();
                     b.putString("progress", ((iPh * 100) / photos.size()) + "");
                     b.putString("message", iPh + " из " + photos.size() + " обработано");
-                    rec.send(0, b);
-                }
-                iPh++;
-                Log.d("FaceFinderService", "photo" + photo);
+                    if (rec != null) {
+                        rec.send(0, b);
+                    }
+                    iPh++;
+                    Log.d("FaceFinderService", "photo" + photo);
+                    Logger1.log("photo " + photo + " " + iPh + " " + photos.size());
 
-                BitmapFactory.Options bitmap_options = new BitmapFactory.Options();
-                bitmap_options.inPreferredConfig = Bitmap.Config.RGB_565;
+                    BitmapFactory.Options bitmap_options = new BitmapFactory.Options();
+                    bitmap_options.inPreferredConfig = Bitmap.Config.RGB_565;
 
-                final BitmapFactory.Options options = new BitmapFactory.Options();
-                Bitmap background_image = decodeSampledBitmapFromResource(photo, PHOTOS_SIZE_TO_BE_PROCESSED, PHOTOS_SIZE_TO_BE_PROCESSED, options);
+                    final BitmapFactory.Options options = new BitmapFactory.Options();
+                    Bitmap background_image = decodeSampledBitmapFromResource(photo, PHOTOS_SIZE_TO_BE_PROCESSED,
+                            PHOTOS_SIZE_TO_BE_PROCESSED, options);
 
-                Log.i("FaceFinderService", "size " + background_image.getWidth() + " " + background_image.getHeight());
-                long time = System.currentTimeMillis();
-                List<Rectangle> res = detector.getFaces(background_image, 1.2f, 1.1f, .05f, 2, true, useCpp, threadsNum);
-                time = (System.currentTimeMillis() - time) / 1000;
-                Log.i("FaceFinderService", "foune " + res.size() + " faces");
-                
-                String imgId = UUID.randomUUID().toString();
-                Face[] faces = new Face[res.size()];
-                if (res.size() == 0) {
-                    dbHelper.updatePhoto(photo, imgId, time);
-                }
-                for (int i = 0; i < res.size(); ++i) {
-                    if (i == 0) {
+                    Log.i("FaceFinderService",
+                            "size " + background_image.getWidth() + " " + background_image.getHeight());
+                    long time = System.currentTimeMillis();
+                    List<Rectangle> res = detector.getFaces(background_image, 1.2f, 1.1f, .05f, 2, true, useCpp,
+                            threadsNum);
+                    time = (System.currentTimeMillis() - time) / 1000;
+                    Logger1.log("find in " + time);
+                    Log.i("FaceFinderService", "foune " + res.size() + " faces");
+
+                    String imgId = UUID.randomUUID().toString();
+                    Face[] faces = new Face[res.size()];
+                    if (res.size() == 0) {
                         dbHelper.updatePhoto(photo, imgId, time);
                     }
-                    //FaceppResult face = result.get("face").get(i);
-                    Rectangle face = res.get(i);
-                    //FaceppResult position = face.get("position");
-                    Face faceCur = new Face();
-                    faces[i] = faceCur;
-                    faceCur.height = 100 * face.height / (double) background_image.getHeight();
-                    faceCur.width = 100 * face.width / (double) background_image.getWidth();
-                    faceCur.centerY = 100 * (face.y + face.height / 2) / (double) background_image.getHeight();
-                    faceCur.centerX = 100 * (face.x + face.width / 2) / (double) background_image.getWidth();
-                    faceCur.guid = UUID.randomUUID().toString();
-                    dbHelper.addFace(faceCur, imgId);
-                    String personGuid = UUID.randomUUID().toString();
-                    dbHelper.addPerson(personGuid);
-                    dbHelper.addFaceToPerson(faceCur.guid, personGuid);
-                    // сохраняем фотографию
-                    SQLiteDatabase db = dbHelper.getReadableDatabase();
-                    // кэшируем фото лица
-                    dataHolder.getLittleFace(db, faceCur.guid, getApplicationContext());
-                    db.close();
-                }
-
-                // сообщения для UI о готовности фото с лицами
-                if (rec != null) {
+                    for (int i = 0; i < res.size(); ++i) {
+                        if (i == 0) {
+                            dbHelper.updatePhoto(photo, imgId, time);
+                        }
+                        // FaceppResult face = result.get("face").get(i);
+                        Rectangle face = res.get(i);
+                        // FaceppResult position = face.get("position");
+                        Face faceCur = new Face();
+                        faces[i] = faceCur;
+                        faceCur.height = 100 * face.height / (double) background_image.getHeight();
+                        faceCur.width = 100 * face.width / (double) background_image.getWidth();
+                        faceCur.centerY = 100 * (face.y + face.height / 2) / (double) background_image.getHeight();
+                        faceCur.centerX = 100 * (face.x + face.width / 2) / (double) background_image.getWidth();
+                        faceCur.guid = UUID.randomUUID().toString();
+                        dbHelper.addFace(faceCur, imgId);
+                        String personGuid = UUID.randomUUID().toString();
+                        dbHelper.addPerson(personGuid);
+                        dbHelper.addFaceToPerson(faceCur.guid, personGuid);
+                        // сохраняем фотографию
+                        SQLiteDatabase db = dbHelper.getReadableDatabase();
+                        // кэшируем фото лица
+                        dataHolder.getLittleFace(db, faceCur.guid, getApplicationContext());
+                        db.close();
+                    }
+                    // сообщения для UI о готовности фото с лицами
                     b = new Bundle();
                     b.putString("photo", photo);
-                    rec.send(0, b);
-                }
-            	} catch(Exception e) {
-            		Log.d("FaceFinderService", "error" + e.getMessage());
+                    if (rec != null) {
+                        rec.send(0, b);
+                    }
+                } catch (Exception e) {
+                    Log.d("FaceFinderService", "error" + e.getMessage());
+                    Logger1.log("error" + e.getMessage());
                     e.printStackTrace();
                     // помечаем фотку как обработанную
                     // TODO кидать фото в статус ошибки
                     dbHelper.updatePhoto(photo, UUID.randomUUID().toString(), -1);
-            	}
+                }
             }
             dataHolder.processPhotos = false;
         } catch (Exception e) {
@@ -173,10 +185,11 @@ public class FaceFinderService extends IntentService {
             e.printStackTrace();
         } finally {
             DataHolder.getInstance().processPhotos = false;
+
+            Bundle b = new Bundle();
+            b.putString("progress", "100");
+            b.putString("message", "Завершенно");
             if (rec != null) {
-                Bundle b = new Bundle();
-                b.putString("progress", "100");
-                b.putString("message", "Завершенно");
                 rec.send(0, b);
             }
             // TODO send status message
@@ -225,12 +238,14 @@ public class FaceFinderService extends IntentService {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i("FaceFinderService", "onStartCommand22");
         super.onStartCommand(intent, flags, startId);
+        Logger1.log("onStartCommand22");
         return START_STICKY;
     }
 
     @Override
     public void onCreate() {
         Log.i("FaceFinderService", "onCreate22");
+        Logger1.log("onCreate22");
         super.onCreate();
         instance = this;
     }
@@ -241,12 +256,14 @@ public class FaceFinderService extends IntentService {
     @Override
     public void onStart(Intent intent, int startId) {
         Log.i("FaceFinderService", "onStart22");
+        Logger1.log("onStart22");
         super.onStart(intent, startId);
     }
 
     @Override
     public void onDestroy() {
         Log.i("FaceFinderService", "onDestroy22");
+        Logger1.log("onDestroy22");
         instance = null;
         super.onDestroy();
     }

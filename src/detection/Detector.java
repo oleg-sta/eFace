@@ -200,18 +200,32 @@ public class Detector {
     	Computations comp = new Computations();
     	
         Log.i("Detector", "getFaces");
-	    
-			//StopWatch sw = new StopWatch();
-			//sw.start();
-			List<Rectangle> ret=new ArrayList<Rectangle>();
+			
 			int width=image.getWidth();
 			int height=image.getHeight();
+			if (useC) {
+			    int[][] origImg = new int[width][height]; // оригинальное цветное изображение
+			    for(int i=0;i<width;i++)
+	            {
+	                for(int j=0;j<height;j++)
+	                {
+	                    int c = image.getPixel(i, j);//getRGB(i,j);
+	                    origImg[i][j] = c;
+	                }
+	            }
+                Log.i("Detector", "calling Computations...");
+                faces = new ArrayList<Rectangle>();
+                Rectangle[] facs = comp.findFaces(origImg, baseScale, increment, min_neighbors, scale_inc, doCannyPruning, this, threadsNum);
+                Log.i("Detector", "return from Computations " + facs.length);
+                return Arrays.asList(facs);
+            }
+			List<Rectangle> ret=new ArrayList<Rectangle>();
+			
 			/* Compute the max scale of the detector, i.e. the size of the image divided by the size of the detector. */
 			float maxScale = (Math.min((width+0.f)/size.x,(height+0.0f)/size.y));
 			
 			/* Compute the grayscale image, the integral image and the squared integral image.*/
 			int[][] grayImage=new int[width][height]; // интенсивность пикселей
-			int[][] origImg = new int[width][height]; // оригинальное цветное изображение
 			int[][] img = new int[width][height]; // ч\б изображение
 			int[][] squares=new int[width][height]; // интенсивноть квадратов пикселей
 			for(int i=0;i<width;i++)
@@ -221,7 +235,6 @@ public class Detector {
 				for(int j=0;j<height;j++)
 				{
 					int c = image.getPixel(i, j);//getRGB(i,j);
-					origImg[i][j] = c;
 					int  red = (c & 0x00ff0000) >> 16;
 					int  green = (c & 0x0000ff00) >> 8;
 					int  blue = c & 0x000000ff;
@@ -233,15 +246,7 @@ public class Detector {
 					col2+=value*value;
 				}
 			}
-			
-			if (useC) {
-				Log.i("Detector", "calling Computations...");
-				faces = new ArrayList<Rectangle>();
-				Rectangle[] facs = comp.findFaces(origImg, baseScale, increment, min_neighbors, scale_inc, doCannyPruning, this, threadsNum);
-				Log.i("Detector", "return from Computations " + facs.length);
-				return Arrays.asList(facs);
-			}
-			
+					
 			Log.i("Detector", "getFaces2");
 			/* Eventually compute the gradient of the image, if option is on. */
 			int[][] canny = null;
