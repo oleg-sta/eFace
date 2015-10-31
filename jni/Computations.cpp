@@ -111,9 +111,9 @@ JNIEXPORT jobjectArray JNICALL Java_ru_trolleg_faces_jni_Computations_findFaces(
 
 	// release memory
 	for (int i = 0; i < len1; i++) {
-		free(imageLocal[i]);
+		delete[] imageLocal[i];
 	}
-	free(imageLocal);
+	delete[] imageLocal;
 
 	return jobAr;
 }

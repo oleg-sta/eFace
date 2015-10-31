@@ -101,18 +101,18 @@ VectorRects* Detector::getFaces(float baseScale, float scale_inc, float incremen
 	}
 	for (int i = 0; i < width; i++) {
 		if (doCannyPruning) {
-			free(canny[i]);
+			delete[] canny[i];
 		}
-		free(grayImage[i]);
-		free(img[i]);
-		free(squares[i]);
+		delete[] grayImage[i];
+		delete[] img[i];
+		delete[] squares[i];
 	}
 	if (doCannyPruning) {
-		free(canny);
+		delete[] canny;
 	}
-	free(grayImage);
-	free(img);
-	free(squares);
+	delete[] grayImage;
+	delete[] img;
+	delete[] squares;
 
 	__android_log_print(ANDROID_LOG_INFO, "Detector", "gettFaces3 faces before=%d", ret->currIndex);
 
@@ -239,9 +239,9 @@ int** Detector::getIntegralCanny(int** grayImage, int width, int height) {
 		}
 	}
 	for (int i = 0; i < width; i++) {
-		free(grad[i]);
+		delete[] grad[i];
 	}
-	free(grad);
+	delete[] grad;
 	return canny;
 }
 

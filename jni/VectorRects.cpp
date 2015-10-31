@@ -14,7 +14,7 @@ void VectorRects::addRect(Rectangle* rect) {
 		for (int i = 0; i < limit; i++) {
 			newRects[i] = rects[i];
 		}
-		free(rects);
+		delete[] rects;
 		rects = newRects;
 		limit = newSize;
 	}
