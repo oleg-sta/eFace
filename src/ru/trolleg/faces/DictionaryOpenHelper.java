@@ -146,7 +146,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     }
 
     public void addPerson(String id) {
-        addPerson(id, "Введите имя");
+        addPerson(id, MainActivity.INPUT_NAME);
     }
 
     public void addPerson(String id, String name) {
@@ -386,10 +386,10 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
 	 * Вы лица не привязанные к персоне будут привязаны к "Не лица"
 	 */
 	public void repairBugs() {
-		Integer personId = getOrCreatePerson(MainActivity.NO_FACES);
-		String personGuid = getPersStrById(personId);
-		SQLiteDatabase s = getWritableDatabase();
-		s.execSQL("update faces set person_id = '" + personGuid + "' where person_id is null or person_id not in (select person_id from person)");
-		s.close();
+//		Integer personId = getOrCreatePerson(MainActivity.NO_FACES);
+//		String personGuid = getPersStrById(personId);
+//		SQLiteDatabase s = getWritableDatabase();
+//		s.execSQL("update faces set person_id = '" + personGuid + "' where person_id is null or person_id not in (select person_id from person)");
+//		s.close();
 	}
 }

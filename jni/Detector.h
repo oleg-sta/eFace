@@ -30,6 +30,7 @@ public:
     VectorRects* getFaces(float baseScale, float scale_inc, float increment, int min_neighbors, bool doCannyPruning, int **imageLocal, int len1, int len2);
     VectorRects* merge(VectorRects* rects, int min_neighbors);
     VectorRects* getResult(int thrN);
+    int abs(int x);
     bool equals(Rectangle* r1, Rectangle* r2);
     VectorRects* workerTansient(int threadNum);
 };

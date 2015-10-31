@@ -9,6 +9,11 @@ import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 
+/**
+ * Отображение всех лиц человека.
+ * @author sov
+ *
+ */
 public class DisplayPersonPhotos extends Activity {
 
     public static final String FACE_ID = "faceId";

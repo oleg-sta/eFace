@@ -5,8 +5,8 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="14"
-        android:targetSdkVersion="21" />
+        android:minSdkVersion="15"
+        android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     
@@ -31,6 +31,10 @@
         <activity
             android:label="@string/act_common_photo_name"
             android:name=".DisplayCommonPhoto">
+        </activity>
+        <activity
+            android:label="@string/help"
+            android:name=".HelpActivity">
         </activity>
         <service android:name=".FaceFinderService" />
                 

@@ -12,8 +12,11 @@
                 android:id="@+id/delete"
                 android:title="Не лица"/>
             <item
-                android:id="@+id/reset"
-                android:title="Сбросить"/>
+                android:id="@+id/reset_filter"
+                android:title="Сбросить фильтр"/>
+            <item
+                android:id="@+id/help"
+                android:title="Справка"/>
         </menu>
     </item>
 

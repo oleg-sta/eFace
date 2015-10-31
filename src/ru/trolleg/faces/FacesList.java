@@ -19,6 +19,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+/**
+ * Просмотр лиц одного человека.
+ * @author sov
+ *
+ */
 public class FacesList extends ArrayAdapter<Integer> {
 
     public static final int FACES_SIZE = 150;

@@ -8,8 +8,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Логироваине в файл. В промышленной эксплуатации должно быть отключено.
+ * @author sov
+ *
+ */
 public class Logger1 {
-    public final static DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+    public final static DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     static OutputStream out;
 
     public static void log(String message) {

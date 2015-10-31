@@ -245,7 +245,7 @@ int** Detector::getIntegralCanny(int** grayImage, int width, int height) {
 	return canny;
 }
 
-int abs(int x) {
+int Detector::abs(int x) {
 	if (x < 0) {
 		x = -x;
 	}

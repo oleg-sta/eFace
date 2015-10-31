@@ -7,6 +7,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 
+/**
+ * Отображение общей фотографии
+ * @author sov
+ *
+ */
 public class DisplayCommonPhoto extends Activity {
 
     @Override

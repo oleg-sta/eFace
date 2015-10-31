@@ -25,7 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
- * Адаптер для просмотра сгруппированых лиц, т.е. персон
+ * Адаптер для просмотра сгруппированых лиц, т.е. людей.
  * 
  * @author sov
  * 

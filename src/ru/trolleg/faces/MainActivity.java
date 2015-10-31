@@ -27,10 +27,16 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+/**
+ * Первоначальная страница, здесь в списке показаны лица людей
+ * @author sov
+ *
+ */
 public class MainActivity extends Activity implements NotificationReceiver.Listener {
 
     public static int FACES_VERTICAL;
     public final static String NO_FACES = "Не лица";
+    public final static String INPUT_NAME = "Введите имя";
 
     DictionaryOpenHelper dbHelper;
     public static final String CAMERA_IMAGE_BUCKET_NAME = Environment.getExternalStorageDirectory().toString()
@@ -168,10 +174,19 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         case R.id.delete:
             delete();
             return true;
-        case R.id.reset:
-            adapter.clear();
-            dbHelper.recreate();
+        case R.id.reset_filter:
+            adapter.checked.clear();
             adapter.notifyDataSetChanged();
+            return true;
+//        case R.id.reset:
+//            adapter.clear();
+//            dbHelper.recreate();
+//            adapter.notifyDataSetChanged();
+//            return true;
+        case R.id.help:
+            Intent intent = new Intent(this, HelpActivity.class);
+            startActivity(intent);
+            return true;
         default:
             return super.onOptionsItemSelected(item);
         }
@@ -183,16 +198,21 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
     private void combine() {
         Integer toPersonId = null;
         boolean changed = false;
+        String newName = null;
         for (Integer i : adapter.checked) {
             if (toPersonId == null) {
                 toPersonId = i;
+                newName = dbHelper.getPersonName(i);
             } else {
-                Integer old = i;
-                dbHelper.updatePersonsFacesToNew(toPersonId, old);
-                adapter.remove(old);
+                if (INPUT_NAME.equals(newName)) {
+                    newName = dbHelper.getPersonName(i);
+                }
+                dbHelper.updatePersonsFacesToNew(toPersonId, i);
+                adapter.remove(i);
                 changed = true;
             }
         }
+        dbHelper.updatePersonName(toPersonId, newName);
         releaseFirstFace();
         adapter.checked.clear();
         if (changed) {
