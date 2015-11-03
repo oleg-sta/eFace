@@ -3,14 +3,10 @@ package ru.trolleg.faces;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.trolleg.faces.data.Face;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -22,7 +18,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLayoutChangeListener;
+import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -44,16 +45,23 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
     public static final String CAMERA_IMAGE_BUCKET_ID = getBucketId(CAMERA_IMAGE_BUCKET_NAME);
     public static final String EXTRA_MESSAGE = "com.example.test1.MESSAGE";
 
-    private PersonList adapter;
+    public FacesList2 adapterFaces;
+    public MenList adapterMans;
+    
+    public Integer currentMan = null;
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.i("MainActivity", "onResume");
+        
         final Context context = this;
         final MainActivity d = this;
-        adapter.clear();
-        adapter.addAll(dbHelper.getAllIdsPerson());
-        adapter.notifyDataSetChanged();
+        adapterFaces.clear();
+        //adapterFaces = new FacesList2(this, dbHelper.getAllIdsFacesForPerson(null));
+        adapterFaces.addAll(dbHelper.getAllIdsFacesForPerson(currentMan));
+        Log.i("MainActivity", "size persons " + adapterFaces.faces.size());
+        adapterFaces.notifyDataSetChanged();
         // запускаем поиск лиц
         boolean useCpp = true;
         int cores = 4;
@@ -101,10 +109,80 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         final Context context = this;
         final MainActivity d = this;
 
-        adapter = new PersonList(this, dbHelper.getAllIdsPerson());
-        final ListView listView = (ListView) findViewById(R.id.listFaces);
-        listView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        adapterFaces = new FacesList2(this, dbHelper.getAllIdsFacesForPerson(currentMan));
+        final GridView listView = (GridView) findViewById(R.id.listFaces);
+        listView.setAdapter(adapterFaces);
+        adapterFaces.notifyDataSetChanged();
+        Log.i("MainActivity", "size persons " + adapterFaces.faces.size());
+        
+        final LinearLayout la1 = (LinearLayout) findViewById(R.id.mainLay);
+        final View vi1 = findViewById(R.id.vie);
+        la1.getMeasuredWidth();
+        //LinearLayout la2 = (LinearLayout) findViewById(R.id.listFaces2);
+        //la2.set
+        
+        int num = la1.getMeasuredWidth() / FacesList.FACES_SIZE - 1;
+        Log.v("MainActivity", "size " + num + " " + la1.getMeasuredWidth());
+        Log.v("MainActivity", "size " + la1.getWidth());
+        la1.addOnLayoutChangeListener(new OnLayoutChangeListener() {
+            
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight,
+                    int oldBottom) {
+                Log.i("MainActivity", "size2 " + la1.getMeasuredWidth());
+                int num = la1.getMeasuredWidth() / FacesList.FACES_SIZE - 1;
+                listView.getLayoutParams().width = num * FacesList.FACES_SIZE;
+                listView.setNumColumns(num);
+                vi1.getLayoutParams().width = la1.getMeasuredWidth() % FacesList.FACES_SIZE; 
+                
+                //((LinearLayout)listView.getParent()).set
+                
+            }
+        });
+        //listView.setStretchMode(GridView.NO_STRETCH);
+        //listView.getLayoutParams().width = num * FacesList.FACES_SIZE;
+        //listView.setNumColumns(num);
+        
+        adapterMans = new MenList(this, dbHelper.getAllIdsPerson());
+        final ListView listView2 = (ListView) findViewById(R.id.listOfMan);
+        listView2.setAdapter(adapterMans);
+        adapterMans.notifyDataSetChanged();
+        
+        
+        //LinearLayout t = (LinearLayout)findViewById(R.id.listOfManLayout);
+        //t.setOnDragListener(new DragOverListMen(this));
+        final Button button = (Button) findViewById(R.id.start_stop);
+        button.setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                FaceFinderService.buttonStart = !FaceFinderService.buttonStart;
+                if (!FaceFinderService.buttonStart) {
+                    button.setText("Запустить");
+                } else {
+                    button.setText("Остановить");
+                    FaceFinderService instance = FaceFinderService.getInstance();
+                    Intent intent = new Intent(context, FaceFinderService.class);
+                    NotificationReceiver receiver = new NotificationReceiver(new Handler());
+                    receiver.setListener(d);
+                    startService(intent);
+                }
+            }
+        });
+        ImageView im2 = (ImageView) findViewById(R.id.add_face2);
+        im2.setImageResource(R.drawable.add_face);
+        im2.setOnDragListener(new DragOverListMen(this));
+        im2.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                d.setCurrentMan(null);
+            }
+        });
+        
+        ImageView im = (ImageView) findViewById(R.id.first_face);
+        im.setImageResource(R.drawable.full_trash);
+        im.setOnDragListener(new DragOnTrashListener(this));
+        
     }
 
     private static String getBucketId(String path) {
@@ -140,8 +218,8 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         String message = resultData.getString("message");
         String progressStr = resultData.getString("progress");
         if (photo != null) {
-            adapter.addAll(dbHelper.getIdsFacesForPhoto(photo));
-            adapter.notifyDataSetChanged();
+            adapterFaces.addAll(dbHelper.getIdsFacesForPhoto(photo));
+            adapterFaces.notifyDataSetChanged();
         }
         if (message != null) {
             int progress = 0;
@@ -155,7 +233,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
             bar.setVisibility(View.VISIBLE);
             bar.setProgress(progress);
         }
-        adapter.notifyDataSetChanged();
+        adapterFaces.notifyDataSetChanged();
     }
 
     @Override
@@ -175,21 +253,29 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
             delete();
             return true;
         case R.id.reset_filter:
-            adapter.checked.clear();
-            adapter.notifyDataSetChanged();
+            adapterFaces.checked.clear();
+            adapterFaces.notifyDataSetChanged();
             return true;
-//        case R.id.reset:
-//            adapter.clear();
-//            dbHelper.recreate();
-//            adapter.notifyDataSetChanged();
-//            return true;
+        case R.id.reset:
+            adapterFaces.clear();
+            dbHelper.recreate();
+            adapterFaces.notifyDataSetChanged();
+            return true;
         case R.id.help:
             Intent intent = new Intent(this, HelpActivity.class);
             startActivity(intent);
             return true;
+        case R.id.reset_people:
+            resetPeople();
+            return true;
         default:
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void resetPeople() {
+        dbHelper.facesToNullPeople();
+        
     }
 
     /**
@@ -199,7 +285,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         Integer toPersonId = null;
         boolean changed = false;
         String newName = null;
-        for (Integer i : adapter.checked) {
+        for (Integer i : adapterFaces.checked) {
             if (toPersonId == null) {
                 toPersonId = i;
                 newName = dbHelper.getPersonName(i);
@@ -208,15 +294,15 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
                     newName = dbHelper.getPersonName(i);
                 }
                 dbHelper.updatePersonsFacesToNew(toPersonId, i);
-                adapter.remove(i);
+                adapterFaces.remove(i);
                 changed = true;
             }
         }
         dbHelper.updatePersonName(toPersonId, newName);
         releaseFirstFace();
-        adapter.checked.clear();
+        adapterFaces.checked.clear();
         if (changed) {
-            adapter.notifyDataSetChanged();
+            adapterFaces.notifyDataSetChanged();
         }
     }
 
@@ -226,38 +312,66 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
     private void delete() {
         Integer toPersonId = dbHelper.getOrCreatePerson(NO_FACES);
         boolean changed = false;
-        if (!adapter.personsId.contains(toPersonId)) {
-            adapter.add(toPersonId);
+        if (!adapterFaces.faces.contains(toPersonId)) {
+            adapterFaces.add(toPersonId);
             changed = true;
         }
-        for (Integer i : adapter.checked) {
+        for (Integer i : adapterFaces.checked) {
             Integer old = i;
             if (old != toPersonId) {
                 dbHelper.updatePersonsFacesToNew(toPersonId, old);
-                adapter.remove(old);
+                adapterFaces.remove(old);
                 changed = true;
             }
         }
         releaseFirstFace();
-        adapter.checked.clear();
+        adapterFaces.checked.clear();
         if (changed) {
-            adapter.notifyDataSetChanged();
+            adapterFaces.notifyDataSetChanged();
         }
     }
 
     public void setFistFace(Integer integer) {
-        List<Integer> faceIds = dbHelper.getAllIdsFacesForPerson(integer);
-        Face face = dbHelper.getFaceForId(faceIds.get(0));
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Bitmap bm = DataHolder.getInstance().getLittleFace(db, face.guid, this);
-        db.close();
-        ImageView im = (ImageView) findViewById(R.id.first_face);
-        im.setImageBitmap(bm);
+//        List<Integer> faceIds = dbHelper.getAllIdsFacesForPerson(integer);
+//        Face face = dbHelper.getFaceForId(faceIds.get(0));
+//        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//        Bitmap bm = DataHolder.getInstance().getLittleFace(db, face.guid, this);
+//        db.close();
+//        ImageView im = (ImageView) findViewById(R.id.first_face);
+//        im.setImageResource(R.drawable.full_trash);
+        //im.setImageBitmap(bm);
+//        im.setOnDragListener(new OnDragListener() {
+//            
+//            @Override
+//            public boolean onDrag(View v, DragEvent event) {
+//                Log.i("MainActivity", "onDrag222");
+//
+//                return true;
+//            }
+//        });
         
     }
     public void releaseFirstFace() {
         ImageView im = (ImageView) findViewById(R.id.first_face);
         im.setImageBitmap(null);
         
+    }
+
+    public void setFacesOfManList(int personId) {
+        Log.i("MainActivity", "setFacesOfManList " + personId);
+        List<Integer> faceIds = dbHelper.getAllIdsFacesForPerson(personId);
+        ListView facesOfMan = (ListView) findViewById(R.id.listOfMan);
+        FacesOfManList facesOfManList = new FacesOfManList(this, faceIds);
+        facesOfMan.setAdapter(facesOfManList);
+        facesOfManList.notifyDataSetChanged();
+    }
+
+    public void setCurrentMan(Integer manId) {
+        currentMan = manId;
+        adapterFaces.clear();
+        //adapterFaces = new FacesList2(this, dbHelper.getAllIdsFacesForPerson(null));
+        adapterFaces.addAll(dbHelper.getAllIdsFacesForPerson(currentMan));
+        Log.i("MainActivity", "size persons " + adapterFaces.faces.size());
+        adapterFaces.notifyDataSetChanged();
     }
 }

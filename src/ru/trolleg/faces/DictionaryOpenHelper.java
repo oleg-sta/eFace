@@ -161,6 +161,12 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         s.execSQL("update faces set person_id = '" + personId + "' where guid = '" + faceId + "'");
         s.close();
     }
+    
+    public void addFaceToPerson(Integer faceId, String personId) {
+        SQLiteDatabase s = getWritableDatabase();
+        s.execSQL("update faces set person_id = '" + personId + "' where id = '" + faceId + "'");
+        s.close();
+    }
 
     public InfoPhoto getInfoPhotoFull(String path) {
         Log.v("DictionaryOpenHelper", path);
@@ -266,7 +272,11 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public List<Integer> getAllIdsFacesForPerson(Integer personId) {
     	List<Integer> faces = new ArrayList<Integer>();
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select f.id from faces f inner join person p on p.person_id = f.person_id where p.id = " + personId, null);
+        String sql = "select f.id from faces f inner join person p on p.person_id = f.person_id where p.id = " + personId;
+        if (personId == null) {
+            sql = "select f.id from faces f where f.person_id is null";
+        }
+        Cursor c = s.rawQuery(sql, null);
         while (c.moveToNext()) {
             faces.add(c.getInt(0));
         }
@@ -288,6 +298,18 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         Cursor c = s.rawQuery("select person_id from person where id = " + id, null);
         while (c.moveToNext()) {
             res = c.getString(0);
+        }
+        c.close();
+        s.close();
+        return res;
+    }
+    
+    public Integer getPersonIdByGuid(String id) {
+        Integer res = null;
+        SQLiteDatabase s = getReadableDatabase();
+        Cursor c = s.rawQuery("select id from person where person_id = '" + id + "'", null);
+        while (c.moveToNext()) {
+            res = c.getInt(0);
         }
         c.close();
         s.close();
@@ -392,4 +414,17 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
 //		s.execSQL("update faces set person_id = '" + personGuid + "' where person_id is null or person_id not in (select person_id from person)");
 //		s.close();
 	}
+
+    public void removePerson(Integer oldPersonId) {
+        SQLiteDatabase s = getWritableDatabase();
+        s.execSQL("delete from person where id = " + oldPersonId);
+        s.close();
+    }
+
+    public void facesToNullPeople() {
+        SQLiteDatabase s = getWritableDatabase();
+        s.execSQL("update faces set person_id = null");
+        s.execSQL("delete from person");
+        s.close();
+    }
 }

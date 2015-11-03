@@ -30,6 +30,7 @@ import detection.Rectangle;
  */
 public class FaceFinderService extends IntentService {
 
+    public static boolean buttonStart = true; 
 
     static FaceFinderService instance;
     public final static int PHOTOS_LIMIT = 3000; // максимальное количество фотографий для обработки
@@ -75,7 +76,8 @@ public class FaceFinderService extends IntentService {
                 Log.d("FaceFinderService", "onHandleIntent useCpp " + useCpp);
                 threadsNum = intent.getIntExtra("threads", threadsNum);
             } else {
-                
+                // был перезапуск, поэтому ставим в true
+                buttonStart = true;
             }
             
             Log.d("FaceFinderService", "onHandleIntent threads " + threadsNum);
@@ -88,6 +90,7 @@ public class FaceFinderService extends IntentService {
             // find faces on photos
             photos = dbHelper.getAllPhotosToBeProcessed();
             if (photos.size() == 0) {
+                Log.d("FaceFinderService", "zero photos ");
             	return;
             }
             b = new Bundle();
@@ -96,7 +99,10 @@ public class FaceFinderService extends IntentService {
             if (rec != null) {
                 rec.send(0, b);
             }
-            
+            if (!buttonStart) {
+                Log.d("FaceFinderService", "button stop ");
+                return;
+            }
             Log.d("FaceFinderService", "loading casade...");
             Logger1.log("loading casade...");
             InputStream inputHaas = getResources().openRawResource(R.raw.haarcascade_frontalface_default);
@@ -107,7 +113,9 @@ public class FaceFinderService extends IntentService {
             int iPh = 0;
             for (String photo : photos) {
                 try {
-
+                    if (!buttonStart) {
+                        return;
+                    }
                     b = new Bundle();
                     b.putString("progress", ((iPh * 100) / photos.size()) + "");
                     b.putString("message", iPh + " из " + photos.size() + " обработано");
@@ -154,9 +162,9 @@ public class FaceFinderService extends IntentService {
                         faceCur.centerX = 100 * (face.x + face.width / 2) / (double) background_image.getWidth();
                         faceCur.guid = UUID.randomUUID().toString();
                         dbHelper.addFace(faceCur, imgId);
-                        String personGuid = UUID.randomUUID().toString();
-                        dbHelper.addPerson(personGuid);
-                        dbHelper.addFaceToPerson(faceCur.guid, personGuid);
+                        //String personGuid = UUID.randomUUID().toString();
+                        //dbHelper.addPerson(personGuid);
+                        //dbHelper.addFaceToPerson(faceCur.guid, personGuid);
                         // сохраняем фотографию
                         SQLiteDatabase db = dbHelper.getReadableDatabase();
                         // кэшируем фото лица
@@ -262,6 +270,8 @@ public class FaceFinderService extends IntentService {
 
     @Override
     public void onDestroy() {
+        // TODO сообщить в MainActivity об остановке
+        DataHolder.getInstance().processPhotos = false;
         Log.i("FaceFinderService", "onDestroy22");
         Logger1.log("onDestroy22");
         instance = null;
