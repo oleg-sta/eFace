@@ -6,6 +6,9 @@ import java.util.UUID;
 
 import ru.trolleg.faces.data.Face;
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,6 +20,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.ResultReceiver;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import detection.Detector;
 import detection.Rectangle;
@@ -30,6 +34,7 @@ import detection.Rectangle;
  */
 public class FaceFinderService extends IntentService {
 
+    private static final int notif_id=1;
     public static boolean buttonStart = true; 
 
     static FaceFinderService instance;
@@ -49,6 +54,15 @@ public class FaceFinderService extends IntentService {
         // TODO Auto-generated constructor stub
     }
     
+    private Notification getMyActivityNotification(String text) {
+        // The PendingIntent to launch our activity if the user selects
+        // this notification
+        CharSequence title = getText(R.string.app_name);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
+
+        return new Notification.Builder(this).setContentTitle(title).setContentText(text)
+                .setSmallIcon(R.drawable.stat_notify_chat).setContentIntent(contentIntent).getNotification();
+    }
     
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -57,6 +71,22 @@ public class FaceFinderService extends IntentService {
         //Bundle bundle = null;
         //ResultReceiver rec = null;
         try {
+            Notification note = new Notification(R.drawable.stat_notify_chat, "Обработка фотографий запущена",
+                    System.currentTimeMillis());
+            Intent i2 = new Intent(this, MainActivity.class);
+            i2.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent pi = PendingIntent.getActivity(this, 0, i2, 0);
+            note.setLatestEventInfo(this, "Обработка фотографий", "Подождите...", pi);
+            note.flags |= Notification.FLAG_NO_CLEAR;
+            startForeground(notif_id, note);
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+            
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
+            NotificationManager mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mBuilder.setContentTitle(getText(R.string.app_name)).setContentText("Обработка начата").setSmallIcon(R.drawable.stat_notify_chat);
+            mBuilder.setContentIntent(contentIntent);
+            
+            
             // нельзя допускать повторного запуска1
             DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
             
@@ -116,6 +146,16 @@ public class FaceFinderService extends IntentService {
                     if (!buttonStart) {
                         return;
                     }
+//                    Notification notification = getMyActivityNotification(iPh + " из " + photos.size() + " обработано");
+//                    NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//                    mNotificationManager.notify(notif_id, notification);
+                    mBuilder.setContentText(iPh + " из " + photos.size() + " обработано");
+                    mBuilder.setProgress(photos.size(), iPh, false);
+                    Notification not = mBuilder.build();
+                    //not.flags = not.flags | Notification.FLAG_INSISTENT;
+                    not.flags = not.flags | Notification.FLAG_ONGOING_EVENT;
+                    mNotifyManager.notify(notif_id, not);
+                    
                     b = new Bundle();
                     b.putString("progress", ((iPh * 100) / photos.size()) + "");
                     b.putString("message", iPh + " из " + photos.size() + " обработано");
