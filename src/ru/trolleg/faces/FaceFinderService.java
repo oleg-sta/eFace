@@ -19,6 +19,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.os.ResultReceiver;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -70,7 +72,12 @@ public class FaceFinderService extends IntentService {
         Log.d("FaceFinderService", "onHandleIntent " + intent);
         //Bundle bundle = null;
         //ResultReceiver rec = null;
+        WakeLock wakeLock = null;
         try {
+            PowerManager mgr = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
+            wakeLock.acquire();
+            
             Notification note = new Notification(R.drawable.stat_notify_chat, "Обработка фотографий запущена",
                     System.currentTimeMillis());
             Intent i2 = new Intent(this, MainActivity.class);
@@ -144,7 +151,7 @@ public class FaceFinderService extends IntentService {
             for (String photo : photos) {
                 try {
                     if (!buttonStart) {
-                        return;
+                        break;
                     }
 //                    Notification notification = getMyActivityNotification(iPh + " из " + photos.size() + " обработано");
 //                    NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -232,6 +239,9 @@ public class FaceFinderService extends IntentService {
             Log.d("FaceFinderService", "error" + e.getMessage());
             e.printStackTrace();
         } finally {
+            if (wakeLock != null) {
+                wakeLock.release();
+            }
             DataHolder.getInstance().processPhotos = false;
 
             Bundle b = new Bundle();

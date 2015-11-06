@@ -130,8 +130,7 @@ VectorRects* Detector::getResult(int thrN) {
 		//int end = ((int)((thrN + 1) * (width - sizeI) / threadsNum / step)) * step;
 		int start = step * thrN;
 
-		__android_log_print(ANDROID_LOG_INFO, "Detector", "gettFaces2 %d %f %d %d %d", thrN,
-						scale, step, sizeI, start);
+		//__android_log_print(ANDROID_LOG_INFO, "Detector", "gettFaces2 %d %f %d %d %d", thrN, scale, step, sizeI, start);
 		/*For each position of the window on the image, check whether the object is detected there.*/
 		for (int i = start; i < width - sizeI; i += (step * threadsNum)) {
 			//__android_log_print(ANDROID_LOG_INFO, "Detector", "gettFaces2 i=%d", i);
