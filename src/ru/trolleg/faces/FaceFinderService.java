@@ -103,22 +103,18 @@ public class FaceFinderService extends IntentService {
                 return;
             }
             dataHolder.processPhotos = true;
-            boolean useCpp = true;
             Runtime info = Runtime.getRuntime();
             int threadsNum = info.availableProcessors();
             if (intent != null) {
                 //bundle = intent.getExtras();
                 rec = (ResultReceiver) intent.getParcelableExtra("receiver");
-                useCpp = intent.getBooleanExtra("useCpp", true);
-                Log.d("FaceFinderService", "onHandleIntent useCpp " + useCpp);
-                threadsNum = intent.getIntExtra("threads", threadsNum);
             } else {
                 // был перезапуск, поэтому ставим в true
                 buttonStart = true;
             }
             
             Log.d("FaceFinderService", "onHandleIntent threads " + threadsNum);
-            Logger1.log("onHandleIntent threads " + threadsNum + " useCpp " + useCpp);
+            Logger1.log("onHandleIntent threads " + threadsNum);
             List<String> photos = MainActivity.getCameraImages(getApplicationContext());
             // положить фотки в БД
             int newFaces = dbHelper.addNewPhotos(photos);
@@ -183,7 +179,7 @@ public class FaceFinderService extends IntentService {
                     Log.i("FaceFinderService",
                             "size " + background_image.getWidth() + " " + background_image.getHeight());
                     long time = System.currentTimeMillis();
-                    List<Rectangle> res = detector.getFaces(background_image, 1.2f, 1.1f, .05f, 2, true, useCpp,
+                    List<Rectangle> res = detector.getFaces(background_image, 1.2f, 1.1f, .05f, 2, true, true,
                             threadsNum);
                     time = (System.currentTimeMillis() - time) / 1000;
                     Logger1.log("find in " + time);
@@ -233,6 +229,12 @@ public class FaceFinderService extends IntentService {
                     dbHelper.updatePhoto(photo, UUID.randomUUID().toString(), -1);
                 }
             }
+            mBuilder.setContentText("Обработка завершена");
+            mBuilder.setProgress(iPh, iPh, false);
+            Notification not = mBuilder.build();
+            not.defaults |= Notification.DEFAULT_SOUND;
+            mNotifyManager.notify(notif_id, not);
+            
             dataHolder.processPhotos = false;
         } catch (Exception e) {
             // TODO Auto-generated catch block

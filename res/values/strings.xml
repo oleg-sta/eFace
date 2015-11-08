@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Галерея лиц</string>
     <string name="act_people_name">Галерея лиц</string>
+    <string name="menu_menu">Меню</string>
+    <string name="menu_help">Справка</string>
+    <string name="menu_recogntion">Распознавание</string>
+    <string name="menu_people">Люди</string>
     <string name="act_faces_name">Лица</string>
     <string name="act_common_photo_name">Общее фото</string>
     <string name="help">Справка</string>

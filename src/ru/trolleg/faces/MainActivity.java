@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLayoutChangeListener;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -54,33 +53,17 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
     protected void onResume() {
         super.onResume();
         Log.i("MainActivity", "onResume");
-        
         final Context context = this;
         final MainActivity d = this;
         adapterFaces.clear();
-        //adapterFaces = new FacesList2(this, dbHelper.getAllIdsFacesForPerson(null));
         adapterFaces.addAll(dbHelper.getAllIdsFacesForPerson(currentMan));
         Log.i("MainActivity", "size persons " + adapterFaces.faces.size());
         adapterFaces.notifyDataSetChanged();
         // запускаем поиск лиц
-        boolean useCpp = true;
-        int cores = 4;
-        int coresTh = Runtime.getRuntime().availableProcessors();
-        cores = coresTh;
-        Log.i("MainActivity", "num cores " + coresTh);
         
         // TODO возможно неверный способ запуска единственной сущности IntentService
         FaceFinderService instance = FaceFinderService.getInstance();
-        if (instance == null) {
-            Intent intent = new Intent(context, FaceFinderService.class);
-            NotificationReceiver receiver = new NotificationReceiver(new Handler());
-            receiver.setListener(d);
-            intent.putExtra("receiver", receiver);
-            intent.putExtra("useCpp", useCpp);
-            Log.i("MainActivity", "num thre " + cores);
-            intent.putExtra("threads", cores);
-            startService(intent);
-        } else {
+        if (instance != null) {
             NotificationReceiver receiver = new NotificationReceiver(new Handler());
             receiver.setListener(d);
             instance.setReceiver(receiver);
@@ -88,15 +71,22 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
                 onReceiveResult(0, instance.b);
             }
         }
-        // поиск новых фотографий
-
     }
 
+    private static int px2Dp(int px, Context ctx)
+    {
+        return (int)(px / ctx.getResources().getDisplayMetrics().density);
+    }
+ 
+    private static int dp2Px(int dp, Context ctx)
+    {
+        return (int)(dp * ctx.getResources().getDisplayMetrics().density);
+    }
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.v("MainActivity", "onCreate");
         dbHelper = new DictionaryOpenHelper(this);
-        dbHelper.repairBugs();
         // SQLiteDatabase db = dbHelper.getReadableDatabase();
         // dbHelper.onUpgrade(db, 1, 1); // временно
 
@@ -129,19 +119,18 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight,
                     int oldBottom) {
+                //TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, la1.getMeasuredWidth(), metrics)
                 Log.i("MainActivity", "size2 " + la1.getMeasuredWidth());
-                int num = la1.getMeasuredWidth() / FacesList.FACES_SIZE - 1;
-                listView.getLayoutParams().width = num * FacesList.FACES_SIZE;
+                int num = px2Dp(la1.getMeasuredWidth(), d) / (80 + 2 * 2)- 1;
+                listView.getLayoutParams().width = num * dp2Px(80 + 2 * 2, d);
+//                listView.setHorizontalSpacing(FacesList.FACES_PADDING_MAIN);
+//                listView.setVerticalSpacing(FacesList.FACES_PADDING_MAIN);
                 listView.setNumColumns(num);
-                vi1.getLayoutParams().width = la1.getMeasuredWidth() % FacesList.FACES_SIZE; 
-                
-                //((LinearLayout)listView.getParent()).set
+                // TODO неправильно вычисл€етс€ размер, не учитываютс€ spacing
+                vi1.getLayoutParams().width = la1.getMeasuredWidth() - dp2Px((80 +2*2)*num + 80, d); 
                 
             }
         });
-        //listView.setStretchMode(GridView.NO_STRETCH);
-        //listView.getLayoutParams().width = num * FacesList.FACES_SIZE;
-        //listView.setNumColumns(num);
         
         adapterMans = new MenList(this, dbHelper.getAllIdsPerson());
         final ListView listView2 = (ListView) findViewById(R.id.listOfMan);
@@ -151,17 +140,17 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         
         //LinearLayout t = (LinearLayout)findViewById(R.id.listOfManLayout);
         //t.setOnDragListener(new DragOverListMen(this));
-        final Button button = (Button) findViewById(R.id.start_stop);
+        final ImageView button = (ImageView) findViewById(R.id.start_stop);
         button.setOnClickListener(new OnClickListener() {
             
             @Override
             public void onClick(View v) {
                 FaceFinderService.buttonStart = !FaceFinderService.buttonStart;
                 if (!FaceFinderService.buttonStart) {
-                    button.setText("«апустить");
+                    button.setImageResource(R.drawable.start);
                 } else {
-                    button.setText("ќстановить");
-                    FaceFinderService instance = FaceFinderService.getInstance();
+                    button.setImageResource(R.drawable.pause);
+                    //FaceFinderService instance = FaceFinderService.getInstance();
                     Intent intent = new Intent(context, FaceFinderService.class);
                     NotificationReceiver receiver = new NotificationReceiver(new Handler());
                     receiver.setListener(d);
@@ -246,24 +235,18 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.merge:
-            combine();
+        case R.id.help:
+            Intent intent = new Intent(this, HelpActivity.class);
+            startActivity(intent);
             return true;
-        case R.id.delete:
-            delete();
-            return true;
-        case R.id.reset_filter:
-            adapterFaces.checked.clear();
-            adapterFaces.notifyDataSetChanged();
+        case R.id.people:
+            intent = new Intent(this, PeopleActivity.class);
+            startActivity(intent);
             return true;
         case R.id.reset:
             adapterFaces.clear();
             dbHelper.recreate();
             adapterFaces.notifyDataSetChanged();
-            return true;
-        case R.id.help:
-            Intent intent = new Intent(this, HelpActivity.class);
-            startActivity(intent);
             return true;
         case R.id.reset_people:
             resetPeople();

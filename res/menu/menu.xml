@@ -2,21 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
         android:id="@+id/file"
-        android:title="Меню"
+        android:title="@string/menu_menu"
         android:showAsAction="ifRoom">
         <menu>
             <item
-                android:id="@+id/merge"
-                android:title="Объединить лица"/>
+                android:id="@+id/recognition"
+                android:title="@string/menu_recogntion"/>
             <item
-                android:id="@+id/delete"
-                android:title="Не лица"/>
-            <item
-                android:id="@+id/reset_filter"
-                android:title="Сбросить фильтр"/>
+                android:id="@+id/people"
+                android:title="@string/menu_people"/>
             <item
                 android:id="@+id/help"
-                android:title="Справка"/>
+                android:title="@string/menu_help"/>
             <item
                 android:id="@+id/reset"
                 android:title="Сбросить(для разработки)"/>

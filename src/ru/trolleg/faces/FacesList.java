@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 public class FacesList extends ArrayAdapter<Integer> {
 
     public static final int FACES_SIZE = 150;
+    public static final int FACES_PADDING_MAIN = 2;
 
     private final Activity context;
     private final int personId;

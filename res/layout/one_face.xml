@@ -5,7 +5,7 @@
 
     <ImageView
         android:id="@+id/one_face1"
-        android:layout_width="150px"
-        android:layout_height="150px" />
+        android:layout_width="80dp"
+        android:layout_height="80dp" />
 
 </LinearLayout>
