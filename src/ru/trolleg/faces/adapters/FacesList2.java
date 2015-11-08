@@ -1,9 +1,17 @@
-package ru.trolleg.faces;
+package ru.trolleg.faces.adapters;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import ru.trolleg.faces.DataHolder;
+import ru.trolleg.faces.DictionaryOpenHelper;
+import ru.trolleg.faces.R;
+import ru.trolleg.faces.R.id;
+import ru.trolleg.faces.R.layout;
+import ru.trolleg.faces.activities.DisplayCommonPhoto;
+import ru.trolleg.faces.activities.DisplayPersonPhotos;
+import ru.trolleg.faces.activities.MainActivity;
 import ru.trolleg.faces.data.Face;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -31,7 +39,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
- * Адаптер для просмотра сгруппированых лиц, т.е. людей.
+ * пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ, пїЅ.пїЅ. пїЅпїЅпїЅпїЅпїЅ.
  * 
  * @author sov
  * 
@@ -39,7 +47,7 @@ import android.widget.TextView;
 public class FacesList2 extends ArrayAdapter<Integer> {
 
     private final MainActivity context;
-    public final List<Integer> faces; // идентификаторы персон
+    public final List<Integer> faces; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     public final Set<Integer> checked = new HashSet<Integer>();
 
     public FacesList2(MainActivity context, List<Integer> faces) {
@@ -81,17 +89,17 @@ public class FacesList2 extends ArrayAdapter<Integer> {
                 return true;
             }
         });
-        view.setOnClickListener(new OnClickListener() {
-            
-            @Override
-            public void onClick(View v) {
-                Intent personIntent = new Intent(context, DisplayCommonPhoto.class);
-                personIntent.putExtra(DisplayPersonPhotos.FACE_ID, faceId);
-                // ((DisplayPersonPhotos)context).startActivity(personIntent);
-                context.startActivity(personIntent);
-                
-            }
-        });
+//        view.setOnClickListener(new OnClickListener() {
+//            
+//            @Override
+//            public void onClick(View v) {
+//                Intent personIntent = new Intent(context, DisplayCommonPhoto.class);
+//                personIntent.putExtra(DisplayPersonPhotos.FACE_ID, faceId);
+//                // ((DisplayPersonPhotos)context).startActivity(personIntent);
+//                context.startActivity(personIntent);
+//                
+//            }
+//        });
         return convertView;
     }
 

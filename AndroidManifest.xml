@@ -17,7 +17,7 @@
         android:label="@string/app_name" android:theme="@android:style/Theme.WithActionBar">
         <!-- android:label="@string/app_name" android:theme="@android:style/Theme.DeviceDefault.Light"-->
         <activity
-            android:name=".MainActivity"
+            android:name="ru.trolleg.faces.activities.MainActivity"
             android:label="@string/act_people_name"
             android:launchMode="singleTask">
             <intent-filter>
@@ -27,24 +27,27 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PeopleActivity"
+            android:name="ru.trolleg.faces.activities.PeopleActivity"
             android:label="@string/act_people_name"
             android:launchMode="singleTask">
         </activity>
         <activity
             android:label="@string/act_faces_name" 
-            android:name=".DisplayPersonPhotos">
+            android:name="ru.trolleg.faces.activities.DisplayPersonPhotos">
         </activity>
         <activity
             android:label="@string/act_common_photo_name"
-            android:name=".DisplayCommonPhoto">
+            android:name="ru.trolleg.faces.activities.DisplayCommonPhoto">
         </activity>
         <activity
             android:label="@string/help"
-            android:name=".HelpActivity">
+            android:name="ru.trolleg.faces.activities.HelpActivity">
         </activity>
         <service android:name=".FaceFinderService" />
-                
-    </application>
+        <activity
+            android:label="@string/act_people_name"
+            android:name="ru.trolleg.faces.activities.FacesActivity">
+        </activity>
+        </application>
 
 </manifest>

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import ru.trolleg.faces.activities.MainActivity;
 import ru.trolleg.faces.data.Face;
 import ru.trolleg.faces.data.InfoPhoto;
 
@@ -18,7 +19,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 10;
 
-    DictionaryOpenHelper(Context context) {
+    public DictionaryOpenHelper(Context context) {
         super(context, "faces.db", null, DATABASE_VERSION);
     }
 
@@ -45,7 +46,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * получение всех необработанных фотографий
+     * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
      * 
      * @return
      */
@@ -62,7 +63,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * добавить только новые фото
+     * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
      * 
      * @param photos
      */
@@ -86,7 +87,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Добавление одног фото
+     * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
      * 
      * @param photo
      */
@@ -108,7 +109,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         s.close();
     }
     /**
-     * обновление информации по фото
+     * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ
      * 
      * @param photo
      * @param guid
@@ -336,7 +337,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         return res;
     }
     /**
-     * Перенос лица из одной персоны в другую
+     * пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
      * 
      * @param toPersonId
      * @param fromPersonId
@@ -388,7 +389,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
 
 	
 	/**
-	 * Было ли уже обработано фото
+	 * пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
 	 * @param photo
 	 * @return
 	 */
@@ -405,7 +406,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * Вы лица не привязанные к персоне будут привязаны к "Не лица"
+	 * пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ "пїЅпїЅ пїЅпїЅпїЅпїЅ"
 	 */
 	public void repairBugs() {
 //		Integer personId = getOrCreatePerson(MainActivity.NO_FACES);

@@ -1,33 +1,38 @@
-package ru.trolleg.faces;
+package ru.trolleg.faces.adapters;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import ru.trolleg.faces.DataHolder;
+import ru.trolleg.faces.DictionaryOpenHelper;
+import ru.trolleg.faces.R;
+import ru.trolleg.faces.R.id;
+import ru.trolleg.faces.R.layout;
+import ru.trolleg.faces.activities.DisplayCommonPhoto;
+import ru.trolleg.faces.activities.DisplayPersonPhotos;
+import ru.trolleg.faces.activities.FacesActivity;
+import ru.trolleg.faces.activities.PeopleActivity;
 import ru.trolleg.faces.data.Face;
-
-import android.content.ClipData;
-import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.View.DragShadowBuilder;
-import android.view.View.OnLongClickListener;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MenList extends ArrayAdapter<Integer> {
-
-    private final MainActivity context;
-    public final List<Integer> men; // идентификаторы персон
+public class MenListOnPeopleActivity extends ArrayAdapter<Integer>{
+    private final PeopleActivity context;
+    public final List<Integer> men; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     public final Set<Integer> checked = new HashSet<Integer>();
 
-    public MenList(MainActivity context, List<Integer> men) {
-        super(context, R.layout.one_face_and_name, men);
+    public MenListOnPeopleActivity(PeopleActivity context, List<Integer> men) {
+        super(context, R.layout.name_faces, men);
         this.men = men;
         this.context = context;
     }
@@ -35,13 +40,12 @@ public class MenList extends ArrayAdapter<Integer> {
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.one_face_and_name, null, true);
+            convertView = inflater.inflate(R.layout.name_faces, null, true);
         }
-        ImageView view = (ImageView) convertView.findViewById(R.id.one_face1);
-        TextView text = (TextView) convertView.findViewById(R.id.name_face);
+        ImageView view = (ImageView) convertView.findViewById(R.id.face_man);
+        TextView text = (TextView) convertView.findViewById(R.id.name_man);
         final int manId = men.get(position);
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
-        // final int personId = dbHelper.getPersonIdByFaceId(faceId);
         String name = dbHelper.getPersonName(manId);
         text.setText(name);
         List<Integer> faces = dbHelper.getAllIdsFacesForPerson(manId);
@@ -51,26 +55,18 @@ public class MenList extends ArrayAdapter<Integer> {
             Bitmap bm = DataHolder.getInstance().getLittleFace(db, face.guid, getContext());
             db.close();
             view.setImageBitmap(bm);
-            view.setOnDragListener(new DragOverManListener(manId, context));
+            
             view.setOnClickListener(new OnClickListener() {
-                
                 @Override
                 public void onClick(View v) {
-                    context.setCurrentMan(manId);
-                    
+                    Intent personIntent = new Intent(context, FacesActivity.class);
+                    Log.i("MenListOnPeopleActivity", "manId " + manId);
+                    personIntent.putExtra(DisplayPersonPhotos.PERSON_ID, manId);
+                    // ((DisplayPersonPhotos)context).startActivity(personIntent);
+                    context.startActivity(personIntent);
+
                 }
             });
-            // view.setOnLongClickListener(new OnLongClickListener() {
-            //
-            // @Override
-            // public boolean onLongClick(View view) {
-            // ClipData data = ClipData.newPlainText("", "");
-            // DragShadowBuilder shadowBuilder = new
-            // View.DragShadowBuilder(view);
-            // view.startDrag(data, shadowBuilder, faceId, 0);
-            // return true;
-            // }
-            // });
         }
         return convertView;
     }

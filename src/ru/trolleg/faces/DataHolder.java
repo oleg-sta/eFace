@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import ru.trolleg.faces.adapters.FacesList;
 import ru.trolleg.faces.data.Face;
 
 import android.content.Context;
@@ -21,17 +22,17 @@ import android.util.Log;
 public class DataHolder {
 
 	public static int SIZE_PHOTO_TO_FIND_FACES = 500;
-    // кэш фотографий лиц
+    // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
     private static LruCache<String, Bitmap> mMemoryCache;
 
     public boolean processPhotos = false;
-    // TODO убрать infos
+    // TODO пїЅпїЅпїЅпїЅпїЅпїЅ infos
     // public Map<String, InfoPhoto> infos = new HashMap<String, InfoPhoto>();
 
     private static final DataHolder holder = new DataHolder();
 
     public static DataHolder getInstance() {
-        // TODO использовать кэш или файлами хранить
+        // TODO пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (mMemoryCache == null) {
             final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
 
@@ -75,10 +76,10 @@ public class DataHolder {
         return res;
     }
     
-    // TODO методы работы с кэшированными фотографиями
+    // TODO пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     public Bitmap getLittleFace(SQLiteDatabase db, String faceId, Context context) {
         // TODO save to disc
-        // TODO сохранения на диск делать не во время показа, делать во время поиска
+        // TODO пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         Bitmap bm = mMemoryCache.get(faceId);
         if (bm == null) {
             Face faceCur = getFace(db, faceId);
@@ -95,7 +96,7 @@ public class DataHolder {
                 }
             } else {
                 final BitmapFactory.Options options = new BitmapFactory.Options();
-                // уменьшаем полную фотографию
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 Bitmap background_image = FaceFinderService.decodeSampledBitmapFromResource(path, SIZE_PHOTO_TO_FIND_FACES, SIZE_PHOTO_TO_FIND_FACES, options);
                 Bitmap bmTmp = Bitmap.createBitmap(background_image, (int) (background_image.getWidth()
                         * (faceCur.centerX - faceCur.width / 2) / 100), (int) (background_image.getHeight()
@@ -140,7 +141,7 @@ public class DataHolder {
         return resizedBitmap;
     }
     /**
-     * Получить полную фотографию для отображении в общем списке
+     * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
      * 
      * @param path
      * @return
@@ -155,4 +156,13 @@ public class DataHolder {
         return bm;
     }
     
+    public static int px2Dp(int px, Context ctx)
+    {
+        return (int)(px / ctx.getResources().getDisplayMetrics().density);
+    }
+ 
+    public static int dp2Px(int dp, Context ctx)
+    {
+        return (int)(dp * ctx.getResources().getDisplayMetrics().density);
+    }
 }

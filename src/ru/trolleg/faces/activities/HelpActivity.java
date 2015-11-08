@@ -1,5 +1,9 @@
-package ru.trolleg.faces;
+package ru.trolleg.faces.activities;
 
+import ru.trolleg.faces.R;
+import ru.trolleg.faces.R.id;
+import ru.trolleg.faces.R.layout;
+import ru.trolleg.faces.R.string;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Html;
@@ -7,7 +11,7 @@ import android.text.Spanned;
 import android.widget.TextView;
 
 /**
- * Отображение справки
+ * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
  * @author sov
  *
  */

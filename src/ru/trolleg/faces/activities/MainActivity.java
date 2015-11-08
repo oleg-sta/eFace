@@ -1,7 +1,24 @@
-package ru.trolleg.faces;
+package ru.trolleg.faces.activities;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import ru.trolleg.faces.DataHolder;
+import ru.trolleg.faces.DictionaryOpenHelper;
+import ru.trolleg.faces.DragOnTrashListener;
+import ru.trolleg.faces.DragOverListMen;
+import ru.trolleg.faces.FaceFinderService;
+import ru.trolleg.faces.NotificationReceiver;
+import ru.trolleg.faces.R;
+import ru.trolleg.faces.NotificationReceiver.Listener;
+import ru.trolleg.faces.R.drawable;
+import ru.trolleg.faces.R.id;
+import ru.trolleg.faces.R.layout;
+import ru.trolleg.faces.R.menu;
+import ru.trolleg.faces.adapters.FacesList;
+import ru.trolleg.faces.adapters.FacesList2;
+import ru.trolleg.faces.adapters.FacesOfManList;
+import ru.trolleg.faces.adapters.MenList;
 
 import android.app.Activity;
 import android.content.Context;
@@ -28,15 +45,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 /**
- * Первоначальная страница, здесь в списке показаны лица людей
+ * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
  * @author sov
  *
  */
 public class MainActivity extends Activity implements NotificationReceiver.Listener {
 
     public static int FACES_VERTICAL;
-    public final static String NO_FACES = "Не лица";
-    public final static String INPUT_NAME = "Введите имя";
+    public final static String NO_FACES = "РќРµ Р»РёС†Р°";
+    public final static String INPUT_NAME = "Р’РІРµРґРёС‚Рµ РёРјСЏ";
 
     DictionaryOpenHelper dbHelper;
     public static final String CAMERA_IMAGE_BUCKET_NAME = Environment.getExternalStorageDirectory().toString()
@@ -59,9 +76,9 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         adapterFaces.addAll(dbHelper.getAllIdsFacesForPerson(currentMan));
         Log.i("MainActivity", "size persons " + adapterFaces.faces.size());
         adapterFaces.notifyDataSetChanged();
-        // запускаем поиск лиц
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
         
-        // TODO возможно неверный способ запуска единственной сущности IntentService
+        // TODO пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ IntentService
         FaceFinderService instance = FaceFinderService.getInstance();
         if (instance != null) {
             NotificationReceiver receiver = new NotificationReceiver(new Handler());
@@ -73,22 +90,12 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         }
     }
 
-    private static int px2Dp(int px, Context ctx)
-    {
-        return (int)(px / ctx.getResources().getDisplayMetrics().density);
-    }
- 
-    private static int dp2Px(int dp, Context ctx)
-    {
-        return (int)(dp * ctx.getResources().getDisplayMetrics().density);
-    }
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.v("MainActivity", "onCreate");
         dbHelper = new DictionaryOpenHelper(this);
         // SQLiteDatabase db = dbHelper.getReadableDatabase();
-        // dbHelper.onUpgrade(db, 1, 1); // временно
+        // dbHelper.onUpgrade(db, 1, 1); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -121,13 +128,13 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
                     int oldBottom) {
                 //TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, la1.getMeasuredWidth(), metrics)
                 Log.i("MainActivity", "size2 " + la1.getMeasuredWidth());
-                int num = px2Dp(la1.getMeasuredWidth(), d) / (80 + 2 * 2)- 1;
-                listView.getLayoutParams().width = num * dp2Px(80 + 2 * 2, d);
+                int num = DataHolder.px2Dp(la1.getMeasuredWidth(), d) / (80 + 2)- 1;
+                listView.getLayoutParams().width = num * DataHolder.dp2Px(80 + 2, d);
 //                listView.setHorizontalSpacing(FacesList.FACES_PADDING_MAIN);
 //                listView.setVerticalSpacing(FacesList.FACES_PADDING_MAIN);
                 listView.setNumColumns(num);
-                // TODO неправильно вычисляется размер, не учитываются spacing
-                vi1.getLayoutParams().width = la1.getMeasuredWidth() - dp2Px((80 +2*2)*num + 80, d); 
+                // TODO пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ spacing
+                vi1.getLayoutParams().width = la1.getMeasuredWidth() - DataHolder.dp2Px((80 +2)*num + 80, d); 
                 
             }
         });
@@ -190,7 +197,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
             final int dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             do {
                 final String data = cursor.getString(dataColumn);
-                // ограничение до 40 фоток
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 40 пїЅпїЅпїЅпїЅпїЅ
                 if (i < FaceFinderService.PHOTOS_LIMIT) {
                     result.add(data);
                 }
@@ -262,7 +269,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
     }
 
     /**
-     * Объединение выделенных персон в одну персону
+     * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
      */
     private void combine() {
         Integer toPersonId = null;
@@ -290,7 +297,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
     }
 
     /**
-     * "удаление" лиц, лица добавляются в персону с именем "Не лица"
+     * "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ" пїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ "пїЅпїЅ пїЅпїЅпїЅпїЅ"
      */
     private void delete() {
         Integer toPersonId = dbHelper.getOrCreatePerson(NO_FACES);

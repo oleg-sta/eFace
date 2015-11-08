@@ -1,12 +1,13 @@
 package ru.trolleg.faces;
 
+import ru.trolleg.faces.activities.MainActivity;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnDragListener;
 
 /**
- * Для лиц человека на MainActivity
+ * пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ MainActivity
  * 
  * @author sov
  * 

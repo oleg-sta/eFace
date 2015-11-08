@@ -1,7 +1,13 @@
-package ru.trolleg.faces;
+package ru.trolleg.faces.activities;
 
 import java.util.Arrays;
 import java.util.List;
+
+import ru.trolleg.faces.DictionaryOpenHelper;
+import ru.trolleg.faces.R;
+import ru.trolleg.faces.R.id;
+import ru.trolleg.faces.R.layout;
+import ru.trolleg.faces.adapters.FacesList;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -10,13 +16,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 /**
- * Отображение всех лиц человека.
+ * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
  * @author sov
  *
  */
 public class DisplayPersonPhotos extends Activity {
 
     public static final String FACE_ID = "faceId";
+    public static final String PERSON_ID = "personId";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +45,7 @@ public class DisplayPersonPhotos extends Activity {
         FacesList facesList = new FacesList(this, Arrays.asList(heightTableDummy), personId, faces);
         facesLayout.setAdapter(facesList);
 
+        
     }
 
 }

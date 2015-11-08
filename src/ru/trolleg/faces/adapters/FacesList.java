@@ -1,7 +1,15 @@
-package ru.trolleg.faces;
+package ru.trolleg.faces.adapters;
 
 import java.util.List;
 
+import ru.trolleg.faces.DataHolder;
+import ru.trolleg.faces.DictionaryOpenHelper;
+import ru.trolleg.faces.R;
+import ru.trolleg.faces.R.id;
+import ru.trolleg.faces.R.layout;
+import ru.trolleg.faces.activities.DisplayCommonPhoto;
+import ru.trolleg.faces.activities.DisplayPersonPhotos;
+import ru.trolleg.faces.activities.MainActivity;
 import ru.trolleg.faces.data.Face;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -20,7 +28,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 /**
- * Просмотр лиц одного человека.
+ * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
  * @author sov
  *
  */
@@ -66,12 +74,12 @@ public class FacesList extends ArrayAdapter<Integer> {
 
                 @Override
                 public boolean onLongClick(View v) {
-                    // Нельзя удалить последний элемент
+                    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                     if (faces.size() == 1) {
                         return true;
                     }
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setMessage("Удалить лицо").setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    builder.setMessage("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ").setPositiveButton("пїЅпїЅ", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dbHelper.removeFromPerson(faceId);
                             if (horizs.size() < faces.size() / MainActivity.FACES_VERTICAL) {
@@ -79,7 +87,7 @@ public class FacesList extends ArrayAdapter<Integer> {
                             }
                             notifyDataSetChanged();
                         }
-                    }).setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                    }).setNegativeButton("пїЅпїЅпїЅпїЅпїЅпїЅ", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             // User cancelled the dialog
                         }

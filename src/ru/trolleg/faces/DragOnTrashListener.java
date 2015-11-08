@@ -1,5 +1,6 @@
 package ru.trolleg.faces;
 
+import ru.trolleg.faces.activities.MainActivity;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;

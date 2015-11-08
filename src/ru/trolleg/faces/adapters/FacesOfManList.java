@@ -1,8 +1,13 @@
-package ru.trolleg.faces;
+package ru.trolleg.faces.adapters;
 
 import java.util.List;
 
-import ru.trolleg.faces.FacesList2.ViewHolder;
+import ru.trolleg.faces.DataHolder;
+import ru.trolleg.faces.DictionaryOpenHelper;
+import ru.trolleg.faces.R;
+import ru.trolleg.faces.R.id;
+import ru.trolleg.faces.R.layout;
+import ru.trolleg.faces.activities.MainActivity;
 import ru.trolleg.faces.data.Face;
 
 import android.content.ClipData;

@@ -1,5 +1,10 @@
-package ru.trolleg.faces;
+package ru.trolleg.faces.activities;
 
+import ru.trolleg.faces.DictionaryOpenHelper;
+import ru.trolleg.faces.FaceFinderService;
+import ru.trolleg.faces.R;
+import ru.trolleg.faces.R.id;
+import ru.trolleg.faces.R.layout;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,7 +13,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 /**
- * Отображение общей фотографии
+ * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
  * @author sov
  *
  */
@@ -19,7 +24,7 @@ public class DisplayCommonPhoto extends Activity {
         super.onCreate(savedInstanceState);
         Log.i("DisplayCommonPhoto", "onCreate");
         setContentView(R.layout.show_common_photo);
-        Integer faceId = getIntent().getIntExtra("faceId", 0);
+        Integer faceId = getIntent().getIntExtra(DisplayPersonPhotos.FACE_ID, 0);
         DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
         String photoPath = dbHelper.getPhotoPathByFaceId(faceId);
         final BitmapFactory.Options options = new BitmapFactory.Options();

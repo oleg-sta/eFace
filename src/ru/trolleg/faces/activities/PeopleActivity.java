@@ -1,5 +1,11 @@
-package ru.trolleg.faces;
+package ru.trolleg.faces.activities;
 
+import ru.trolleg.faces.DictionaryOpenHelper;
+import ru.trolleg.faces.R;
+import ru.trolleg.faces.R.id;
+import ru.trolleg.faces.R.layout;
+import ru.trolleg.faces.R.menu;
+import ru.trolleg.faces.adapters.MenListOnPeopleActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

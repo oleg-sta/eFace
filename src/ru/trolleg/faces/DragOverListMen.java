@@ -2,6 +2,8 @@ package ru.trolleg.faces;
 
 import java.util.UUID;
 
+import ru.trolleg.faces.activities.MainActivity;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.util.Log;
@@ -36,20 +38,20 @@ public class DragOverListMen implements OnDragListener{
             act.adapterMans.add(personId);
             act.adapterMans.notifyDataSetChanged();
             
-            final String[] name = {"Имя"};
+            final String[] name = {"РРјСЏ"};
             
             final EditText input = new EditText(act);
             input.setText("");
             AlertDialog.Builder builder = new AlertDialog.Builder(act);
-            builder.setMessage("Введите имя");
-            builder.setView(input).setPositiveButton("Да", new DialogInterface.OnClickListener() {
+            builder.setMessage("Р’РІРµРґРёС‚Рµ РёРјСЏ");
+            builder.setView(input).setPositiveButton("Р”Р°", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     name[0] =  input.getText().toString();
                     Log.i("DragOverListMen", "Yes " + name[0]);
                     dbHelper.updatePersonName(personId, name[0]);
                     act.adapterMans.notifyDataSetChanged();
                 }
-            }).setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+            }).setNegativeButton("РќРµС‚", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     Log.i("DragOverListMen", "No");
                 }
