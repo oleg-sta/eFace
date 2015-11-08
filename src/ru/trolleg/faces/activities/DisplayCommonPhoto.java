@@ -12,7 +12,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 /**
- * ����������� ����� ����������
+ * Просмотр общего фото
  * @author sov
  *
  */

@@ -2,10 +2,7 @@ package ru.trolleg.faces.activities;
 
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
-import ru.trolleg.faces.R.id;
-import ru.trolleg.faces.R.layout;
-import ru.trolleg.faces.R.menu;
-import ru.trolleg.faces.adapters.MenListOnPeopleActivity;
+import ru.trolleg.faces.adapters.FirstFacesOnPersonActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +11,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+/**
+ * Просмотр людей, с первыми фотографиями.
+ * 
+ * @author sov
+ *
+ */
 public class PeopleActivity extends Activity {
 
     @Override
@@ -23,7 +26,7 @@ public class PeopleActivity extends Activity {
         
         DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
         
-        MenListOnPeopleActivity adapterMans = new MenListOnPeopleActivity(this, dbHelper.getAllIdsPerson());
+        FirstFacesOnPersonActivity adapterMans = new FirstFacesOnPersonActivity(this, dbHelper.getAllIdsPerson());
         final ListView listView2 = (ListView) findViewById(R.id.list_man);
         listView2.setAdapter(adapterMans);
         

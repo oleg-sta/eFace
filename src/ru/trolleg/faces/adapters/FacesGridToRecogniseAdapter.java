@@ -5,34 +5,26 @@ import java.util.List;
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
-import ru.trolleg.faces.R.id;
-import ru.trolleg.faces.R.layout;
 import ru.trolleg.faces.activities.MainActivity;
 import ru.trolleg.faces.data.Face;
-
 import android.content.ClipData;
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
-import android.view.View.OnDragListener;
 import android.view.View.OnLongClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
-public class FacesOfManList extends ArrayAdapter<Integer> {
+public class FacesGridToRecogniseAdapter extends ArrayAdapter<Integer> {
 
     private final MainActivity context;
     public final List<Integer> faces;
 
-    public FacesOfManList(MainActivity context, List<Integer> faces) {
+    public FacesGridToRecogniseAdapter(MainActivity context, List<Integer> faces) {
         super(context, R.layout.one_face, faces);
         this.faces = faces;
         this.context = context;

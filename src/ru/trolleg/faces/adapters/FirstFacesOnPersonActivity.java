@@ -20,14 +20,15 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class MenListOnPeopleActivity extends ArrayAdapter<Integer>{
+public class FirstFacesOnPersonActivity extends ArrayAdapter<Integer>{
     private final PeopleActivity context;
     public final List<Integer> men; // �������������� ������
     public final Set<Integer> checked = new HashSet<Integer>();
 
-    public MenListOnPeopleActivity(PeopleActivity context, List<Integer> men) {
+    public FirstFacesOnPersonActivity(PeopleActivity context, List<Integer> men) {
         super(context, R.layout.name_faces, men);
         this.men = men;
         this.context = context;
@@ -38,31 +39,37 @@ public class MenListOnPeopleActivity extends ArrayAdapter<Integer>{
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.name_faces, null, true);
         }
-        ImageView view = (ImageView) convertView.findViewById(R.id.face_man);
+        //ImageView view = (ImageView) convertView.findViewById(R.id.face_man);
         TextView text = (TextView) convertView.findViewById(R.id.name_man);
         final int manId = men.get(position);
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
         String name = dbHelper.getPersonName(manId);
         text.setText(name);
         List<Integer> faces = dbHelper.getAllIdsFacesForPerson(manId);
+        LinearLayout l1 = (LinearLayout) convertView.findViewById(R.id.faces);
+        l1.removeAllViews();
         if (faces.size() > 0) {
-            Face face = dbHelper.getFaceForId(faces.get(0));
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
-            Bitmap bm = DataHolder.getInstance().getLittleFace(db, face.guid, getContext());
-            db.close();
-            view.setImageBitmap(bm);
-            
-            view.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent personIntent = new Intent(context, FacesActivity.class);
-                    Log.i("MenListOnPeopleActivity", "manId " + manId);
-                    personIntent.putExtra(DataHolder.PERSON_ID, manId);
-                    // ((DisplayPersonPhotos)context).startActivity(personIntent);
-                    context.startActivity(personIntent);
+            for (int i = 0; (i < faces.size()) && (i < 3); i++) {
+                Face face = dbHelper.getFaceForId(faces.get(i));
+                SQLiteDatabase db = dbHelper.getReadableDatabase();
+                Bitmap bm = DataHolder.getInstance().getLittleFace(db, face.guid, getContext());
+                db.close();
+                ImageView imageView2 = new ImageView(context);
+                imageView2.setId(i);
+                imageView2.setImageBitmap(bm);
+                l1.addView(imageView2);
+                imageView2.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent personIntent = new Intent(context, FacesActivity.class);
+                        Log.i("MenListOnPeopleActivity", "manId " + manId);
+                        personIntent.putExtra(DataHolder.PERSON_ID, manId);
+                        context.startActivity(personIntent);
 
-                }
-            });
+                    }
+                });
+
+            }
         }
         return convertView;
     }

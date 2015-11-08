@@ -20,13 +20,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MenList extends ArrayAdapter<Integer> {
+public class PersonListToRecogniseAdapter extends ArrayAdapter<Integer> {
 
     private final MainActivity context;
     public final List<Integer> men; // �������������� ������
     public final Set<Integer> checked = new HashSet<Integer>();
 
-    public MenList(MainActivity context, List<Integer> men) {
+    public PersonListToRecogniseAdapter(MainActivity context, List<Integer> men) {
         super(context, R.layout.one_face_and_name, men);
         this.men = men;
         this.context = context;

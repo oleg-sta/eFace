@@ -11,8 +11,8 @@ import ru.trolleg.faces.FaceFinderService;
 import ru.trolleg.faces.NotificationReceiver;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.FacesGridAdapter;
-import ru.trolleg.faces.adapters.FacesOfManList;
-import ru.trolleg.faces.adapters.MenList;
+import ru.trolleg.faces.adapters.FacesGridToRecogniseAdapter;
+import ru.trolleg.faces.adapters.PersonListToRecogniseAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -38,7 +38,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 /**
- * Здесь происход распознавание лиц, кнопка запуска.
+ * Здесь происходит распознавание лиц, раскидываени лиц по людям. Кнопка запуска.
  * 
  * @author sov
  *
@@ -55,7 +55,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
     public static final String EXTRA_MESSAGE = "com.example.test1.MESSAGE";
 
     public FacesGridAdapter adapterFaces;
-    public MenList adapterMans;
+    public PersonListToRecogniseAdapter adapterMans;
     
     public Integer currentMan = null;
 
@@ -116,7 +116,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
             }
         });
         
-        adapterMans = new MenList(this, dbHelper.getAllIdsPerson());
+        adapterMans = new PersonListToRecogniseAdapter(this, dbHelper.getAllIdsPerson());
         final ListView listView2 = (ListView) findViewById(R.id.listOfMan);
         listView2.setAdapter(adapterMans);
         adapterMans.notifyDataSetChanged();
@@ -324,7 +324,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         Log.i("MainActivity", "setFacesOfManList " + personId);
         List<Integer> faceIds = dbHelper.getAllIdsFacesForPerson(personId);
         ListView facesOfMan = (ListView) findViewById(R.id.listOfMan);
-        FacesOfManList facesOfManList = new FacesOfManList(this, faceIds);
+        FacesGridToRecogniseAdapter facesOfManList = new FacesGridToRecogniseAdapter(this, faceIds);
         facesOfMan.setAdapter(facesOfManList);
         facesOfManList.notifyDataSetChanged();
     }

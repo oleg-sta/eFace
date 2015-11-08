@@ -13,6 +13,12 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+/**
+ * Просмотр всех фотографий человека.
+ * 
+ * @author sov
+ *
+ */
 public class FacesActivity extends Activity {
 
     @Override
