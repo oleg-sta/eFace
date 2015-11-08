@@ -7,10 +7,6 @@ import java.util.Set;
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
-import ru.trolleg.faces.R.id;
-import ru.trolleg.faces.R.layout;
-import ru.trolleg.faces.activities.DisplayCommonPhoto;
-import ru.trolleg.faces.activities.DisplayPersonPhotos;
 import ru.trolleg.faces.activities.FacesActivity;
 import ru.trolleg.faces.activities.PeopleActivity;
 import ru.trolleg.faces.data.Face;
@@ -20,8 +16,8 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -61,7 +57,7 @@ public class MenListOnPeopleActivity extends ArrayAdapter<Integer>{
                 public void onClick(View v) {
                     Intent personIntent = new Intent(context, FacesActivity.class);
                     Log.i("MenListOnPeopleActivity", "manId " + manId);
-                    personIntent.putExtra(DisplayPersonPhotos.PERSON_ID, manId);
+                    personIntent.putExtra(DataHolder.PERSON_ID, manId);
                     // ((DisplayPersonPhotos)context).startActivity(personIntent);
                     context.startActivity(personIntent);
 

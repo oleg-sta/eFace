@@ -7,50 +7,35 @@ import java.util.Set;
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
-import ru.trolleg.faces.R.id;
-import ru.trolleg.faces.R.layout;
-import ru.trolleg.faces.activities.DisplayCommonPhoto;
-import ru.trolleg.faces.activities.DisplayPersonPhotos;
 import ru.trolleg.faces.activities.MainActivity;
 import ru.trolleg.faces.data.Face;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ClipData;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
-import android.view.View.OnClickListener;
-import android.view.View.OnDragListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
- * ������� ��� ��������� �������������� ���, �.�. �����.
+ * Лица для распознавания
  * 
  * @author sov
  * 
  */
-public class FacesList2 extends ArrayAdapter<Integer> {
+public class FacesGridAdapter extends ArrayAdapter<Integer> {
 
     private final MainActivity context;
     public final List<Integer> faces; // �������������� ������
     public final Set<Integer> checked = new HashSet<Integer>();
 
-    public FacesList2(MainActivity context, List<Integer> faces) {
+    public FacesGridAdapter(MainActivity context, List<Integer> faces) {
         super(context, R.layout.one_face, faces);
         this.faces = faces;
         this.context = context;

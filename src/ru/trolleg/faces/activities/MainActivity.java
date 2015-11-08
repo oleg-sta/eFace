@@ -10,16 +10,9 @@ import ru.trolleg.faces.DragOverListMen;
 import ru.trolleg.faces.FaceFinderService;
 import ru.trolleg.faces.NotificationReceiver;
 import ru.trolleg.faces.R;
-import ru.trolleg.faces.NotificationReceiver.Listener;
-import ru.trolleg.faces.R.drawable;
-import ru.trolleg.faces.R.id;
-import ru.trolleg.faces.R.layout;
-import ru.trolleg.faces.R.menu;
-import ru.trolleg.faces.adapters.FacesList;
-import ru.trolleg.faces.adapters.FacesList2;
+import ru.trolleg.faces.adapters.FacesGridAdapter;
 import ru.trolleg.faces.adapters.FacesOfManList;
 import ru.trolleg.faces.adapters.MenList;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -45,13 +38,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 /**
- * �������������� ��������, ����� � ������ �������� ���� �����
+ * Здесь происход распознавание лиц, кнопка запуска.
+ * 
  * @author sov
  *
  */
 public class MainActivity extends Activity implements NotificationReceiver.Listener {
 
-    public static int FACES_VERTICAL;
     public final static String NO_FACES = "Не лица";
     public final static String INPUT_NAME = "Введите имя";
 
@@ -61,7 +54,7 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
     public static final String CAMERA_IMAGE_BUCKET_ID = getBucketId(CAMERA_IMAGE_BUCKET_NAME);
     public static final String EXTRA_MESSAGE = "com.example.test1.MESSAGE";
 
-    public FacesList2 adapterFaces;
+    public FacesGridAdapter adapterFaces;
     public MenList adapterMans;
     
     public Integer currentMan = null;
@@ -70,15 +63,12 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
     protected void onResume() {
         super.onResume();
         Log.i("MainActivity", "onResume");
-        final Context context = this;
         final MainActivity d = this;
         adapterFaces.clear();
         adapterFaces.addAll(dbHelper.getAllIdsFacesForPerson(currentMan));
         Log.i("MainActivity", "size persons " + adapterFaces.faces.size());
         adapterFaces.notifyDataSetChanged();
-        // ��������� ����� ���
-        
-        // TODO �������� �������� ������ ������� ������������ �������� IntentService
+
         FaceFinderService instance = FaceFinderService.getInstance();
         if (instance != null) {
             NotificationReceiver receiver = new NotificationReceiver(new Handler());
@@ -99,14 +89,13 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        FACES_VERTICAL = metrics.widthPixels / FacesList.FACES_SIZE;
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final Context context = this;
         final MainActivity d = this;
 
-        adapterFaces = new FacesList2(this, dbHelper.getAllIdsFacesForPerson(currentMan));
+        adapterFaces = new FacesGridAdapter(this, dbHelper.getAllIdsFacesForPerson(currentMan));
         final GridView listView = (GridView) findViewById(R.id.listFaces);
         listView.setAdapter(adapterFaces);
         adapterFaces.notifyDataSetChanged();
@@ -114,28 +103,16 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         
         final LinearLayout la1 = (LinearLayout) findViewById(R.id.mainLay);
         final View vi1 = findViewById(R.id.vie);
-        la1.getMeasuredWidth();
-        //LinearLayout la2 = (LinearLayout) findViewById(R.id.listFaces2);
-        //la2.set
-        
-        int num = la1.getMeasuredWidth() / FacesList.FACES_SIZE - 1;
-        Log.v("MainActivity", "size " + num + " " + la1.getMeasuredWidth());
-        Log.v("MainActivity", "size " + la1.getWidth());
         la1.addOnLayoutChangeListener(new OnLayoutChangeListener() {
             
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight,
                     int oldBottom) {
-                //TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, la1.getMeasuredWidth(), metrics)
                 Log.i("MainActivity", "size2 " + la1.getMeasuredWidth());
                 int num = DataHolder.px2Dp(la1.getMeasuredWidth(), d) / (80 + 2)- 1;
                 listView.getLayoutParams().width = num * DataHolder.dp2Px(80 + 2, d);
-//                listView.setHorizontalSpacing(FacesList.FACES_PADDING_MAIN);
-//                listView.setVerticalSpacing(FacesList.FACES_PADDING_MAIN);
                 listView.setNumColumns(num);
-                // TODO ����������� ����������� ������, �� ����������� spacing
                 vi1.getLayoutParams().width = la1.getMeasuredWidth() - DataHolder.dp2Px((80 +2)*num + 80, d); 
-                
             }
         });
         
@@ -144,9 +121,6 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
         listView2.setAdapter(adapterMans);
         adapterMans.notifyDataSetChanged();
         
-        
-        //LinearLayout t = (LinearLayout)findViewById(R.id.listOfManLayout);
-        //t.setOnDragListener(new DragOverListMen(this));
         final ImageView button = (ImageView) findViewById(R.id.start_stop);
         button.setOnClickListener(new OnClickListener() {
             
@@ -157,7 +131,6 @@ public class MainActivity extends Activity implements NotificationReceiver.Liste
                     button.setImageResource(R.drawable.start);
                 } else {
                     button.setImageResource(R.drawable.pause);
-                    //FaceFinderService instance = FaceFinderService.getInstance();
                     Intent intent = new Intent(context, FaceFinderService.class);
                     NotificationReceiver receiver = new NotificationReceiver(new Handler());
                     receiver.setListener(d);

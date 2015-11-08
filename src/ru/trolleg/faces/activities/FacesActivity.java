@@ -19,7 +19,7 @@ public class FacesActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.faces_activity);
-        Integer personId = getIntent().getIntExtra(DisplayPersonPhotos.PERSON_ID, 0);
+        Integer personId = getIntent().getIntExtra(DataHolder.PERSON_ID, 0);
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
         
         TextView namePerson = (TextView) findViewById(R.id.name_man);

@@ -8,7 +8,6 @@ import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.activities.DisplayCommonPhoto;
-import ru.trolleg.faces.activities.DisplayPersonPhotos;
 import ru.trolleg.faces.activities.FacesActivity;
 import ru.trolleg.faces.data.Face;
 import android.content.Intent;
@@ -21,6 +20,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
+/**
+ * Лица для просмотра
+ * @author sov
+ *
+ */
 public class FacesGridShow extends ArrayAdapter<Integer> {
 
     private final FacesActivity context;
@@ -52,7 +56,7 @@ public class FacesGridShow extends ArrayAdapter<Integer> {
             @Override
             public void onClick(View v) {
                 Intent personIntent = new Intent(context, DisplayCommonPhoto.class);
-                personIntent.putExtra(DisplayPersonPhotos.FACE_ID, faceId);
+                personIntent.putExtra(DataHolder.FACE_ID, faceId);
                 // ((DisplayPersonPhotos)context).startActivity(personIntent);
                 context.startActivity(personIntent);
 

@@ -6,9 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import ru.trolleg.faces.adapters.FacesList;
 import ru.trolleg.faces.data.Face;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -21,13 +19,15 @@ import android.util.Log;
 
 public class DataHolder {
 
+    public static final int FACES_SIZE = 150;
+    public static final int FACES_PADDING_MAIN = 2;
 	public static int SIZE_PHOTO_TO_FIND_FACES = 500;
+	public static final String FACE_ID = "faceId";
+    public static final String PERSON_ID = "personId";
     // ��� ���������� ���
     private static LruCache<String, Bitmap> mMemoryCache;
 
     public boolean processPhotos = false;
-    // TODO ������ infos
-    // public Map<String, InfoPhoto> infos = new HashMap<String, InfoPhoto>();
 
     private static final DataHolder holder = new DataHolder();
 
@@ -103,7 +103,7 @@ public class DataHolder {
                         * (faceCur.centerY - faceCur.height / 2) / 100),
                         (int) (background_image.getWidth() * faceCur.width / 100), (int) (background_image.getHeight()
                                 * faceCur.height / 100));
-                bm = getResizedBitmap(bmTmp, FacesList.FACES_SIZE, FacesList.FACES_SIZE);
+                bm = getResizedBitmap(bmTmp, FACES_SIZE, FACES_SIZE);
                 Log.v("DataHolder", "file dir " + context.getFilesDir());
                 file = new File(context.getFilesDir(), faceId + ".jpg");
                 try {
