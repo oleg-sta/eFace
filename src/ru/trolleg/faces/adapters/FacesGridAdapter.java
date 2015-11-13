@@ -7,8 +7,8 @@ import java.util.Set;
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
-import ru.trolleg.faces.activities.MainActivity;
 import ru.trolleg.faces.data.Face;
+import android.app.Activity;
 import android.content.ClipData;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -31,11 +31,11 @@ import android.widget.TextView;
  */
 public class FacesGridAdapter extends ArrayAdapter<Integer> {
 
-    private final MainActivity context;
+    private final Activity context;
     public final List<Integer> faces; // �������������� ������
     public final Set<Integer> checked = new HashSet<Integer>();
 
-    public FacesGridAdapter(MainActivity context, List<Integer> faces) {
+    public FacesGridAdapter(Activity context, List<Integer> faces) {
         super(context, R.layout.one_face, faces);
         this.faces = faces;
         this.context = context;

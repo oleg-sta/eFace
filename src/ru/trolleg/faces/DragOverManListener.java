@@ -1,6 +1,6 @@
 package ru.trolleg.faces;
 
-import ru.trolleg.faces.activities.MainActivity;
+import ru.trolleg.faces.activities.RecognizeFragment;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
@@ -15,9 +15,9 @@ import android.view.View.OnDragListener;
 public class DragOverManListener implements OnDragListener {
 
     Integer i;
-    MainActivity act;
+    RecognizeFragment act;
 
-    public DragOverManListener(Integer integer, MainActivity act) {
+    public DragOverManListener(Integer integer, RecognizeFragment act) {
         this.i = integer;
         this.act = act;
     }
@@ -28,7 +28,7 @@ public class DragOverManListener implements OnDragListener {
         case DragEvent.ACTION_DROP:
             Integer faceId = (Integer) event.getLocalState();
             Log.i("DragOverManListener", "faceId " + faceId + " to " + i);
-            DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(act);
+            DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(act.getActivity());
             Integer oldPersonId = dbHelper.getPersonIdByFaceId(faceId);
             if (oldPersonId != i) {
                 dbHelper.addFaceToPerson(faceId, dbHelper.getPersStrById(i));

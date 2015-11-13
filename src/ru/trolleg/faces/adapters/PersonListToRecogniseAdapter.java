@@ -8,8 +8,9 @@ import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.DragOverManListener;
 import ru.trolleg.faces.R;
-import ru.trolleg.faces.activities.MainActivity;
+import ru.trolleg.faces.activities.RecognizeFragment;
 import ru.trolleg.faces.data.Face;
+import android.app.Activity;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -22,14 +23,16 @@ import android.widget.TextView;
 
 public class PersonListToRecogniseAdapter extends ArrayAdapter<Integer> {
 
-    private final MainActivity context;
+    private final Activity context;
     public final List<Integer> men; // �������������� ������
     public final Set<Integer> checked = new HashSet<Integer>();
+    RecognizeFragment act;
 
-    public PersonListToRecogniseAdapter(MainActivity context, List<Integer> men) {
+    public PersonListToRecogniseAdapter(Activity context, List<Integer> men, RecognizeFragment act) {
         super(context, R.layout.one_face_and_name, men);
         this.men = men;
         this.context = context;
+        this.act = act;
     }
 
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -51,12 +54,12 @@ public class PersonListToRecogniseAdapter extends ArrayAdapter<Integer> {
             Bitmap bm = DataHolder.getInstance().getLittleFace(db, face.guid, getContext());
             db.close();
             view.setImageBitmap(bm);
-            view.setOnDragListener(new DragOverManListener(manId, context));
+            view.setOnDragListener(new DragOverManListener(manId, act));
             view.setOnClickListener(new OnClickListener() {
                 
                 @Override
                 public void onClick(View v) {
-                    context.setCurrentMan(manId);
+                    act.setCurrentMan(manId);
                     
                 }
             });

@@ -8,8 +8,8 @@ import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.activities.FacesActivity;
-import ru.trolleg.faces.activities.PeopleActivity;
 import ru.trolleg.faces.data.Face;
+import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -24,11 +24,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class FirstFacesOnPersonActivity extends ArrayAdapter<Integer>{
-    private final PeopleActivity context;
+    private final Activity context;
     public final List<Integer> men; // �������������� ������
     public final Set<Integer> checked = new HashSet<Integer>();
 
-    public FirstFacesOnPersonActivity(PeopleActivity context, List<Integer> men) {
+    public FirstFacesOnPersonActivity(Activity context, List<Integer> men) {
         super(context, R.layout.name_faces, men);
         this.men = men;
         this.context = context;

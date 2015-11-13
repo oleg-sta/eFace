@@ -27,7 +27,7 @@ public class DataHolder {
     // ��� ���������� ���
     private static LruCache<String, Bitmap> mMemoryCache;
 
-    public boolean processPhotos = false;
+    //public boolean processPhotos = false;
 
     private static final DataHolder holder = new DataHolder();
 

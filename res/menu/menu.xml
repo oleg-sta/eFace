@@ -6,12 +6,6 @@
         android:showAsAction="ifRoom">
         <menu>
             <item
-                android:id="@+id/recognition"
-                android:title="@string/menu_recogntion"/>
-            <item
-                android:id="@+id/people"
-                android:title="@string/menu_people"/>
-            <item
                 android:id="@+id/help"
                 android:title="@string/menu_help"/>
             <item

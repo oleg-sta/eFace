@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import ru.trolleg.faces.activities.MainActivity;
+import ru.trolleg.faces.activities.NavigationDrawer;
 import ru.trolleg.faces.data.Face;
 import android.app.IntentService;
 import android.app.Notification;
@@ -25,6 +26,7 @@ import android.os.PowerManager.WakeLock;
 import android.os.ResultReceiver;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 import detection.Detector;
 import detection.Rectangle;
 
@@ -38,7 +40,8 @@ import detection.Rectangle;
 public class FaceFinderService extends IntentService {
 
     private static final int notif_id=1;
-    public static boolean buttonStart = true; 
+    //public static boolean working = false;
+    public static boolean buttonStart = false;
 
     static FaceFinderService instance;
     public final static int PHOTOS_LIMIT = 3000; // ������������ ���������� ���������� ��� ���������
@@ -61,7 +64,7 @@ public class FaceFinderService extends IntentService {
         // The PendingIntent to launch our activity if the user selects
         // this notification
         CharSequence title = getText(R.string.app_name);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, NavigationDrawer.class), 0);
 
         return new Notification.Builder(this).setContentTitle(title).setContentText(text)
                 .setSmallIcon(R.drawable.stat_notify_chat).setContentIntent(contentIntent).getNotification();
@@ -81,7 +84,7 @@ public class FaceFinderService extends IntentService {
             
             Notification note = new Notification(R.drawable.stat_notify_chat, "Обработка фотографий запущена",
                     System.currentTimeMillis());
-            Intent i2 = new Intent(this, MainActivity.class);
+            Intent i2 = new Intent(this, NavigationDrawer.class);
             i2.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent pi = PendingIntent.getActivity(this, 0, i2, 0);
             note.setLatestEventInfo(this, "Обработка фотографий", "Подождите...", pi);
@@ -89,7 +92,7 @@ public class FaceFinderService extends IntentService {
             startForeground(notif_id, note);
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
             
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, NavigationDrawer.class), 0);
             NotificationManager mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             mBuilder.setContentTitle(getText(R.string.app_name)).setContentText("Обработка начата").setSmallIcon(R.drawable.stat_notify_chat);
             mBuilder.setContentIntent(contentIntent);
@@ -99,18 +102,11 @@ public class FaceFinderService extends IntentService {
             DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
             
             DataHolder dataHolder = DataHolder.getInstance();
-            if (dataHolder.processPhotos) {
-                Log.d("FaceFinderService", "onHandleIntent is process now");
-                return;
-            }
-            dataHolder.processPhotos = true;
             Runtime info = Runtime.getRuntime();
             int threadsNum = info.availableProcessors();
             if (intent != null) {
-                //bundle = intent.getExtras();
                 rec = (ResultReceiver) intent.getParcelableExtra("receiver");
             } else {
-                // ��� ����������, ������� ������ � true
                 buttonStart = true;
             }
             
@@ -125,12 +121,14 @@ public class FaceFinderService extends IntentService {
             photos = dbHelper.getAllPhotosToBeProcessed();
             if (photos.size() == 0) {
                 Log.d("FaceFinderService", "zero photos ");
+                buttonStart = false;
             	return;
             }
             b = new Bundle();
             b.putString("progress", "0");
             b.putString("message", "Найдено " + photos.size() + " фотографий.");
             if (rec != null) {
+                Log.i("FaceFinderService", "message to rec");
                 rec.send(0, b);
             }
             if (!buttonStart) {
@@ -227,13 +225,14 @@ public class FaceFinderService extends IntentService {
                     dbHelper.updatePhoto(photo, UUID.randomUUID().toString(), -1);
                 }
             }
+            if (iPh == photos.size()) {
+                buttonStart = false;
+            }
             mBuilder.setContentText("Обработка завершена");
             mBuilder.setProgress(iPh, iPh, false);
             Notification not = mBuilder.build();
             not.defaults |= Notification.DEFAULT_SOUND;
             mNotifyManager.notify(notif_id, not);
-            
-            dataHolder.processPhotos = false;
         } catch (Exception e) {
             // TODO Auto-generated catch block
             Log.d("FaceFinderService", "error" + e.getMessage());
@@ -242,7 +241,6 @@ public class FaceFinderService extends IntentService {
             if (wakeLock != null) {
                 wakeLock.release();
             }
-            DataHolder.getInstance().processPhotos = false;
 
             Bundle b = new Bundle();
             b.putString("progress", "100");
@@ -304,6 +302,7 @@ public class FaceFinderService extends IntentService {
     public void onCreate() {
         Log.i("FaceFinderService", "onCreate22");
         Logger1.log("onCreate22");
+        Toast.makeText(getApplicationContext(), "Обработка запущена", Toast.LENGTH_LONG).show();
         super.onCreate();
         instance = this;
     }
@@ -320,11 +319,22 @@ public class FaceFinderService extends IntentService {
 
     @Override
     public void onDestroy() {
-        // TODO �������� � MainActivity �� ���������
-        DataHolder.getInstance().processPhotos = false;
         Log.i("FaceFinderService", "onDestroy22");
         Logger1.log("onDestroy22");
         instance = null;
+        if (!buttonStart) {
+            Bundle b = new Bundle();
+            b.putBoolean("ended", true);
+            if (rec != null) {
+                rec.send(0, b);
+            }
+        }
+        Toast.makeText(getApplicationContext(), "Обработка остановлена", Toast.LENGTH_LONG).show();
+        // Запустить сервис снова, если стоит start
+        if (buttonStart) {
+            Intent intent = new Intent(getApplicationContext(), FaceFinderService.class);
+            getApplicationContext().startService(intent);
+        }
         super.onDestroy();
     }
 
