@@ -251,7 +251,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public List<Integer> getAllIdsPerson() {
     	List<Integer> faces = new ArrayList<Integer>();
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select f.id from person f", null);
+        Cursor c = s.rawQuery("select p.id from person p order by p.id", null);
         while (c.moveToNext()) {
             faces.add(c.getInt(0));
         }
@@ -273,9 +273,9 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public List<Integer> getAllIdsFacesForPerson(Integer personId) {
     	List<Integer> faces = new ArrayList<Integer>();
         SQLiteDatabase s = getReadableDatabase();
-        String sql = "select f.id from faces f inner join person p on p.person_id = f.person_id where p.id = " + personId;
+        String sql = "select f.id from faces f inner join person p on p.person_id = f.person_id where p.id = " + personId + " order by f.id";
         if (personId == null) {
-            sql = "select f.id from faces f where f.person_id is null";
+            sql = "select f.id from faces f where f.person_id is null order by f.id";
         }
         Cursor c = s.rawQuery(sql, null);
         while (c.moveToNext()) {
@@ -427,5 +427,29 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         s.execSQL("update faces set person_id = null");
         s.execSQL("delete from person");
         s.close();
+    }
+
+    public List<String> getAllPhotos() {
+        List<String> photos = new ArrayList<String>();
+        SQLiteDatabase s = getReadableDatabase();
+        Cursor c = s.rawQuery("select path from photos", null);
+        while (c.moveToNext()) {
+            photos.add(c.getString(0));
+        }
+        c.close();
+        s.close();
+        return photos;
+    }
+    
+    public List<String> getAllPhotosForPersonAndFacePosition(Integer personId) {
+        List<String> photos = new ArrayList<String>();
+        SQLiteDatabase s = getReadableDatabase();
+        Cursor c = s.rawQuery("select ph.path from photos ph", null);
+        while (c.moveToNext()) {
+            photos.add(c.getString(0));
+        }
+        c.close();
+        s.close();
+        return photos;
     }
 }
