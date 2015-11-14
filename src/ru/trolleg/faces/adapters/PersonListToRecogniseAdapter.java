@@ -44,7 +44,6 @@ public class PersonListToRecogniseAdapter extends ArrayAdapter<Integer> {
         TextView text = (TextView) convertView.findViewById(R.id.name_face);
         final int manId = men.get(position);
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
-        // final int personId = dbHelper.getPersonIdByFaceId(faceId);
         String name = dbHelper.getPersonName(manId);
         text.setText(name);
         List<Integer> faces = dbHelper.getAllIdsFacesForPerson(manId);
@@ -63,17 +62,6 @@ public class PersonListToRecogniseAdapter extends ArrayAdapter<Integer> {
                     
                 }
             });
-            // view.setOnLongClickListener(new OnLongClickListener() {
-            //
-            // @Override
-            // public boolean onLongClick(View view) {
-            // ClipData data = ClipData.newPlainText("", "");
-            // DragShadowBuilder shadowBuilder = new
-            // View.DragShadowBuilder(view);
-            // view.startDrag(data, shadowBuilder, faceId, 0);
-            // return true;
-            // }
-            // });
         }
         return convertView;
     }

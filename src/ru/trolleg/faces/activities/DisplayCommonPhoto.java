@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Gallery;
+import android.widget.TextView;
 
 /**
  * Просмотр общего фото
@@ -30,9 +31,11 @@ public class DisplayCommonPhoto extends Activity {
         Log.i("DisplayCommonPhoto", "onCreate");
         setContentView(R.layout.comon_photo_pager);
         Integer faceId = getIntent().getIntExtra(DataHolder.FACE_ID, 0);
+        TextView nameView = (TextView) findViewById(R.id.name_man);
         final ViewPager mPager = (ViewPager) findViewById(R.id.pager);
         DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
         Integer personId = dbHelper.getPersonIdByFaceId(faceId);
+        nameView.setText(dbHelper.getPersonName(personId));
         List<Integer> faces = dbHelper.getAllIdsFacesForPerson(personId);
         int position = faces.indexOf(faceId);
         Log.i("DisplayCommonPhoto", "pos " + position);

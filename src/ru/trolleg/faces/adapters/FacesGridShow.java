@@ -60,6 +60,7 @@ public class FacesGridShow extends ArrayAdapter<Integer> {
 
             }
         });
+       
         return convertView;
     }
 

@@ -58,7 +58,6 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
         ImageView view = (ImageView)convertView.findViewById(R.id.one_face1);
         final int faceId = faces.get(position);
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
-        //final int personId = dbHelper.getPersonIdByFaceId(faceId);
         Face face = dbHelper.getFaceForId(faceId);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Bitmap bm = DataHolder.getInstance().getLittleFace(db, face.guid, getContext());
@@ -74,17 +73,6 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
                 return true;
             }
         });
-//        view.setOnClickListener(new OnClickListener() {
-//            
-//            @Override
-//            public void onClick(View v) {
-//                Intent personIntent = new Intent(context, DisplayCommonPhoto.class);
-//                personIntent.putExtra(DisplayPersonPhotos.FACE_ID, faceId);
-//                // ((DisplayPersonPhotos)context).startActivity(personIntent);
-//                context.startActivity(personIntent);
-//                
-//            }
-//        });
         return convertView;
     }
 

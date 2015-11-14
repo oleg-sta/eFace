@@ -145,7 +145,7 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
             adapterFaces.addAll(dbHelper.getIdsFacesForPhoto(photo));
             adapterFaces.notifyDataSetChanged();
         }
-        if (message != null) {
+        if (message != null && getView() != null) {
             int progress = 0;
             if (progressStr != null) {
                 progress = Integer.valueOf(progressStr);

@@ -10,6 +10,8 @@ import ru.trolleg.faces.R;
 import ru.trolleg.faces.activities.FacesActivity;
 import ru.trolleg.faces.data.Face;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -19,6 +21,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,10 +43,10 @@ public class FirstFacesOnPersonActivity extends ArrayAdapter<Integer>{
             convertView = inflater.inflate(R.layout.name_faces, null, true);
         }
         //ImageView view = (ImageView) convertView.findViewById(R.id.face_man);
-        TextView text = (TextView) convertView.findViewById(R.id.name_man);
+        final TextView text = (TextView) convertView.findViewById(R.id.name_man);
         final int manId = men.get(position);
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
-        String name = dbHelper.getPersonName(manId);
+        final String name = dbHelper.getPersonName(manId);
         text.setText(name);
         List<Integer> faces = dbHelper.getAllIdsFacesForPerson(manId);
         LinearLayout l1 = (LinearLayout) convertView.findViewById(R.id.faces);
@@ -71,6 +74,32 @@ public class FirstFacesOnPersonActivity extends ArrayAdapter<Integer>{
 
             }
         }
+        ImageView penView = (ImageView) convertView.findViewById(R.id.pen);
+        penView.setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                final EditText input = new EditText(context);
+                input.setText(name);
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("Введите имя");
+                builder.setView(input).setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        String newName =  input.getText().toString();
+                        dbHelper.updatePersonName(manId, newName);
+                        text.setText(newName);
+                        //act.adapterMans.notifyDataSetChanged();
+                    }
+                }).setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+                
+            }
+        });
+        
         return convertView;
     }
 
