@@ -1,12 +1,15 @@
 package ru.trolleg.faces;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 import ru.trolleg.faces.activities.MainActivity;
 import ru.trolleg.faces.activities.NavigationDrawer;
 import ru.trolleg.faces.data.Face;
+import ru.trolleg.faces.jni.Computations;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -138,7 +141,7 @@ public class FaceFinderService extends IntentService {
             Log.d("FaceFinderService", "loading casade...");
             Logger1.log("loading casade...");
             InputStream inputHaas = getResources().openRawResource(R.raw.haarcascade_frontalface_default);
-            Detector detector = Detector.create(inputHaas);
+            //Detector detector = Detector.create(inputHaas);
             Log.d("FaceFinderService", "casade loaded");
             Logger1.log("casade loaded");
             inputHaas.close();
@@ -168,6 +171,16 @@ public class FaceFinderService extends IntentService {
                     BitmapFactory.Options bitmap_options = new BitmapFactory.Options();
                     bitmap_options.inPreferredConfig = Bitmap.Config.RGB_565;
 
+                    final BitmapFactory.Options options2 = new BitmapFactory.Options();
+                    options2.inJustDecodeBounds = true;
+                    BitmapFactory.decodeFile(photo, options2);
+                    int height = options2.outHeight;
+                    int width = options2.outWidth;
+                    double koef  = calculateInSampleSize(options2, PHOTOS_SIZE_TO_BE_PROCESSED, PHOTOS_SIZE_TO_BE_PROCESSED);
+                    height = (int)(height / koef);
+                    width = (int) (width / koef);
+                    
+                    
                     final BitmapFactory.Options options = new BitmapFactory.Options();
                     Bitmap background_image = decodeSampledBitmapFromResource(photo, PHOTOS_SIZE_TO_BE_PROCESSED,
                             PHOTOS_SIZE_TO_BE_PROCESSED, options);
@@ -175,8 +188,17 @@ public class FaceFinderService extends IntentService {
                     Log.i("FaceFinderService",
                             "size " + background_image.getWidth() + " " + background_image.getHeight());
                     long time = System.currentTimeMillis();
-                    List<Rectangle> res = detector.getFaces(background_image, 1.2f, 1.1f, .05f, 2, true, true,
-                            threadsNum);
+                    Computations comp = new Computations();
+                    //long koe = height / background_image.getHeight();
+                    List<Rectangle> res = Arrays.asList(comp.findFaces2("/sdcard/Download/my_detector.xml",  photo, 1 / koef));
+                    for(Rectangle r : res) {
+                        r.x = r.x * background_image.getWidth() / width;
+                        r.width = r.width * background_image.getWidth() / width;
+                        r.y = r.y * background_image.getHeight() / height;
+                        r.height = r.height * background_image.getHeight() / height;
+                    }
+//                            detector.getFaces(background_image, 1.2f, 1.1f, .05f, 2, true, true,
+//                            threadsNum);
                     time = (System.currentTimeMillis() - time) / 1000;
                     Logger1.log("find in " + time);
                     Log.i("FaceFinderService", "foune " + res.size() + " faces");

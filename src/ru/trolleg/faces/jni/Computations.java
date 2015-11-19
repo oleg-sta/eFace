@@ -10,5 +10,7 @@ public class Computations {
 
     public native Rectangle[] findFaces(int[][] grayImage, float baseScale, float increment, int min_neighbors,
             float scale_inc, boolean doCannyPruning, Detector detector, int threadsNum);
+    
+    public native Rectangle[] findFaces2(String photo, String modelName, double koef);
 
 }

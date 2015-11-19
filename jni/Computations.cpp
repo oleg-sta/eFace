@@ -4,6 +4,14 @@
 #include <pthread.h>
 #include <android/log.h>
 #include "Computations.h"
+#include <vector>
+#include "opencv2/objdetect/objdetect.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include <math.h>
+
+int const maxHeight = 320;
+int const maxWidth = 480;
 
 
 Computations::Computations() {
@@ -11,10 +19,43 @@ Computations::Computations() {
 
 extern "C" {
 
+JNIEXPORT jobjectArray JNICALL Java_ru_trolleg_faces_jni_Computations_findFaces2(JNIEnv* env, jobject thiz, jstring xml, jstring photo, jdouble koef) {
+	__android_log_print(ANDROID_LOG_INFO, "Computations", "we are in");
+	cv::CascadeClassifier face_cascade;
+	//std::string s = xml;
+	//std::string s2 = photo;
+	const char *s = env->GetStringUTFChars(xml, NULL);
+	const char *s2 = env->GetStringUTFChars(photo, NULL);
+	face_cascade.load(s);
+	cv::Mat img = cv::imread(s2, 1);
+	cv::resize(img, img, cv::Size(), koef, koef);
+	cv::Mat gray_image;
+	cv::cvtColor( img, gray_image, CV_BGR2GRAY );
+	std::vector<cv::Rect> faces;
+	face_cascade.detectMultiScale( gray_image, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(32, 32) );
+	int sd =faces.size();
+	__android_log_print(ANDROID_LOG_INFO, "Computations", "faces %d", sd);
+	jclass cls = env->FindClass("detection/Rectangle");
+	jmethodID constructor = env->GetMethodID(cls, "<init>", "(IIII)V");
+	jobjectArray jobAr =env->NewObjectArray(faces.size(), cls, NULL);
+	for( size_t i = 0; i < faces.size(); i++ )
+	{
+		jobject object = env->NewObject(cls, constructor, faces[i].x, faces[i].y, faces[i].width, faces[i].height);
+		env->SetObjectArrayElement(jobAr, i, object);
+	}
+
+	__android_log_print(ANDROID_LOG_INFO, "Computations", "we are out");
+	return jobAr;
+}
+
 JNIEXPORT jobjectArray JNICALL Java_ru_trolleg_faces_jni_Computations_findFaces(JNIEnv* env, jobject thiz, jobjectArray image, jfloat baseScale, jfloat increment,
 		jint min_neighbors, jfloat scale_inc, jboolean doCannyPruning, jobject detectorJObj, jint threadsNum) {
 
-	// копирование изображения в С массив
+
+
+
+	//d.
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 	//int res = 0;
 	int len1 = env -> GetArrayLength(image);
 	jboolean j2;
