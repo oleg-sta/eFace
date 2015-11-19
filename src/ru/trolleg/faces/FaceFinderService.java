@@ -1,6 +1,10 @@
 package ru.trolleg.faces;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -73,6 +77,14 @@ public class FaceFinderService extends IntentService {
                 .setSmallIcon(R.drawable.stat_notify_chat).setContentIntent(contentIntent).getNotification();
     }
     
+    private void copy(InputStream input, OutputStream output) throws IOException {
+        byte [] buffer = new byte[256];
+        int bytesRead = 0;
+        while((bytesRead = input.read(buffer)) != -1) {
+            output.write(buffer, 0, bytesRead);
+        }
+    }
+    
     @Override
     protected void onHandleIntent(Intent intent) {
         Logger1.log("onHandleIntent");
@@ -140,8 +152,17 @@ public class FaceFinderService extends IntentService {
             }
             Log.d("FaceFinderService", "loading casade...");
             Logger1.log("loading casade...");
-            InputStream inputHaas = getResources().openRawResource(R.raw.haarcascade_frontalface_default);
+            //InputStream inputHaas = getResources().openRawResource(R.raw.haarcascade_frontalface_default);
             //Detector detector = Detector.create(inputHaas);
+            Log.i("FaceFinderService", getFilesDir().getAbsolutePath());
+            String detecrtorName = getFilesDir() + File.separator + "detector.xml";
+            InputStream inputHaas = getResources().openRawResource(R.raw.my_detector);
+            OutputStream out = new FileOutputStream(detecrtorName);
+            copy(inputHaas, out);
+            out.close();
+            inputHaas.close();
+            
+            
             Log.d("FaceFinderService", "casade loaded");
             Logger1.log("casade loaded");
             inputHaas.close();
@@ -190,7 +211,7 @@ public class FaceFinderService extends IntentService {
                     long time = System.currentTimeMillis();
                     Computations comp = new Computations();
                     //long koe = height / background_image.getHeight();
-                    List<Rectangle> res = Arrays.asList(comp.findFaces2("/sdcard/Download/my_detector.xml",  photo, 1 / koef));
+                    List<Rectangle> res = Arrays.asList(comp.findFaces2(detecrtorName,  photo, 1 / koef));
                     for(Rectangle r : res) {
                         r.x = r.x * background_image.getWidth() / width;
                         r.width = r.width * background_image.getWidth() / width;
