@@ -18,6 +18,9 @@ public class Logger1 {
     static OutputStream out;
 
     public static void log(String message) {
+        if (true) {
+            return;
+        }
         try {
             if (out == null) {
                 String path = "/storage/sdcard/logs.txt";

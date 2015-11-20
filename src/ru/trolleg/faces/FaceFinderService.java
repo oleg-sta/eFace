@@ -24,6 +24,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -189,6 +191,13 @@ public class FaceFinderService extends IntentService {
                     Log.d("FaceFinderService", "photo" + photo);
                     Logger1.log("photo " + photo + " " + iPh + " " + photos.size());
 
+                    
+                    ExifInterface exif = new ExifInterface(photo);
+                    int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                    int orient = getOrient(orientation);
+                    Log.i("FaceFinderService", "orientation " + orientation);
+                    
+                    
                     BitmapFactory.Options bitmap_options = new BitmapFactory.Options();
                     bitmap_options.inPreferredConfig = Bitmap.Config.RGB_565;
 
@@ -200,18 +209,22 @@ public class FaceFinderService extends IntentService {
                     double koef  = calculateInSampleSize(options2, PHOTOS_SIZE_TO_BE_PROCESSED, PHOTOS_SIZE_TO_BE_PROCESSED);
                     height = (int)(height / koef);
                     width = (int) (width / koef);
-                    
+                    if (orient % 2 == 1) {
+                        int w1 = height;
+                        height = width;
+                        width = w1;
+                    }
                     
                     final BitmapFactory.Options options = new BitmapFactory.Options();
                     Bitmap background_image = decodeSampledBitmapFromResource(photo, PHOTOS_SIZE_TO_BE_PROCESSED,
-                            PHOTOS_SIZE_TO_BE_PROCESSED, options);
+                            PHOTOS_SIZE_TO_BE_PROCESSED, options, true);
 
                     Log.i("FaceFinderService",
                             "size " + background_image.getWidth() + " " + background_image.getHeight());
                     long time = System.currentTimeMillis();
                     Computations comp = new Computations();
                     //long koe = height / background_image.getHeight();
-                    List<Rectangle> res = Arrays.asList(comp.findFaces2(detecrtorName,  photo, 1 / koef));
+                    List<Rectangle> res = Arrays.asList(comp.findFaces2(detecrtorName,  photo, 1 / koef, orient));
                     for(Rectangle r : res) {
                         r.x = r.x * background_image.getWidth() / width;
                         r.width = r.width * background_image.getWidth() / width;
@@ -295,7 +308,7 @@ public class FaceFinderService extends IntentService {
         }
     }
 
-    public static Bitmap decodeSampledBitmapFromResource(String photo, int reqWidth, int reqHeight, Options options) {
+    public static Bitmap decodeSampledBitmapFromResource(String photo, int reqWidth, int reqHeight, Options options, boolean orientFlag) {
 
         // First decode with inJustDecodeBounds=true to check dimensions
         // final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -308,7 +321,25 @@ public class FaceFinderService extends IntentService {
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
         options.inPreferredConfig = Bitmap.Config.RGB_565;
-        return BitmapFactory.decodeFile(photo, options);
+        Bitmap res = BitmapFactory.decodeFile(photo, options);
+        if (orientFlag) {
+            
+            ExifInterface exif = null;
+            try {
+                exif = new ExifInterface(photo);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            int orient = getOrient(orientation);
+            
+            Matrix matrix = new Matrix();
+            matrix.postRotate(orient * 90);
+            res = Bitmap.createBitmap(res, 0, 0, res.getWidth(),
+                    res.getHeight(), matrix, true);
+        }
+        return res;
     }
 
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -381,6 +412,17 @@ public class FaceFinderService extends IntentService {
         super.onDestroy();
     }
 
+    public static int getOrient(int orientation) {
+        int orient = 0;
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
+            orient = 1;
+        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
+            orient = 2;
+        } if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            orient = 3;
+        }
+        return orient;
+    }
     /**
      * ���� �� wifi ����������
      * @return

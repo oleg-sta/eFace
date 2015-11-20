@@ -19,7 +19,24 @@ Computations::Computations() {
 
 extern "C" {
 
-JNIEXPORT jobjectArray JNICALL Java_ru_trolleg_faces_jni_Computations_findFaces2(JNIEnv* env, jobject thiz, jstring xml, jstring photo, jdouble koef) {
+void rot90(cv::Mat &matImage, int rotflag);
+
+void rot90(cv::Mat &matImage, int rotflag){
+  //1=CW, 2=CCW, 3=180
+  if (rotflag == 1){ // 90%
+    transpose(matImage, matImage);
+    flip(matImage, matImage,1); //transpose+flip(1)=CW
+  } else if (rotflag == 3) { // 270 %
+    transpose(matImage, matImage);
+    flip(matImage, matImage,0); //transpose+flip(0)=CCW
+  } else if (rotflag ==2){ // 180%
+    flip(matImage, matImage,-1);    //flip(-1)=180
+  } else if (rotflag != 0){ //if not 0,1,2,3:
+    // cout  << "Unknown rotation flag(" << rotflag << ")" << endl;
+  }
+}
+
+JNIEXPORT jobjectArray JNICALL Java_ru_trolleg_faces_jni_Computations_findFaces2(JNIEnv* env, jobject thiz, jstring xml, jstring photo, jdouble koef, jint rotflat) {
 	__android_log_print(ANDROID_LOG_INFO, "Computations", "we are in");
 	cv::CascadeClassifier face_cascade;
 	//std::string s = xml;
@@ -29,6 +46,7 @@ JNIEXPORT jobjectArray JNICALL Java_ru_trolleg_faces_jni_Computations_findFaces2
 	face_cascade.load(s);
 	cv::Mat img = cv::imread(s2, 1);
 	cv::resize(img, img, cv::Size(), koef, koef);
+	rot90(img, rotflat);
 	cv::Mat gray_image;
 	cv::cvtColor( img, gray_image, CV_BGR2GRAY );
 	std::vector<cv::Rect> faces;

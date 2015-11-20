@@ -96,8 +96,11 @@ public class DataHolder {
                 }
             } else {
                 final BitmapFactory.Options options = new BitmapFactory.Options();
-                // ��������� ������ ����������
-                Bitmap background_image = FaceFinderService.decodeSampledBitmapFromResource(path, SIZE_PHOTO_TO_FIND_FACES, SIZE_PHOTO_TO_FIND_FACES, options);
+                Bitmap background_image = FaceFinderService.decodeSampledBitmapFromResource(path, SIZE_PHOTO_TO_FIND_FACES, SIZE_PHOTO_TO_FIND_FACES, options, true);
+                if (background_image == null) {
+                    Log.i("DataHolder", "null path " + path + " " + faceId + " " + faceCur.photoId);
+                    return null;
+                }
                 Bitmap bmTmp = Bitmap.createBitmap(background_image, (int) (background_image.getWidth()
                         * (faceCur.centerX - faceCur.width / 2) / 100), (int) (background_image.getHeight()
                         * (faceCur.centerY - faceCur.height / 2) / 100),
@@ -139,21 +142,6 @@ public class DataHolder {
             bm, 0, 0, width, height, matrix, false);
         bm.recycle();
         return resizedBitmap;
-    }
-    /**
-     * �������� ������ ���������� ��� ����������� � ����� ������
-     * 
-     * @param path
-     * @return
-     */
-    public Bitmap getLittlePhoto(String path) {
-        Bitmap bm = mMemoryCache.get(path);
-        if (bm == null) {
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            bm = FaceFinderService.decodeSampledBitmapFromResource(path, 150, 150, options);
-            mMemoryCache.put(path, bm);
-        }
-        return bm;
     }
     
     public static int px2Dp(int px, Context ctx)

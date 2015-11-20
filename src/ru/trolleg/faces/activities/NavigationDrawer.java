@@ -135,10 +135,12 @@ public class NavigationDrawer extends Activity {
         lastPosition = position;
         
         Fragment fragment = null;
-        if (position == 0) {
+        if (position == 1) {
             fragment = new RecognizeFragment();
-        } else {
+        } else if (position == 0) {
             fragment = new PeopleFragment();
+        } else {
+            fragment = new PhotoFragment();
         }
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
