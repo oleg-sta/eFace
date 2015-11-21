@@ -244,7 +244,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public List<Integer> getAllIdsPerson() {
     	List<Integer> faces = new ArrayList<Integer>();
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select p.id from person p order by p.id", null);
+        Cursor c = s.rawQuery("select p.id from person p where p.name <> '"+MainActivity.NO_FACES+"' order by p.name, p.id", null);
         while (c.moveToNext()) {
             faces.add(c.getInt(0));
         }

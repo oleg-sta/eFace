@@ -1,5 +1,8 @@
 package ru.trolleg.faces.activities;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.DragOnTrashListener;
@@ -9,11 +12,14 @@ import ru.trolleg.faces.NotificationReceiver;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.FacesGridAdapter;
 import ru.trolleg.faces.adapters.PersonListToRecogniseAdapter;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnLayoutChangeListener;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -121,12 +128,78 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
         im2.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                this1.setCurrentMan(null);
+                // TODO add new, если нет выделенных людей, то переходим на неопознанных
+                if (adapterFaces.checked.isEmpty()) {
+                    this1.setCurrentMan(null);
+                } else {
+                    final int newPerson = dbHelper.addPerson();
+                    adapterMans.add(newPerson);
+                    Set<Integer> facesRemove = new HashSet<Integer>();
+                    for (int positionid : adapterFaces.checked) {
+                        int faceId = adapterFaces.faces.get(positionid);
+                        dbHelper.addFaceToPerson(faceId, newPerson);
+                        facesRemove.add(faceId);
+                    }
+                    for (int faceId : facesRemove) {
+                        adapterFaces.remove(faceId);
+                    }
+                    adapterFaces.checked.clear();
+                    adapterFaces.notifyDataSetChanged();
+                    adapterMans.notifyDataSetChanged();
+                    
+                    // input new name
+                    
+                    final String[] name = {"Имя"};
+                    
+                    final EditText input = new EditText(getActivity());
+                    input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+                    input.setText("");
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage("Введите имя");
+                    builder.setView(input).setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            name[0] =  input.getText().toString();
+                            Log.i("DragOverListMen", "Yes " + name[0]);
+                            dbHelper.updatePersonName(newPerson, name[0]);
+                            adapterMans.notifyDataSetChanged();
+                        }
+                    }).setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Log.i("DragOverListMen", "No");
+                        }
+                    });
+                    // Create the AlertDialog object and return it
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
             }
         });
         
         ImageView im = (ImageView) rootView.findViewById(R.id.first_face);
         im.setImageResource(R.drawable.full_trash);
+        im.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (adapterFaces.checked.isEmpty()) {
+                    this1.setCurrentMan(dbHelper.getOrCreatePerson(MainActivity.NO_FACES));
+                } else {
+                    Integer thrashPersonId = dbHelper.getOrCreatePerson(MainActivity.NO_FACES);
+                    Set<Integer> facesRemove = new HashSet<Integer>();
+                    for (int positionid : adapterFaces.checked) {
+                        int faceId = adapterFaces.faces.get(positionid);
+                        dbHelper.addFaceToPerson(faceId, thrashPersonId);
+                        facesRemove.add(faceId);
+                    }
+                    for (int faceId : facesRemove) {
+                        adapterFaces.remove(faceId);
+                    }
+                    adapterFaces.checked.clear();
+                    adapterFaces.notifyDataSetChanged();
+                    adapterMans.notifyDataSetChanged();
+                }
+            }
+        });
         im.setOnDragListener(new DragOnTrashListener(this));
 
         return rootView;
@@ -163,6 +236,12 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
     
     public void setCurrentMan(Integer manId) {
         currentMan = manId;
+        String name = dbHelper.getPersonName(manId);
+        if (name == null) {
+            name = "Лица";
+        }
+        TextView nameView = (TextView) getView().findViewById(R.id.name);
+        nameView.setText(name);
         adapterFaces.clear();
         adapterFaces.checked.clear();
         adapterFaces.addAll(dbHelper.getAllIdsFacesForPerson(currentMan));

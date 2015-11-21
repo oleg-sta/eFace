@@ -34,7 +34,7 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
 
     private final Activity context;
     public final List<Integer> faces; // �������������� ������
-    public final Set<Integer> checked = new HashSet<Integer>();
+    public final Set<Integer> checked = new HashSet<Integer>(); // TODO лучше faces id хранить, так независимо будет от единичного убирания
 
     public FacesGridAdapter(Activity context, List<Integer> faces) {
         super(context, R.layout.one_face, faces);

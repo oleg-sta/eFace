@@ -58,7 +58,25 @@ public class PersonListToRecogniseAdapter extends ArrayAdapter<Integer> {
                 
                 @Override
                 public void onClick(View v) {
-                    act.setCurrentMan(manId);
+                    if (act.currentMan != null && act.currentMan == manId) {
+                        return;
+                    }
+                    if (act.adapterFaces.checked.isEmpty()) {
+                        act.setCurrentMan(manId);
+                    } else {
+                        Set<Integer> facesRemove = new HashSet<Integer>();
+                        for (int positionid : act.adapterFaces.checked) {
+                            int faceId = act.adapterFaces.faces.get(positionid);
+                            dbHelper.addFaceToPerson(faceId, manId);
+                            facesRemove.add(faceId);
+                        }
+                        for (int faceId : facesRemove) {
+                            act.adapterFaces.remove(faceId);
+                        }
+                        act.adapterFaces.checked.clear();
+                        act.adapterFaces.notifyDataSetChanged();
+                        act.adapterMans.notifyDataSetChanged();
+                    }
                     
                 }
             });
