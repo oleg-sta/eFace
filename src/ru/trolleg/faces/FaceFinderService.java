@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -36,7 +35,6 @@ import android.os.ResultReceiver;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
-import detection.Detector;
 import detection.Rectangle;
 
 /**
@@ -237,14 +235,14 @@ public class FaceFinderService extends IntentService {
                     Logger1.log("find in " + time);
                     Log.i("FaceFinderService", "foune " + res.size() + " faces");
 
-                    String imgId = UUID.randomUUID().toString();
                     Face[] faces = new Face[res.size()];
                     if (res.size() == 0) {
-                        dbHelper.updatePhoto(photo, imgId, time);
+                        dbHelper.updatePhoto(photo, time);
                     }
+                    int photoId = dbHelper.getPhotoIdByPath(photo);
                     for (int i = 0; i < res.size(); ++i) {
                         if (i == 0) {
-                            dbHelper.updatePhoto(photo, imgId, time);
+                            dbHelper.updatePhoto(photo, time);
                         }
                         // FaceppResult face = result.get("face").get(i);
                         Rectangle face = res.get(i);
@@ -256,17 +254,11 @@ public class FaceFinderService extends IntentService {
                         faceCur.centerY = 100 * (face.y + face.height / 2) / (double) background_image.getHeight();
                         faceCur.centerX = 100 * (face.x + face.width / 2) / (double) background_image.getWidth();
                         faceCur.guid = UUID.randomUUID().toString();
-                        dbHelper.addFace(faceCur, imgId);
-                        //String personGuid = UUID.randomUUID().toString();
-                        //dbHelper.addPerson(personGuid);
-                        //dbHelper.addFaceToPerson(faceCur.guid, personGuid);
-                        // ��������� ����������
+                        dbHelper.addFace(faceCur, photoId);
                         SQLiteDatabase db = dbHelper.getReadableDatabase();
-                        // �������� ���� ����
                         dataHolder.getLittleFace(db, faceCur.guid, getApplicationContext());
                         db.close();
                     }
-                    // ��������� ��� UI � ���������� ���� � ������
                     b = new Bundle();
                     b.putString("photo", photo);
                     if (rec != null) {
@@ -278,7 +270,7 @@ public class FaceFinderService extends IntentService {
                     e.printStackTrace();
                     // �������� ����� ��� ������������
                     // TODO ������ ���� � ������ ������
-                    dbHelper.updatePhoto(photo, UUID.randomUUID().toString(), -1);
+                    dbHelper.updatePhoto(photo, -1);
                 }
             }
             if (iPh == photos.size()) {

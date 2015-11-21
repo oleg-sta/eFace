@@ -14,11 +14,11 @@ import android.view.View.OnDragListener;
  */
 public class DragOverManListener implements OnDragListener {
 
-    Integer i;
+    Integer personId;
     RecognizeFragment act;
 
     public DragOverManListener(Integer integer, RecognizeFragment act) {
-        this.i = integer;
+        this.personId = integer;
         this.act = act;
     }
 
@@ -27,11 +27,11 @@ public class DragOverManListener implements OnDragListener {
         switch (event.getAction()) {
         case DragEvent.ACTION_DROP:
             Integer faceId = (Integer) event.getLocalState();
-            Log.i("DragOverManListener", "faceId " + faceId + " to " + i);
+            Log.i("DragOverManListener", "faceId " + faceId + " to " + personId);
             DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(act.getActivity());
             Integer oldPersonId = dbHelper.getPersonIdByFaceId(faceId);
-            if (oldPersonId != i) {
-                dbHelper.addFaceToPerson(faceId, dbHelper.getPersStrById(i));
+            if (oldPersonId != personId) {
+                dbHelper.addFaceToPerson(faceId, personId);
                 act.adapterFaces.remove(faceId);
                 act.adapterFaces.notifyDataSetChanged();
                 if (act.adapterFaces.isEmpty()) {

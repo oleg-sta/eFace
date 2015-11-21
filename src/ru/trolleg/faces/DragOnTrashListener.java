@@ -24,8 +24,7 @@ public class DragOnTrashListener implements OnDragListener {
             Log.i("ItemOnDragListener", "faceId " + faceId);
             DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(act.getActivity());
             Integer thrashPersonId = dbHelper.getOrCreatePerson(MainActivity.NO_FACES);
-            //if (thrashPersonId != faceId) {
-            dbHelper.addFaceToPerson(faceId, dbHelper.getPersStrById(thrashPersonId));
+            dbHelper.addFaceToPerson(faceId, thrashPersonId);
             act.adapterFaces.remove(faceId);
             act.adapterFaces.notifyDataSetChanged();
             break;

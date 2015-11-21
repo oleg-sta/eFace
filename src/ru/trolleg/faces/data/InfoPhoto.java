@@ -7,7 +7,7 @@ public class InfoPhoto {
     public Face[] faces;
     public int faceCount;
     // public int scaleFactor;
-    public String guid;
+    public int id;
     public String path;
-    public long timeProccessed;
+    public Long timeProccessed;
 }

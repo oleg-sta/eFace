@@ -27,13 +27,10 @@ public class DragOverListMen implements OnDragListener{
             Integer faceId = (Integer) event.getLocalState();
             Log.i("DragOverListMen", "faceId " + faceId);
             final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(act.getActivity());
-            //Integer thrashPersonId = dbHelper.getOrCreatePerson(MainActivity.NO_FACES);
-            String personGuid = UUID.randomUUID().toString();
-            dbHelper.addPerson(personGuid);
-            dbHelper.addFaceToPerson(faceId, personGuid);
+            final int personId = dbHelper.addPerson();
+            dbHelper.addFaceToPerson(faceId, personId);
             act.adapterFaces.remove(faceId);
             act.adapterFaces.notifyDataSetChanged();
-            final Integer personId = dbHelper.getPersonIdByGuid(personGuid);
             act.adapterMans.add(personId);
             act.adapterMans.notifyDataSetChanged();
             

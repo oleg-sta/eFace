@@ -25,9 +25,9 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE photos (guid text, path TEXT primary key, time_processed real);");
-        db.execSQL("create table faces (guid text, photo_id text, person_id text, height real, width real, centerX real, centerY real, id integer PRIMARY KEY AUTOINCREMENT NOT NULL);");
-        db.execSQL("create table person (person_id text, id integer PRIMARY KEY AUTOINCREMENT NOT NULL, name text, deleted INTEGER);");
+        db.execSQL("CREATE TABLE photos (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, path TEXT, time_processed real);");
+        db.execSQL("create table faces (guid text, photo_id integer, person_id text, height real, width real, centerX real, centerY real, id integer PRIMARY KEY AUTOINCREMENT NOT NULL);");
+        db.execSQL("create table person (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, name text, deleted INTEGER);");
     }
     
     public void recreate() {
@@ -53,7 +53,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public List<String> getAllPhotosToBeProcessed() {
         List<String> photos = new ArrayList<String>();
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select path from photos where guid is null", null);
+        Cursor c = s.rawQuery("select path from photos where time_processed is null", null);
         while (c.moveToNext()) {
             photos.add(c.getString(0));
         }
@@ -108,22 +108,11 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         s.execSQL("update person set name = '"+newName+"' where id = " + id + "");
         s.close();
     }
-    /**
-     * ���������� ���������� �� ����
-     * 
-     * @param photo
-     * @param guid
-     */
-    public void updatePhoto(String photo, String guid, long time) {
-        SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("update photos set guid = '" + guid + "', time_processed = "+time+" where path = '" + photo + "'");
-        s.close();
-    }
 
-    public void addFace(Face faceCur, String imgId) {
+    public void addFace(Face faceCur, int photoId) {
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("insert into faces (guid, photo_id, height, width, centerX, centerY) values ('" + faceCur.guid + "', '" + imgId
-                + "', " + faceCur.height + ", " + faceCur.width + ", " + faceCur.centerX + ", " + faceCur.centerY + ")");
+        s.execSQL("insert into faces (guid, photo_id, height, width, centerX, centerY) values ('" + faceCur.guid + "', " + photoId
+                + ", " + faceCur.height + ", " + faceCur.width + ", " + faceCur.centerX + ", " + faceCur.centerY + ")");
         s.close();
     }
 
@@ -134,7 +123,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         while (c.moveToNext()) {
             Face face = new Face();
             face.guid = c.getString(0);
-            face.photoId = c.getString(1);
+            face.photoId = c.getInt(1);
             face.height = c.getDouble(3);
             face.width = c.getDouble(4);
             face.centerX = c.getDouble(5);
@@ -146,26 +135,28 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         return faces;
     }
 
-    public void addPerson(String id) {
-        addPerson(id, MainActivity.INPUT_NAME);
+    public int addPerson() {
+        return addPerson(MainActivity.INPUT_NAME);
     }
 
-    public void addPerson(String id, String name) {
+    public int addPerson(String name) {
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("insert into person (person_id, name) values ('" + id + "', '"+name+"')");
+        s.execSQL("insert into person (name) values ('"+name+"')");
+        int id = getLastId(s);
         s.close();
+        return id;
     }
 
     
-    public void addFaceToPerson(String faceId, String personId) {
+    public void addFaceToPerson(String faceId, int personId) {
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("update faces set person_id = '" + personId + "' where guid = '" + faceId + "'");
+        s.execSQL("update faces set person_id = " + personId + " where guid = '" + faceId + "'");
         s.close();
     }
     
-    public void addFaceToPerson(Integer faceId, String personId) {
+    public void addFaceToPerson(Integer faceId, int personId) {
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("update faces set person_id = '" + personId + "' where id = '" + faceId + "'");
+        s.execSQL("update faces set person_id = " + personId + " where id = '" + faceId + "'");
         s.close();
     }
 
@@ -174,16 +165,18 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         InfoPhoto info = new InfoPhoto();
         info.path = path;
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select guid, time_processed from photos where path = '" + path + "'", null);
+        Cursor c = s.rawQuery("select id, time_processed from photos where path = '" + path + "'", null);
         if (c.moveToNext()) {
-            info.guid = c.getString(0);
+            info.id = c.getInt(0);
             info.timeProccessed = c.getLong(1);
-            Log.v("DictionaryOpenHelper", "" + info.guid);
+            if (c.isNull(1)) {
+                info.timeProccessed = null;
+            }
         }
         c.close();
         s.close();
-        if (info.guid != null) {
-            info.faces = getFacesForPhoto(info.guid).toArray(new Face[0]);
+        if (info.timeProccessed != null) {
+            info.faces = getFacesForPhoto(info.id).toArray(new Face[0]);
             info.faceCount = info.faces.length;
             
         }
@@ -207,7 +200,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         if (c.moveToNext()) {
         	face = new Face();
             face.guid = c.getString(0);
-            face.photoId = c.getString(1);
+            face.photoId = c.getInt(1);
             face.height = c.getDouble(3);
             face.width = c.getDouble(4);
             face.centerX = c.getDouble(5);
@@ -217,14 +210,14 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         s.close();
         return face;
     }
-    public List<Face> getFacesForPhoto(String guid) {
+    public List<Face> getFacesForPhoto(int id) {
         List<Face> faces = new ArrayList<Face>();
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select guid, photo_id, person_id, height, width, centerX, centerY from faces where photo_id = '"+guid+"'", null);
+        Cursor c = s.rawQuery("select guid, photo_id, person_id, height, width, centerX, centerY from faces where photo_id = "+id, null);
         while (c.moveToNext()) {
             Face face = new Face();
             face.guid = c.getString(0);
-            face.photoId = c.getString(1);
+            face.photoId = c.getInt(1);
             face.height = c.getDouble(3);
             face.width = c.getDouble(4);
             face.centerX = c.getDouble(5);
@@ -236,10 +229,10 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         return faces;
     }
     
-    public List<Integer> getIdsFacesForPhoto(String guid) {
+    public List<Integer> getIdsFacesForPhoto(String photo) {
     	List<Integer> faces = new ArrayList<Integer>();
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select f.id from faces f inner join photos p on p.guid = f.photo_id where p.path = '"+guid+"'", null);
+        Cursor c = s.rawQuery("select f.id from faces f inner join photos p on p.id = f.photo_id where p.path = '"+photo+"'", null);
         while (c.moveToNext()) {
             faces.add(c.getInt(0));
         }
@@ -273,7 +266,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public List<Integer> getAllIdsFacesForPerson(Integer personId) {
     	List<Integer> faces = new ArrayList<Integer>();
         SQLiteDatabase s = getReadableDatabase();
-        String sql = "select f.id from faces f inner join person p on p.person_id = f.person_id where p.id = " + personId + " order by f.id";
+        String sql = "select f.id from faces f where f.person_id = " + personId + " order by f.id";
         if (personId == null) {
             sql = "select f.id from faces f where f.person_id is null order by f.id";
         }
@@ -293,36 +286,12 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         s.close();
     }
 
-    public String getPersStrById(Integer id) {
-    	String res = null;
-        SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select person_id from person where id = " + id, null);
-        while (c.moveToNext()) {
-            res = c.getString(0);
-        }
-        c.close();
-        s.close();
-        return res;
-    }
-    
-    public Integer getPersonIdByGuid(String id) {
-        Integer res = null;
-        SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select id from person where person_id = '" + id + "'", null);
-        while (c.moveToNext()) {
-            res = c.getInt(0);
-        }
-        c.close();
-        s.close();
-        return res;
-    }
     public Integer getOrCreatePerson(String name) {
     	Integer res = getPersonByName(name);
     	if (res != null) {
     		return res;
     	}
-        addPerson(UUID.randomUUID().toString(), name);
-        return getPersonByName(name);
+        return addPerson(name);
     }
     
     public Integer getPersonByName(String name) {
@@ -343,23 +312,21 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
      * @param fromPersonId
      */
 	public void updatePersonsFacesToNew(Integer toPersonId, Integer fromPersonId) {
-		String toPerStr = getPersStrById(toPersonId);
-		String personStr = getPersStrById(fromPersonId);
 		SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("update faces set person_id = '" + toPerStr + "' where person_id = '" + personStr + "'");
-        s.execSQL("delete from person where person_id = '" + personStr + "'");
+        s.execSQL("update faces set person_id = " + toPersonId + " where person_id = " + fromPersonId + "");
+        s.execSQL("delete from person where person_id = '" + fromPersonId + "'");
         s.close();
 	}
-	public void addFaceToPersonId(Integer faceId, String personId) {
+	public void addFaceToPersonId(Integer faceId, int personId) {
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("update faces set person_id = '" + personId + "' where id = " + faceId + "");
+        s.execSQL("update faces set person_id = " + personId + " where id = " + faceId + "");
         s.close();
     }
 
 	public String getPhotoPathByFaceId(Integer faceId) {
 		String res = null;
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select path from photos p inner join faces f on f.photo_id = p.guid where f.id = " + faceId, null);
+        Cursor c = s.rawQuery("select path from photos p inner join faces f on f.photo_id = p.id where f.id = " + faceId, null);
         while (c.moveToNext()) {
             res = c.getString(0);
         }
@@ -371,7 +338,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
 	public Integer getPersonIdByFaceId(Integer faceId) {
 		Integer res = null;
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select p.id from person p inner join faces f on f.person_id = p.person_id where f.id = " + faceId, null);
+        Cursor c = s.rawQuery("select f.person_id from faces f where f.id = " + faceId, null);
         while (c.moveToNext()) {
             res = c.getInt(0);
         }
@@ -381,10 +348,10 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
 	}
 
 	public void removeFromPerson(int faceId) {
-		String guidNewPerson = UUID.randomUUID().toString();
-		addPerson(guidNewPerson);
+		//String guidNewPerson = UUID.randomUUID().toString();
+		int newPerosn = addPerson();
 		Face face = getFaceForId(faceId);
-		addFaceToPerson(face.guid, guidNewPerson);
+		addFaceToPerson(face.guid, newPerosn);
 	}
 
 	
@@ -403,17 +370,6 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         c.close();
         s.close();
         return res;
-	}
-
-	/**
-	 * �� ���� �� ����������� � ������� ����� ��������� � "�� ����"
-	 */
-	public void repairBugs() {
-//		Integer personId = getOrCreatePerson(MainActivity.NO_FACES);
-//		String personGuid = getPersStrById(personId);
-//		SQLiteDatabase s = getWritableDatabase();
-//		s.execSQL("update faces set person_id = '" + personGuid + "' where person_id is null or person_id not in (select person_id from person)");
-//		s.close();
 	}
 
     public void removePerson(Integer oldPersonId) {
@@ -451,5 +407,27 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         c.close();
         s.close();
         return photos;
+    }
+
+    public int getPhotoIdByPath(String photo) {
+        int res = 0;
+        SQLiteDatabase s = getReadableDatabase();
+        Cursor c = s.rawQuery("select id from photos where path = '" + photo + "'", null);
+        if (c.moveToNext()) {
+            res = c.getInt(0);
+        }
+        c.close();
+        s.close();
+        return res;
+    }
+    
+    private int getLastId(SQLiteDatabase s) {
+        int id = 0;
+        Cursor c = s.rawQuery("select last_insert_rowid()", null);
+        if (c.moveToNext()) {
+            id = c.getInt(0);
+        }
+        c.close();
+        return id;
     }
 }

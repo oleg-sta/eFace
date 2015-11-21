@@ -56,7 +56,7 @@ public class DataHolder {
         Cursor c = db.rawQuery("select guid, photo_id, person_id, height, width, centerX, centerY from faces where guid = '"+faceId+"'", null);
         if (c.moveToNext()) {
             face.guid = c.getString(0);
-            face.photoId = c.getString(1);
+            face.photoId = c.getInt(1);
             face.height = c.getDouble(3);
             face.width = c.getDouble(4);
             face.centerX = c.getDouble(5);
@@ -66,9 +66,9 @@ public class DataHolder {
         return face;
     }
     
-    public String getPathPhoto(SQLiteDatabase db, String guid) {
+    public String getPathPhoto(SQLiteDatabase db, int photoId) {
         String res = null;
-        Cursor c = db.rawQuery("select path from photos where guid = '"+guid+"'", null);
+        Cursor c = db.rawQuery("select path from photos where id = "+photoId, null);
         if (c.moveToNext()) {
             res = c.getString(0);
         }
@@ -76,10 +76,7 @@ public class DataHolder {
         return res;
     }
     
-    // TODO ������ ������ � ������������� ������������
     public Bitmap getLittleFace(SQLiteDatabase db, String faceId, Context context) {
-        // TODO save to disc
-        // TODO ���������� �� ���� ������ �� �� ����� ������, ������ �� ����� ������
         Bitmap bm = mMemoryCache.get(faceId);
         if (bm == null) {
             Face faceCur = getFace(db, faceId);
