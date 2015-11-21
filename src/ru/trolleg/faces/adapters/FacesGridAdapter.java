@@ -15,6 +15,7 @@ import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
+import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -55,6 +56,8 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.one_face, null, true);
         }
+        final ImageView view2 = (ImageView)convertView.findViewById(R.id.checked);
+        view2.setVisibility(checked.contains(position)? View.VISIBLE : View.INVISIBLE);
         ImageView view = (ImageView)convertView.findViewById(R.id.one_face1);
         final int faceId = faces.get(position);
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
@@ -64,13 +67,24 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
         db.close();
         view.setImageBitmap(bm);
         view.setOnLongClickListener(new OnLongClickListener() {
-
             @Override
             public boolean onLongClick(View view) {
                 ClipData data = ClipData.newPlainText("", "");
                 DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
                 view.startDrag(data, shadowBuilder, faceId, 0);
                 return true;
+            }
+        });
+        view.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                view2.setVisibility(view2.getVisibility() == View.VISIBLE? View.INVISIBLE : View.VISIBLE);
+                if (view2.getVisibility() == View.VISIBLE) {
+                    checked.add(position);
+                } else {
+                    checked.remove(position);
+                }
+                
             }
         });
         return convertView;

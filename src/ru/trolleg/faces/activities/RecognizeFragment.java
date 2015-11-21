@@ -164,6 +164,7 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
     public void setCurrentMan(Integer manId) {
         currentMan = manId;
         adapterFaces.clear();
+        adapterFaces.checked.clear();
         adapterFaces.addAll(dbHelper.getAllIdsFacesForPerson(currentMan));
         Log.i("MainActivity", "size persons " + adapterFaces.faces.size());
         adapterFaces.notifyDataSetChanged();
