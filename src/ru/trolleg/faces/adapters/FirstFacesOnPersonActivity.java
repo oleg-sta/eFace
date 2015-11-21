@@ -15,6 +15,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,6 +81,7 @@ public class FirstFacesOnPersonActivity extends ArrayAdapter<Integer>{
             @Override
             public void onClick(View v) {
                 final EditText input = new EditText(context);
+                input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
                 input.setText(name);
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setMessage("Введите имя");

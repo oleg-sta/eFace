@@ -5,6 +5,7 @@ import java.util.UUID;
 import ru.trolleg.faces.activities.RecognizeFragment;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.text.InputType;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
@@ -37,6 +38,7 @@ public class DragOverListMen implements OnDragListener{
             final String[] name = {"Имя"};
             
             final EditText input = new EditText(act.getActivity());
+            input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
             input.setText("");
             AlertDialog.Builder builder = new AlertDialog.Builder(act.getActivity());
             builder.setMessage("Введите имя");
