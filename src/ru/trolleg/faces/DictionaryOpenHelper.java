@@ -210,10 +210,11 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         s.close();
         return face;
     }
+    // исключаем не лица
     public List<Face> getFacesForPhoto(int id) {
         List<Face> faces = new ArrayList<Face>();
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select guid, photo_id, person_id, height, width, centerX, centerY from faces where photo_id = "+id, null);
+        Cursor c = s.rawQuery("select f.guid, f.photo_id, f.person_id, f.height, f.width, f.centerX, f.centerY from faces f where f.photo_id = "+id + " and f.person_id not in (select id from person where name = '"+MainActivity.NO_FACES+"')", null);
         while (c.moveToNext()) {
             Face face = new Face();
             face.guid = c.getString(0);

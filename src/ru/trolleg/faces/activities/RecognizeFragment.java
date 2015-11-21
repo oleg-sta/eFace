@@ -1,8 +1,5 @@
 package ru.trolleg.faces.activities;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.DragOnTrashListener;
@@ -24,9 +21,9 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnLayoutChangeListener;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -139,7 +136,7 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
                     final String[] name = {"Имя"};
                     
                     final EditText input = new EditText(getActivity());
-                    input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+                    input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS | InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
                     input.setText("");
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setMessage("Введите имя");

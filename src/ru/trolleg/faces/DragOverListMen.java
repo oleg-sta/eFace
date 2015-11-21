@@ -38,7 +38,7 @@ public class DragOverListMen implements OnDragListener{
             final String[] name = {"Имя"};
             
             final EditText input = new EditText(act.getActivity());
-            input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+            input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS | InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
             input.setText("");
             AlertDialog.Builder builder = new AlertDialog.Builder(act.getActivity());
             builder.setMessage("Введите имя");

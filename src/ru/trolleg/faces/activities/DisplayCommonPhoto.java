@@ -49,7 +49,7 @@ public class DisplayCommonPhoto extends Activity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mPager.setCurrentItem(position);
+                mPager.setCurrentItem(position, false);
             }
         });
         gallery.setSelection(position);
