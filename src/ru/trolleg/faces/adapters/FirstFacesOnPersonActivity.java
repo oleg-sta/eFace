@@ -45,6 +45,7 @@ public class FirstFacesOnPersonActivity extends ArrayAdapter<Integer>{
         }
         //ImageView view = (ImageView) convertView.findViewById(R.id.face_man);
         final TextView text = (TextView) convertView.findViewById(R.id.name_man);
+        final TextView countText = (TextView) convertView.findViewById(R.id.faces_count);
         final int manId = men.get(position);
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
         final String name = dbHelper.getPersonName(manId);
@@ -52,6 +53,7 @@ public class FirstFacesOnPersonActivity extends ArrayAdapter<Integer>{
         List<Integer> faces = dbHelper.getAllIdsFacesForPerson(manId);
         LinearLayout l1 = (LinearLayout) convertView.findViewById(R.id.faces);
         l1.removeAllViews();
+        countText.setText("(кол-во лиц - " + faces.size() + ")");
         if (faces.size() > 0) {
             for (int i = 0; (i < faces.size()) && (i < 3); i++) {
                 Face face = dbHelper.getFaceForId(faces.get(i));
