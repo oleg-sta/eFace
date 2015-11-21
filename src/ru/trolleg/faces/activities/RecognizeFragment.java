@@ -134,21 +134,8 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
                 } else {
                     final int newPerson = dbHelper.addPerson();
                     adapterMans.add(newPerson);
-                    Set<Integer> facesRemove = new HashSet<Integer>();
-                    for (int positionid : adapterFaces.checked) {
-                        int faceId = adapterFaces.faces.get(positionid);
-                        dbHelper.addFaceToPerson(faceId, newPerson);
-                        facesRemove.add(faceId);
-                    }
-                    for (int faceId : facesRemove) {
-                        adapterFaces.remove(faceId);
-                    }
-                    adapterFaces.checked.clear();
-                    adapterFaces.notifyDataSetChanged();
-                    adapterMans.notifyDataSetChanged();
                     
-                    // input new name
-                    
+                    PersonListToRecogniseAdapter.moveFaces(this1, newPerson, dbHelper);
                     final String[] name = {"Имя"};
                     
                     final EditText input = new EditText(getActivity());
@@ -185,18 +172,8 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
                     this1.setCurrentMan(dbHelper.getOrCreatePerson(MainActivity.NO_FACES));
                 } else {
                     Integer thrashPersonId = dbHelper.getOrCreatePerson(MainActivity.NO_FACES);
-                    Set<Integer> facesRemove = new HashSet<Integer>();
-                    for (int positionid : adapterFaces.checked) {
-                        int faceId = adapterFaces.faces.get(positionid);
-                        dbHelper.addFaceToPerson(faceId, thrashPersonId);
-                        facesRemove.add(faceId);
-                    }
-                    for (int faceId : facesRemove) {
-                        adapterFaces.remove(faceId);
-                    }
-                    adapterFaces.checked.clear();
-                    adapterFaces.notifyDataSetChanged();
-                    adapterMans.notifyDataSetChanged();
+                    
+                    PersonListToRecogniseAdapter.moveFaces(this1, thrashPersonId, dbHelper);
                 }
             }
         });

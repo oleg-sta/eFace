@@ -47,41 +47,74 @@ public class PersonListToRecogniseAdapter extends ArrayAdapter<Integer> {
         String name = dbHelper.getPersonName(manId);
         text.setText(name);
         List<Integer> faces = dbHelper.getAllIdsFacesForPerson(manId);
+        Bitmap bm = null;
         if (faces.size() > 0) {
             Face face = dbHelper.getFaceForId(faces.get(0));
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-            Bitmap bm = DataHolder.getInstance().getLittleFace(db, face.guid, getContext());
+            bm = DataHolder.getInstance().getLittleFace(db, face.guid, getContext());
             db.close();
             view.setImageBitmap(bm);
-            view.setOnDragListener(new DragOverManListener(manId, act));
-            view.setOnClickListener(new OnClickListener() {
-                
-                @Override
-                public void onClick(View v) {
-                    if (act.currentMan != null && act.currentMan == manId) {
-                        return;
-                    }
+        } else {
+            view.setImageResource(android.R.color.transparent);
+        }
+        view.setOnDragListener(new DragOverManListener(manId, act));
+        view.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (act.currentMan != null && act.currentMan == manId) {
+                    return;
+                }
+                if (act.adapterFaces.checked.isEmpty()) {
+                    act.setCurrentMan(manId);
+                } else {
+                    moveFaces(act, manId, dbHelper);
+                }
+
+            }
+        });
+
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            
+            @Override
+            public boolean onLongClick(View v) {
+                if (act.currentMan != null && act.currentMan == manId) {
                     if (act.adapterFaces.checked.isEmpty()) {
-                        act.setCurrentMan(manId);
+                        for (int i = 0; i < act.adapterFaces.getCount(); i++) {
+                            act.adapterFaces.checked.add(i);
+                        }
                     } else {
-                        Set<Integer> facesRemove = new HashSet<Integer>();
-                        for (int positionid : act.adapterFaces.checked) {
-                            int faceId = act.adapterFaces.faces.get(positionid);
-                            dbHelper.addFaceToPerson(faceId, manId);
-                            facesRemove.add(faceId);
-                        }
-                        for (int faceId : facesRemove) {
-                            act.adapterFaces.remove(faceId);
-                        }
                         act.adapterFaces.checked.clear();
-                        act.adapterFaces.notifyDataSetChanged();
-                        act.adapterMans.notifyDataSetChanged();
                     }
+                    act.adapterFaces.notifyDataSetChanged();
                     
                 }
-            });
-        }
+                return true;
+            }
+        });
         return convertView;
     }
 
+    public static void moveFaces(RecognizeFragment act, int manId, DictionaryOpenHelper dbHelper) {
+        Set<Integer> facesRemove = new HashSet<Integer>();
+        Integer currMan = act.currentMan;
+        for (int positionid : act.adapterFaces.checked) {
+            int faceId = act.adapterFaces.faces.get(positionid);
+            dbHelper.addFaceToPerson(faceId, manId);
+            facesRemove.add(faceId);
+        }
+        for (int faceId : facesRemove) {
+            act.adapterFaces.remove(faceId);
+        }
+        if (currMan != null) {
+            if (dbHelper.getAllIdsFacesForPerson(currMan).size() == 0) {
+                act.adapterMans.remove(currMan);
+                dbHelper.removePerson(currMan);
+                act.setCurrentMan(null);
+            }
+        }
+        act.adapterFaces.checked.clear();
+        act.adapterFaces.notifyDataSetChanged();
+        act.adapterMans.notifyDataSetChanged();
+    }
 }
