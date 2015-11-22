@@ -53,7 +53,7 @@ public class FaceFinderService extends IntentService {
     static FaceFinderService instance;
     public final static int PHOTOS_LIMIT = 3000; // ������������ ���������� ���������� ��� ���������
     public final static int PHOTOS_SIZE_TO_BE_PROCESSED = 600;
-	public final static int PHOTOS_SIZE_TO_BE_CUT = 300; // ������ ���� � �������� ��� ���������
+	public final static int PHOTOS_SIZE_TO_BE_CUT = 600; // ������ ���� � �������� ��� ���������
 	
 	ResultReceiver rec = null;
 	public Bundle b; // last Bundle
