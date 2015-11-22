@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class RecognizeFragment extends Fragment implements NotificationReceiver.Listener {
     
@@ -127,7 +128,11 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
             public void onClick(View v) {
                 // TODO add new, если нет выделенных людей, то переходим на неопознанных
                 if (adapterFaces.checked.isEmpty()) {
-                    this1.setCurrentMan(null);
+                    if (this1.currentMan == null) {
+                        Toast.makeText(getActivity(), "Сначала выделите лица.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        this1.setCurrentMan(null);
+                    }
                 } else {
                     final EditText input = new EditText(getActivity());
                     input.setHint("Введите имя");
@@ -163,12 +168,13 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
 
             @Override
             public void onClick(View v) {
+                int thrashid = dbHelper.getOrCreatePerson(MainActivity.NO_FACES);
                 if (adapterFaces.checked.isEmpty()) {
-                    this1.setCurrentMan(dbHelper.getOrCreatePerson(MainActivity.NO_FACES));
+                    this1.setCurrentMan(thrashid);
                 } else {
-                    Integer thrashPersonId = dbHelper.getOrCreatePerson(MainActivity.NO_FACES);
-                    
-                    PersonListToRecogniseAdapter.moveFaces(this1, thrashPersonId, dbHelper);
+                    if (currentMan == null || currentMan != thrashid) {
+                        PersonListToRecogniseAdapter.moveFaces(this1, thrashid, dbHelper);
+                    }
                 }
             }
         });
