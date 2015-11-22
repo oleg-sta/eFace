@@ -48,6 +48,7 @@ JNIEXPORT jobjectArray JNICALL Java_ru_trolleg_faces_jni_Computations_findFaces2
 	cv::resize(img, img, cv::Size(), koef, koef);
 	rot90(img, rotflat);
 	cv::Mat gray_image;
+	__android_log_print(ANDROID_LOG_INFO, "Computations", "size %d %d", gray_image.rows, gray_image.cols);
 	cv::cvtColor( img, gray_image, CV_BGR2GRAY );
 	std::vector<cv::Rect> faces;
 	face_cascade.detectMultiScale( gray_image, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(32, 32) );

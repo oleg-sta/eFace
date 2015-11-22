@@ -52,7 +52,8 @@ public class FaceFinderService extends IntentService {
 
     static FaceFinderService instance;
     public final static int PHOTOS_LIMIT = 3000; // ������������ ���������� ���������� ��� ���������
-	public final static int PHOTOS_SIZE_TO_BE_PROCESSED = 300; // ������ ���� � �������� ��� ���������
+    public final static int PHOTOS_SIZE_TO_BE_PROCESSED = 600;
+	public final static int PHOTOS_SIZE_TO_BE_CUT = 300; // ������ ���� � �������� ��� ���������
 	
 	ResultReceiver rec = null;
 	public Bundle b; // last Bundle
@@ -204,18 +205,27 @@ public class FaceFinderService extends IntentService {
                     BitmapFactory.decodeFile(photo, options2);
                     int height = options2.outHeight;
                     int width = options2.outWidth;
-                    double koef  = calculateInSampleSize(options2, PHOTOS_SIZE_TO_BE_PROCESSED, PHOTOS_SIZE_TO_BE_PROCESSED);
-                    height = (int)(height / koef);
-                    width = (int) (width / koef);
+                    Log.i("FaceFinderService", "original " + width + " " + height);
+                    //double koef  = calculateInSampleSize(options2, PHOTOS_SIZE_TO_BE_CUT, PHOTOS_SIZE_TO_BE_CUT);
+                    //height = (int)(height / koef);
+                    //width = (int) (width / koef);
                     if (orient % 2 == 1) {
                         int w1 = height;
                         height = width;
                         width = w1;
                     }
+                    double koef = Math.min((double)height / PHOTOS_SIZE_TO_BE_PROCESSED, (double)width / PHOTOS_SIZE_TO_BE_PROCESSED);
+                    if (koef < 1) {
+                        koef = 1;
+                    }
+                    height = (int)(height / koef);
+                    width = (int)(width / koef);
+                    Log.i("FaceFinderService", "koef " + koef + " " + width + " " + height);
+                    
                     
                     final BitmapFactory.Options options = new BitmapFactory.Options();
-                    Bitmap background_image = decodeSampledBitmapFromResource(photo, PHOTOS_SIZE_TO_BE_PROCESSED,
-                            PHOTOS_SIZE_TO_BE_PROCESSED, options, true);
+                    Bitmap background_image = decodeSampledBitmapFromResource(photo, PHOTOS_SIZE_TO_BE_CUT,
+                            PHOTOS_SIZE_TO_BE_CUT, options, true);
 
                     Log.i("FaceFinderService",
                             "size " + background_image.getWidth() + " " + background_image.getHeight());
