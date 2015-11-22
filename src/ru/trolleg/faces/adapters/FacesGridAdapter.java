@@ -9,14 +9,13 @@ import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.data.Face;
 import android.app.Activity;
-import android.content.ClipData;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.DragShadowBuilder;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -66,14 +65,38 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
         Bitmap bm = DataHolder.getInstance().getLittleFace(db, face.guid, getContext());
         db.close();
         view.setImageBitmap(bm);
-        view.setOnLongClickListener(new OnLongClickListener() {
+//        view.setOnLongClickListener(new OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View view) {
+//                ClipData data = ClipData.newPlainText("", "");
+//                DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+//                view.startDrag(data, shadowBuilder, faceId, 0);
+//                return true;
+//            }
+//        });
+        view.setOnTouchListener(new OnTouchListener() {
+            
             @Override
-            public boolean onLongClick(View view) {
-                ClipData data = ClipData.newPlainText("", "");
-                DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
-                view.startDrag(data, shadowBuilder, faceId, 0);
-                return true;
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction())  {
+                case MotionEvent.ACTION_DOWN: {
+                    ImageView view = (ImageView) v;
+                    // argb
+                    view.setPadding(5, 5, 5, 5);
+                    view.invalidate();
+                    break;
+                }
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL: {
+                    ImageView view = (ImageView) v;
+                    view.setPadding(0, 0, 0, 0);
+                    view.invalidate();
+                    break;
+                }
             }
+            return false;
+            }
+
         });
         view.setOnClickListener(new OnClickListener() {
             @Override

@@ -129,22 +129,20 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
                 if (adapterFaces.checked.isEmpty()) {
                     this1.setCurrentMan(null);
                 } else {
-                    final int newPerson = dbHelper.addPerson();
-                    adapterMans.add(newPerson);
-                    
-                    PersonListToRecogniseAdapter.moveFaces(this1, newPerson, dbHelper);
-                    final String[] name = {"Имя"};
-                    
                     final EditText input = new EditText(getActivity());
+                    input.setHint("Введите имя");
                     input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS | InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-                    input.setText("");
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setMessage("Введите имя");
+                    builder.setMessage("Добавление человека, выделено лиц - " + this1.adapterFaces.checked.size());
                     builder.setView(input).setPositiveButton("Да", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            name[0] =  input.getText().toString();
-                            Log.i("DragOverListMen", "Yes " + name[0]);
-                            dbHelper.updatePersonName(newPerson, name[0]);
+                            String newName =  input.getText().toString();
+                            if ("".equals(newName)) {
+                                newName = "Без имени";
+                            }
+                            final int newPerson = dbHelper.addPerson(newName);
+                            adapterMans.add(newPerson);
+                            PersonListToRecogniseAdapter.moveFaces(this1, newPerson, dbHelper);
                             adapterMans.notifyDataSetChanged();
                         }
                     }).setNegativeButton("Нет", new DialogInterface.OnClickListener() {
