@@ -13,8 +13,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.util.LruCache;
 import android.util.Log;
+import android.widget.ImageView;
 
 
 public class DataHolder {
@@ -126,6 +128,7 @@ public class DataHolder {
         return bm;
     }
 
+    
     public Bitmap getLittleCropedPhoto(String photo, Context context) {
         Bitmap bm = mMemoryCache.get(photo);
         String toSave = new File(photo).getName() + photo.hashCode();

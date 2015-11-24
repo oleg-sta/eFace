@@ -2,8 +2,10 @@ package ru.trolleg.faces;
 
 import java.lang.ref.WeakReference;
 
+import ru.trolleg.faces.adapters.GridPhotosAdapter.ViewHolder;
 import ru.trolleg.faces.data.Face;
 import ru.trolleg.faces.data.InfoPhoto;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,15 +17,15 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 public class BitmapWorkerCropPhotoTask extends AsyncTask<String, Void, Bitmap> {
-    private final WeakReference<ImageView> imageViewReference;
-    private final ProgressBar bar;
+    private final WeakReference<ViewHolder> imageViewReference;
+    private final int position;
     private String data = "";
     Context context;
 
-    public BitmapWorkerCropPhotoTask(ImageView imageView, ProgressBar bar, Context context) {
-        imageViewReference = new WeakReference<ImageView>(imageView);
-        this.bar = bar;
-        this.context = context; 
+    public BitmapWorkerCropPhotoTask(ViewHolder holder, Activity context2, int position) {
+        imageViewReference = new WeakReference<ViewHolder>(holder);
+        this.context = context2;
+        this.position = position;
     }
 
     // Decode image in background.
@@ -39,10 +41,10 @@ public class BitmapWorkerCropPhotoTask extends AsyncTask<String, Void, Bitmap> {
     @Override
     protected void onPostExecute(Bitmap bitmap) {
         if (imageViewReference != null && bitmap != null) {
-            final ImageView imageView = imageViewReference.get();
-            if (imageView != null) {
-                imageView.setImageBitmap(bitmap);
-                bar.setVisibility(ProgressBar.INVISIBLE);
+            final ViewHolder imageView = imageViewReference.get();
+            if (imageView != null && imageView.position == position && imageView.image != null) {
+                imageView.image.setImageBitmap(bitmap);
+                imageView.bar.setVisibility(ProgressBar.INVISIBLE);
             }
         }
     }

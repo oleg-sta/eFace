@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+
 public class GridPhotosAdapter extends ArrayAdapter<String> {
 
     private final Activity context;
@@ -25,22 +26,35 @@ public class GridPhotosAdapter extends ArrayAdapter<String> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
         LayoutInflater inflater = context.getLayoutInflater();
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.one_face, null, true);
-        }
-        ProgressBar bar = (ProgressBar) convertView.findViewById(R.id.progressBar);
-        bar.setVisibility(ProgressBar.VISIBLE);
-        //final ImageView view2 = (ImageView)convertView.findViewById(R.id.checked);
-        ImageView view = (ImageView)convertView.findViewById(R.id.one_face1);
-        final String photo = photos.get(position);
-        view.setImageBitmap(null);
-        final BitmapWorkerCropPhotoTask task = new BitmapWorkerCropPhotoTask(view, bar, context);
-        task.execute(photo);
+            holder = new ViewHolder();
+            holder.image = (ImageView)convertView.findViewById(R.id.one_face1);
+            holder.bar = (ProgressBar) convertView.findViewById(R.id.progressBar);
 
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+        //ProgressBar bar = (ProgressBar) convertView.findViewById(R.id.progressBar);
+        holder.bar.setVisibility(ProgressBar.VISIBLE);
+        //final ImageView view2 = (ImageView)convertView.findViewById(R.id.checked);
+        //ImageView view = (ImageView)convertView.findViewById(R.id.one_face1);
+        final String photo = photos.get(position);
+        holder.image.setImageBitmap(null);
+        holder.position = position;
+        final BitmapWorkerCropPhotoTask task = new BitmapWorkerCropPhotoTask(holder, context, position);
+        task.execute(photo);
         
         return convertView;
     }
- 
-
+    
+    public static class ViewHolder {
+        public ImageView image;
+        public ProgressBar bar;
+        public int position;
+    }
 }
+
