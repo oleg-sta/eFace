@@ -53,6 +53,10 @@
             android:label="@string/act_people_name"
             android:name="ru.trolleg.faces.activities.FacesActivity">
         </activity>
+        <activity
+            android:label="@string/act_people_name"
+            android:name="ru.trolleg.faces.activities.PhotoGalleryCommon">
+        </activity>
         </application>
 
 </manifest>

@@ -41,14 +41,6 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
         this.context = context;
     }
 
-    static class ViewHolder {
-
-        private CheckBox box;
-        private LinearLayout linearLayout;
-        private TextView txtTitle;
-
-    }
-
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();

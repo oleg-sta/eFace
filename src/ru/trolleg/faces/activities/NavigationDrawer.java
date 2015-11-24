@@ -140,7 +140,7 @@ public class NavigationDrawer extends Activity {
         } else if (position == 0) {
             fragment = new PeopleFragment();
         } else {
-            fragment = new PhotoFragment();
+            fragment = new PhotoGridFragment();
         }
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();

@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 
 import ru.trolleg.faces.data.Face;
 import ru.trolleg.faces.data.InfoPhoto;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -18,6 +19,7 @@ public class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
     private final ProgressBar bar;
     private String data = "";
     InfoPhoto info;
+    Context context;
 
     public BitmapWorkerTask(ImageView imageView, ProgressBar bar) {
         this(imageView, bar, null);

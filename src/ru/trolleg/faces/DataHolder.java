@@ -78,6 +78,8 @@ public class DataHolder {
     
     public Bitmap getLittleFace(SQLiteDatabase db, String faceId, Context context) {
         Bitmap bm = mMemoryCache.get(faceId);
+        Log.i("DataHolder", "faceId " + faceId);
+        Log.i("DataHolder", "faceId " + context.getFilesDir().toString());
         if (bm == null) {
             Face faceCur = getFace(db, faceId);
             String path = getPathPhoto(db, faceCur.photoId);
@@ -124,6 +126,66 @@ public class DataHolder {
         return bm;
     }
 
+    public Bitmap getLittleCropedPhoto(String photo, Context context) {
+        Bitmap bm = mMemoryCache.get(photo);
+        String toSave = new File(photo).getName() + photo.hashCode();
+        Log.i("DataHolder", "getLittleCropedPhoto " + photo);
+        Log.i("DataHolder", "getLittleCropedPhoto " + context.getFilesDir().toString());
+        if (bm == null) {
+            Log.i("DataHolder", "not in cache " + photo);
+            File file = new File(context.getFilesDir(), toSave);
+            if (file.exists()) {
+                Log.i("DataHolder", "in file " + photo);
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.RGB_565;
+                try {
+                    bm = BitmapFactory.decodeStream(new FileInputStream(file), null, options);
+                    Log.i("DataHolder", "got file " + photo);
+                } catch (FileNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            } else {
+                Log.i("DataHolder", "cropping " + photo);
+                final BitmapFactory.Options options = new BitmapFactory.Options();
+                bm = FaceFinderService.decodeSampledBitmapFromResource(photo, 150, 150, options, true);
+                if (bm == null) {
+                    return null;
+                }
+                // обрезаем по квадратику
+                int height = bm.getHeight();
+                int width = bm.getWidth();
+                int x = 0;
+                int y = 0;
+                if (width > height) {
+                    x = (width - height) / 2;
+                    width = height;
+                } else {
+                    y = (height - width) / 2;
+                    height = width;
+                }
+                bm = Bitmap.createBitmap(bm, x, y, width, height);
+                bm = getResizedBitmap(bm, FACES_SIZE, FACES_SIZE);
+                file = new File(context.getFilesDir(), toSave);
+                try {
+                    if (file.createNewFile()) {
+                        Log.i("DataHolder", "saving " + photo);
+                        FileOutputStream os = new FileOutputStream(file);
+                        bm.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                        os.flush();
+                        os.close();
+                        Log.i("DataHolder", "saved " + photo);
+                    }
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            mMemoryCache.put(photo, bm);
+        }
+        return bm;
+    }
+    
     public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
         int width = bm.getWidth();
         int height = bm.getHeight();

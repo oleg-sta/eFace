@@ -3,6 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/background"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:max="100"
+        android:visibility="invisible" />
+    
     <ImageView
         android:id="@+id/one_face1"
         android:layout_width="80dp"

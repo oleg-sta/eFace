@@ -324,7 +324,7 @@ public class FaceFinderService extends IntentService {
         options.inJustDecodeBounds = false;
         options.inPreferredConfig = Bitmap.Config.RGB_565;
         Bitmap res = BitmapFactory.decodeFile(photo, options);
-        if (orientFlag) {
+        if (orientFlag && res != null) {
             
             ExifInterface exif = null;
             try {
