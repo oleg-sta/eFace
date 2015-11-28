@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class PeopleFragment extends Fragment {
     public PeopleFragment() {
@@ -16,11 +17,15 @@ public class PeopleFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.people_activity, container, false);
+        View rootView = inflater.inflate(R.layout.people_fragment, container, false);
         DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(getActivity());
         FirstFacesOnPersonActivity adapterMans = new FirstFacesOnPersonActivity(getActivity(), dbHelper.getAllIdsPerson());
         final ListView listView2 = (ListView) rootView.findViewById(R.id.list_man);
         listView2.setAdapter(adapterMans);
+        if (adapterMans.isEmpty()) {
+            TextView t = (TextView) rootView.findViewById(R.id.message);
+            t.setVisibility(View.VISIBLE);
+        }
         return rootView;
     }
 }

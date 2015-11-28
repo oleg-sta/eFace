@@ -46,9 +46,13 @@ import detection.Rectangle;
  */
 public class FaceFinderService extends IntentService {
 
+    public final static String OPER = "operation"; 
+    public enum Operation { FIND_PHOTOS, FIND_FACES, SHOW_BUTTON, HIDE_BUTTON };
+    
     private static final int notif_id=1;
     //public static boolean working = false;
     public static boolean buttonStart = false;
+    public String lastMessage = null;
 
     static FaceFinderService instance;
     public final static int PHOTOS_LIMIT = 3000; // ������������ ���������� ���������� ��� ���������
@@ -86,6 +90,7 @@ public class FaceFinderService extends IntentService {
         }
     }
     
+    // запуск для подсчета фотографий и обработки
     @Override
     protected void onHandleIntent(Intent intent) {
         Logger1.log("onHandleIntent");
@@ -94,6 +99,42 @@ public class FaceFinderService extends IntentService {
         //ResultReceiver rec = null;
         WakeLock wakeLock = null;
         try {
+            
+            DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
+            Operation oper = null;
+            if (intent != null) {
+                rec = (ResultReceiver) intent.getParcelableExtra("receiver");
+                oper = (Operation) intent.getSerializableExtra(OPER);
+            } else {
+                buttonStart = true;
+            }
+            
+            if (oper == Operation.FIND_PHOTOS) {
+                b = new Bundle();
+                b.putString("message", "Поиск новых фотографий...");
+                if (rec != null) {
+                    rec.send(0, b);
+                }
+                List<String> allPhotos = MainActivity.getCameraImages(getApplicationContext());
+                Log.d("FaceFinderService", "onHandleIntent photos " + allPhotos.size());
+                // �������� ����� � ��
+                dbHelper.addNewPhotos(allPhotos);
+                int newPhotos = dbHelper.getCountNewPhotos();
+                Log.d("FaceFinderService", "onHandleIntent newFaces " + newPhotos);
+                buttonStart = false;
+                b.putString("progress", "0");
+                b.putString("message", "Найдено новых фотографий " + newPhotos);
+                if (newPhotos == 0) {
+                    b.putString("progress", "100");
+                }
+                if (rec != null) {
+                    Log.i("FaceFinderService", "message to rec");
+                    rec.send(0, b);
+                }
+                return;
+            }
+            lastMessage = "";
+            Toast.makeText(getApplicationContext(), "Обработка запущена", Toast.LENGTH_LONG).show();
             PowerManager mgr = (PowerManager) getSystemService(Context.POWER_SERVICE);
             wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
             wakeLock.acquire();
@@ -113,28 +154,16 @@ public class FaceFinderService extends IntentService {
             mBuilder.setContentTitle(getText(R.string.app_name)).setContentText("Обработка начата").setSmallIcon(R.drawable.stat_notify_chat);
             mBuilder.setContentIntent(contentIntent);
             
-            
-            // ������ ��������� ���������� �������1
-            DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
-            
             DataHolder dataHolder = DataHolder.getInstance();
             Runtime info = Runtime.getRuntime();
             int threadsNum = info.availableProcessors();
-            if (intent != null) {
-                rec = (ResultReceiver) intent.getParcelableExtra("receiver");
-            } else {
-                buttonStart = true;
-            }
-            
+                        
             Log.d("FaceFinderService", "onHandleIntent threads " + threadsNum);
             Logger1.log("onHandleIntent threads " + threadsNum);
-            List<String> photos = MainActivity.getCameraImages(getApplicationContext());
-            // �������� ����� � ��
-            int newFaces = dbHelper.addNewPhotos(photos);
-            
             
             // find faces on photos
-            photos = dbHelper.getAllPhotosToBeProcessed();
+            List<String> photos = dbHelper.getAllPhotosToBeProcessed();
+            Log.d("FaceFinderService", "onHandleIntent photos " + photos.size());
             if (photos.size() == 0) {
                 Log.d("FaceFinderService", "zero photos ");
                 buttonStart = false;
@@ -285,6 +314,12 @@ public class FaceFinderService extends IntentService {
             }
             if (iPh == photos.size()) {
                 buttonStart = false;
+                Bundle b = new Bundle();
+                b.putString("progress", "100");
+                b.putString("message", "Завершенно");
+                if (rec != null) {
+                    rec.send(0, b);
+                }
             }
             mBuilder.setContentText("Обработка завершена");
             mBuilder.setProgress(iPh, iPh, false);
@@ -300,12 +335,12 @@ public class FaceFinderService extends IntentService {
                 wakeLock.release();
             }
 
-            Bundle b = new Bundle();
-            b.putString("progress", "100");
-            b.putString("message", "Завершенно");
-            if (rec != null) {
-                rec.send(0, b);
-            }
+//            Bundle b = new Bundle();
+//            b.putString("progress", "100");
+//            b.putString("message", "Завершенно");
+//            if (rec != null) {
+//                rec.send(0, b);
+//            }
             // TODO send status message
         }
     }
@@ -378,7 +413,6 @@ public class FaceFinderService extends IntentService {
     public void onCreate() {
         Log.i("FaceFinderService", "onCreate22");
         Logger1.log("onCreate22");
-        Toast.makeText(getApplicationContext(), "Обработка запущена", Toast.LENGTH_LONG).show();
         super.onCreate();
         instance = this;
     }
@@ -405,8 +439,10 @@ public class FaceFinderService extends IntentService {
                 rec.send(0, b);
             }
         }
-        Toast.makeText(getApplicationContext(), "Обработка остановлена", Toast.LENGTH_LONG).show();
         // Запустить сервис снова, если стоит start
+        if (lastMessage!= null) {
+            Toast.makeText(getApplicationContext(), "Обработка завершена", Toast.LENGTH_LONG).show();
+        }
         if (buttonStart) {
             Intent intent = new Intent(getApplicationContext(), FaceFinderService.class);
             getApplicationContext().startService(intent);

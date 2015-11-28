@@ -26,7 +26,7 @@ public class NavigationDrawer extends Activity {
 
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
-    private String[] mPlanetTitles;
+    private String[] mNavigationTitles;
     private Integer lastPosition;
     
     DictionaryOpenHelper dbHelper;
@@ -40,7 +40,7 @@ public class NavigationDrawer extends Activity {
         dbHelper = new DictionaryOpenHelper(this);
 
         mTitle = mDrawerTitle = getTitle();
-        mPlanetTitles = getResources().getStringArray(R.array.planets_array);
+        mNavigationTitles = getResources().getStringArray(R.array.navigation_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -48,7 +48,7 @@ public class NavigationDrawer extends Activity {
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mPlanetTitles));
+                R.layout.drawer_list_item, mNavigationTitles));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // enable ActionBar app icon to behave as action to toggle nav drawer
@@ -83,6 +83,7 @@ public class NavigationDrawer extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.i("ND", "w");
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
@@ -128,7 +129,7 @@ public class NavigationDrawer extends Activity {
     private void selectItem(int position) {
         if (lastPosition != null && lastPosition == position) {
             mDrawerList.setItemChecked(position, true);
-            setTitle(mPlanetTitles[position]);
+            setTitle(mNavigationTitles[position]);
             mDrawerLayout.closeDrawer(mDrawerList);
             return;
         }
@@ -147,7 +148,7 @@ public class NavigationDrawer extends Activity {
 
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
-        setTitle(mPlanetTitles[position]);
+        setTitle(mNavigationTitles[position]);
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 

@@ -1,33 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout   xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
-    android:orientation="vertical"  >
-    
-    <TextView 
-        android:id="@+id/name_man"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:layout_gravity="center_horizontal" />
-    
+    android:background="#000000" >
+
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-    
-    
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/name_man"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|top"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp" />
+
     <ru.trolleg.faces.adapters.HorizontalListView
-            android:id="@+id/gallery1"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:fadingEdgeLength="5dp"
-            android:layout_gravity="bottom"
-            android:requiresFadingEdge="horizontal"/> 
-<!--             
+        android:id="@+id/gallery1"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_gravity="bottom"
+        android:fadingEdgeLength="5dp"
+        android:requiresFadingEdge="horizontal" />
+    <!--
     <HorizontalScrollView
         android:id="@+id/hscroll"
         android:layout_width="match_parent"
@@ -39,21 +37,19 @@
             android:layout_height="80dp"
             android:orientation="horizontal" >
         </LinearLayout>
-    </HorizontalScrollView>
-    -->
-    <!--  
+    </HorizontalScrollView>  -->
+    <!--
     <android.support.v4.view.ViewPager
         android:id="@+id/gallery12"
         android:layout_width="match_parent"
-        android:layout_height="80dp" />
-        -->
-    <!-- 
+        android:layout_height="80dp" />  -->
+    <!--
      <Gallery
         android:id="@+id/gallery1"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:gravity="left" 
         android:layout_gravity="left"
-        android:spacing="1dip" />
-    -->
-</LinearLayout>
+        android:spacing="1dip" />    -->
+
+</FrameLayout>

@@ -38,7 +38,7 @@ public class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
         final BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap myBitmap = FaceFinderService.decodeSampledBitmapFromResource(data, DataHolder.SIZE_PHOTO_TO_FIND_FACES, DataHolder.SIZE_PHOTO_TO_FIND_FACES, options, true);
 
-        if (info == null) {
+        if (info == null || myBitmap == null) {
             return myBitmap;
         }
         android.graphics.Bitmap.Config bitmapConfig = myBitmap.getConfig();
@@ -56,7 +56,7 @@ public class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
         paint.setColor(Color.YELLOW);
         paint.setAlpha(100);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(10);
+        paint.setStrokeWidth(0);
         for (int i = 0; i < info.faceCount; i++) {
             Face face = info.faces[i];
             int heightFace = (int) (face.height * heightImg) / 100;

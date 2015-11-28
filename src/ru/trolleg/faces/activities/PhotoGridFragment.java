@@ -18,7 +18,7 @@ import android.widget.GridView;
 
 public class PhotoGridFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.gallery_photo, container, false);
+        View rootView = inflater.inflate(R.layout.gallery_photo_fragment, container, false);
         DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(getActivity());
         List<String> photosId = dbHelper.getAllPhotos();
         GridView photos = (GridView) rootView.findViewById(R.id.gallery_photos);

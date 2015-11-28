@@ -28,7 +28,7 @@
 Из страницы просмотра лиц человека можно попасть в оригинальную фотографию. Для этого необходимо нажать на лицо.
     ]]></string>
         	
-        <string-array name="planets_array">
+        <string-array name="navigation_array">
         <item>Люди</item>
         <item>Распознавание</item>
         <item>Фотографии</item>

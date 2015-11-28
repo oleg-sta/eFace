@@ -69,20 +69,17 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
      */
     public int addNewPhotos(List<String> photos) {
         int i = 0;
+        SQLiteDatabase s = getWritableDatabase();
         for (String photo : photos) {
-            Log.v("DictionaryOpenHelper", photo);
-            SQLiteDatabase s = getReadableDatabase();
             Cursor c = s.rawQuery("select path from photos where path = '" + photo + "'", null);
             if (!c.moveToNext()) {
-                c.close();
-                s.close();
-                addPhoto(photo);
+                s.execSQL("insert into photos (path) values ('" + photo + "')");
                 i++;
             } else {
-                c.close();
-                s.close();
             }
+            c.close();
         }
+        s.close();
         return i;
     }
 
@@ -92,7 +89,6 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
      * @param photo
      */
     public void addPhoto(String photo) {
-        Log.v("DictionaryOpenHelper", "add photo " + photo);
         SQLiteDatabase s = getWritableDatabase();
         s.execSQL("insert into photos (path) values ('" + photo + "')");
         s.close();
@@ -430,5 +426,17 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         }
         c.close();
         return id;
+    }
+
+    public int getCountNewPhotos() {
+        int count = 0;
+        SQLiteDatabase s = getReadableDatabase();
+        Cursor c = s.rawQuery("select count(*) from photos where time_processed is null", null);
+        if (c.moveToNext()) {
+            count = c.getInt(0);
+        }
+        c.close();
+        s.close();
+        return count;
     }
 }

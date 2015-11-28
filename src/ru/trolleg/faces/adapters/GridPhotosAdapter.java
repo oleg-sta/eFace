@@ -39,11 +39,11 @@ public class GridPhotosAdapter extends ArrayAdapter<String> {
             holder = (ViewHolder) convertView.getTag();
         }
         //ProgressBar bar = (ProgressBar) convertView.findViewById(R.id.progressBar);
-        holder.bar.setVisibility(ProgressBar.VISIBLE);
+        //holder.bar.setVisibility(ProgressBar.VISIBLE);
         //final ImageView view2 = (ImageView)convertView.findViewById(R.id.checked);
         //ImageView view = (ImageView)convertView.findViewById(R.id.one_face1);
         final String photo = photos.get(position);
-        holder.image.setImageBitmap(null);
+        holder.image.setImageResource(R.drawable.blur_photo);
         holder.position = position;
         final BitmapWorkerCropPhotoTask task = new BitmapWorkerCropPhotoTask(holder, context, position);
         task.execute(photo);

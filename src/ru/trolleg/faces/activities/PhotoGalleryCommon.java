@@ -6,11 +6,13 @@ import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.CommonPhotoAdapter2;
+import ru.trolleg.faces.adapters.HorizontalListView;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -34,5 +36,7 @@ public class PhotoGalleryCommon extends Activity {
         final PagerAdapter mPagerAdapter = new CommonPhotoAdapter2(this, photos, nameView);
         mPager.setAdapter(mPagerAdapter);
         mPager.setCurrentItem(position);
+        HorizontalListView horizontal = (HorizontalListView) findViewById(R.id.gallery1);
+        horizontal.setVisibility(View.GONE);
     }
 }
