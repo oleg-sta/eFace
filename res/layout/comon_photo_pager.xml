@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="#000000" >
 
-    <android.support.v4.view.ViewPager
+    <ru.trolleg.faces.DeactivableViewPager
         android:id="@+id/pager"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,32 +24,7 @@
         android:layout_height="80dp"
         android:layout_gravity="bottom"
         android:fadingEdgeLength="5dp"
-        android:requiresFadingEdge="horizontal" />
-    <!--
-    <HorizontalScrollView
-        android:id="@+id/hscroll"
-        android:layout_width="match_parent"
-        android:layout_height="80dp" >
-
-        <LinearLayout
-            android:id="@+id/gallery13"
-            android:layout_width="wrap_content"
-            android:layout_height="80dp"
-            android:orientation="horizontal" >
-        </LinearLayout>
-    </HorizontalScrollView>  -->
-    <!--
-    <android.support.v4.view.ViewPager
-        android:id="@+id/gallery12"
-        android:layout_width="match_parent"
-        android:layout_height="80dp" />  -->
-    <!--
-     <Gallery
-        android:id="@+id/gallery1"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:gravity="left" 
-        android:layout_gravity="left"
-        android:spacing="1dip" />    -->
+        android:requiresFadingEdge="horizontal"
+        android:layout_marginBottom="15dp" />
 
 </FrameLayout>

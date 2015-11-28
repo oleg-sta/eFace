@@ -3,6 +3,7 @@ package ru.trolleg.faces.activities;
 import java.util.List;
 
 import ru.trolleg.faces.DataHolder;
+import ru.trolleg.faces.DeactivableViewPager;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.CommonPhotoAdapter2;
@@ -30,13 +31,14 @@ public class PhotoGalleryCommon extends Activity {
         setContentView(R.layout.comon_photo_pager);
 
         TextView nameView = (TextView) findViewById(R.id.name_man);
-        final ViewPager mPager = (ViewPager) findViewById(R.id.pager);
+        final DeactivableViewPager mPager = (DeactivableViewPager) findViewById(R.id.pager);
         DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
         List<String> photos = dbHelper.getAllPhotos();
-        final PagerAdapter mPagerAdapter = new CommonPhotoAdapter2(this, photos, nameView);
+        final PagerAdapter mPagerAdapter = new CommonPhotoAdapter2(this, photos, nameView, mPager);
         mPager.setAdapter(mPagerAdapter);
         mPager.setCurrentItem(position);
         HorizontalListView horizontal = (HorizontalListView) findViewById(R.id.gallery1);
         horizontal.setVisibility(View.GONE);
+
     }
 }

@@ -3,6 +3,7 @@ package ru.trolleg.faces.activities;
 import java.util.List;
 
 import ru.trolleg.faces.DataHolder;
+import ru.trolleg.faces.DeactivableViewPager;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.CommonPhotoAdapter;
@@ -10,12 +11,16 @@ import ru.trolleg.faces.adapters.FacesCommonAdapter;
 import ru.trolleg.faces.adapters.HorizontalListView;
 import android.app.Activity;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -29,9 +34,13 @@ import android.widget.TextView;
  */
 public class DisplayCommonPhoto extends Activity {
 
+    private float scale = 1f;
+    private ScaleGestureDetector mScaleDetector;
+    private Matrix matrix = new Matrix();
+    
     int lastPosition;
     View  imLast;
-    HorizontalListView horizontal;
+    public HorizontalListView horizontal;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +53,14 @@ public class DisplayCommonPhoto extends Activity {
         setContentView(R.layout.comon_photo_pager);
         Integer faceId = getIntent().getIntExtra(DataHolder.FACE_ID, 0);
         TextView nameView = (TextView) findViewById(R.id.name_man);
-        final ViewPager mPager = (ViewPager) findViewById(R.id.pager);
+        final DeactivableViewPager mPager = (DeactivableViewPager) findViewById(R.id.pager);
         DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
         Integer personId = dbHelper.getPersonIdByFaceId(faceId);
         nameView.setText(dbHelper.getPersonName(personId));
         List<Integer> faces = dbHelper.getAllIdsFacesForPerson(personId);
         int position = faces.indexOf(faceId);
         Log.i("DisplayCommonPhoto", "pos " + position);
-        final PagerAdapter mPagerAdapter = new CommonPhotoAdapter(this, faces);
+        final PagerAdapter mPagerAdapter = new CommonPhotoAdapter(this, faces, mPager);
         mPager.setAdapter(mPagerAdapter);
         mPager.setCurrentItem(position);
         mPager.setOnPageChangeListener(new OnPageChangeListener() {
@@ -74,6 +83,7 @@ public class DisplayCommonPhoto extends Activity {
                 
             }
         });
+        
         
         horizontal = (HorizontalListView) findViewById(R.id.gallery1);
         final FacesCommonAdapter facesAdapter = new FacesCommonAdapter(this, faces);
@@ -110,6 +120,7 @@ public class DisplayCommonPhoto extends Activity {
                 facesAdapter.notifyDataSetChanged();
             }
         });
+        mScaleDetector = new ScaleGestureDetector(this, new ScaleListener());
         
     }
     
@@ -125,4 +136,24 @@ public class DisplayCommonPhoto extends Activity {
         }
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        mScaleDetector.onTouchEvent(event);
+        return true;
+    }
+
+private class ScaleListener extends ScaleGestureDetector.
+    
+    SimpleOnScaleGestureListener {
+       @Override
+       public boolean onScale(ScaleGestureDetector detector) {
+           Log.i("d", "d");
+          scale *= detector.getScaleFactor();
+          scale = Math.max(0.1f, Math.min(scale, 5.0f));
+          
+          matrix.setScale(scale, scale);
+          //imgDisplay.setImageMatrix(matrix);
+          return true;
+       }
+    }
 }
