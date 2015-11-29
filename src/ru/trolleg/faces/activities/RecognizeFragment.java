@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLayoutChangeListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -87,9 +88,9 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
         button = (ImageView) rootView.findViewById(R.id.start_stop);
         int newPhotos = dbHelper.getCountNewPhotos();
         if (newPhotos == 0) {
-            button.setVisibility(View.GONE);
+            button.setAlpha(0.5f);
         } else {
-            button.setVisibility(View.VISIBLE);
+            button.setAlpha(1f);
         }
         if (FaceFinderService.buttonStart) {
             button.setImageResource(R.drawable.pause);
@@ -169,28 +170,27 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
                     });
                     // Create the AlertDialog object and return it
                     AlertDialog alertDialog = builder.create();
+                    alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                     alertDialog.show();
                 }
             }
         });
         
-//        ImageView im = (ImageView) rootView.findViewById(R.id.first_face);
-//        im.setImageResource(R.drawable.full_trash);
-//        im.setOnClickListener(new OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                int thrashid = dbHelper.getOrCreatePerson(MainActivity.NO_FACES);
-//                if (adapterFaces.checked.isEmpty()) {
-//                    this1.setCurrentMan(thrashid);
-//                } else {
-//                    if (currentMan == null || currentMan != thrashid) {
-//                        PersonListToRecogniseAdapter.moveFaces(this1, thrashid, dbHelper);
-//                    }
-//                }
-//            }
-//        });
-//        im.setOnDragListener(new DragOnTrashListener(this));
+        ImageView im = (ImageView) rootView.findViewById(R.id.trash);
+        im.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                int thrashid = dbHelper.getOrCreatePerson(MainActivity.NO_FACES);
+                if (adapterFaces.checked.isEmpty()) {
+                    this1.setCurrentMan(thrashid);
+                } else {
+                    if (currentMan == null || currentMan != thrashid) {
+                        PersonListToRecogniseAdapter.moveFaces(this1, thrashid, dbHelper);
+                    }
+                }
+            }
+        });
 
         return rootView;
     }
@@ -216,12 +216,12 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
                 if (progress < 100) {
                     if (button != null) {
                         bar.setVisibility(View.VISIBLE);
-                        button.setVisibility(View.VISIBLE);
+                        button.setAlpha(1f);
                     }
                 } else {
                     if (button != null) {
                         bar.setVisibility(View.GONE);
-                        button.setVisibility(View.GONE);
+                        button.setAlpha(0.5f);
                     }
                 }
             }

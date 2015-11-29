@@ -20,6 +20,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -55,7 +56,7 @@ public class FirstFacesOnPersonActivity extends ArrayAdapter<Integer>{
         List<Integer> faces = dbHelper.getAllIdsFacesForPerson(manId);
         LinearLayout l1 = (LinearLayout) convertView.findViewById(R.id.faces);
         l1.removeAllViews();
-        countText.setText("(кол-во лиц - " + faces.size() + ")");
+        countText.setText(" (кол-во фото " + faces.size() + ")");
         if (faces.size() > 0) {
             for (int i = 0; (i < faces.size()) && (i < 3); i++) {
                 Face face = dbHelper.getFaceForId(faces.get(i));
@@ -101,6 +102,7 @@ public class FirstFacesOnPersonActivity extends ArrayAdapter<Integer>{
                     }
                 });
                 AlertDialog alertDialog = builder.create();
+                alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                 alertDialog.show();
                 
             }

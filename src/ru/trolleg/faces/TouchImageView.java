@@ -43,7 +43,7 @@ public class TouchImageView extends ImageView {
     // min/max zoom boundary.
     //
     private static final float SUPER_MIN_MULTIPLIER = .75f;
-    private static final float SUPER_MAX_MULTIPLIER = 2.0f;
+    private static final float SUPER_MAX_MULTIPLIER = 4.0f;
 
     //
     // Scale of image ranges from minScale to maxScale, where minScale == 1

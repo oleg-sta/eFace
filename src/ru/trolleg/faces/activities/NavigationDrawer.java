@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.res.Configuration;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
@@ -46,6 +47,7 @@ public class NavigationDrawer extends Activity {
 
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        
         // set up the drawer's list view with items and click listener
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, mNavigationTitles));
@@ -79,6 +81,7 @@ public class NavigationDrawer extends Activity {
         if (savedInstanceState == null) {
             selectItem(0);
         }
+        getActionBar().setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent))); 
     }
 
     @Override

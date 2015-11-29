@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#000000" >
+    android:background="@color/background_color_little_photos">
 
     <GridView
         android:id="@+id/gallery_photos"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:columnWidth="80dp"
         android:horizontalSpacing="2dp"
-        android:verticalSpacing="2dp"
         android:numColumns="auto_fit"
         android:stretchMode="none"
-        android:columnWidth="80dp" >
+        android:verticalSpacing="2dp"
+        android:scrollbars="none">
     </GridView>
+
 
 </LinearLayout>

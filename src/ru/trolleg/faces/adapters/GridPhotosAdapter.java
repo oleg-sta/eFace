@@ -5,6 +5,7 @@ import java.util.List;
 import ru.trolleg.faces.BitmapWorkerCropPhotoTask;
 import ru.trolleg.faces.R;
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,8 @@ public class GridPhotosAdapter extends ArrayAdapter<String> {
         //final ImageView view2 = (ImageView)convertView.findViewById(R.id.checked);
         //ImageView view = (ImageView)convertView.findViewById(R.id.one_face1);
         final String photo = photos.get(position);
-        holder.image.setImageResource(R.drawable.blur_photo);
+        holder.image.setImageBitmap(null);
+        holder.image.setBackgroundColor(Color.GRAY);
         holder.position = position;
         final BitmapWorkerCropPhotoTask task = new BitmapWorkerCropPhotoTask(holder, context, position);
         task.execute(photo);
