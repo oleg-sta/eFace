@@ -134,7 +134,6 @@ public class FaceFinderService extends IntentService {
                 return;
             }
             lastMessage = "";
-            Toast.makeText(getApplicationContext(), "Обработка запущена", Toast.LENGTH_LONG).show();
             PowerManager mgr = (PowerManager) getSystemService(Context.POWER_SERVICE);
             wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
             wakeLock.acquire();
@@ -441,7 +440,6 @@ public class FaceFinderService extends IntentService {
         }
         // Запустить сервис снова, если стоит start
         if (lastMessage!= null) {
-            Toast.makeText(getApplicationContext(), "Обработка завершена", Toast.LENGTH_LONG).show();
         }
         if (buttonStart) {
             Intent intent = new Intent(getApplicationContext(), FaceFinderService.class);

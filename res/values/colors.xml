@@ -2,4 +2,5 @@
 <resources>
         <color name="background_color_little_photos">#FFFFFF</color>
         <color name="action_bar_color">#2196F3</color>
+        <color name="action_button_color">#E1F5FE</color>
 </resources>

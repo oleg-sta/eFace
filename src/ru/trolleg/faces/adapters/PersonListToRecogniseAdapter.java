@@ -43,7 +43,7 @@ public class PersonListToRecogniseAdapter extends ArrayAdapter<Integer> {
     
     @Override
     public int getCount() {
-        return men.size() + 1;
+        return men.size() + 0;
     }
     
     public View getView(final int position, View convertView, ViewGroup parent) {
