@@ -15,5 +15,8 @@
         android:layout_height="wrap_content"
         style="CodeFont"
         android:textSize="16sp" />
-
+    
+    <View
+        android:layout_width="80dp"
+        android:layout_height="5dp" />
 </LinearLayout>

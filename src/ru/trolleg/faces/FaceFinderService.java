@@ -123,7 +123,7 @@ public class FaceFinderService extends IntentService {
                 Log.d("FaceFinderService", "onHandleIntent newFaces " + newPhotos);
                 buttonStart = false;
                 b.putString("progress", "0");
-                b.putString("message", "Найдено новых фотографий " + newPhotos);
+                b.putString("message", "Всего фото: " + allPhotos.size() + ". Обработано: " + (allPhotos.size() - newPhotos) + ".");
                 if (newPhotos == 0) {
                     b.putString("progress", "100");
                 }

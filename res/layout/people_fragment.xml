@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:text="Для обнаружения людей перейидите на вкладку Распознавание, запустите процесс и т.д....." />
+        android:text="Нет ни одного человека, перейдите на вкладку Распознавание и создайде людей." />
 
     <ListView
         android:id="@+id/list_man"

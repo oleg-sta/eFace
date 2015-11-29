@@ -21,6 +21,7 @@ import android.widget.ImageView;
 
 public class DataHolder {
 
+    public static final double FACE_MORE = 1.5d;
     public static final int FACES_SIZE = 150;
     public static final int FACES_PADDING_MAIN = 2;
 	public static int SIZE_PHOTO_TO_FIND_FACES = 500;
@@ -102,11 +103,26 @@ public class DataHolder {
                     Log.i("DataHolder", "null path " + path + " " + faceId + " " + faceCur.photoId);
                     return null;
                 }
-                Bitmap bmTmp = Bitmap.createBitmap(background_image, (int) (background_image.getWidth()
-                        * (faceCur.centerX - faceCur.width / 2) / 100), (int) (background_image.getHeight()
-                        * (faceCur.centerY - faceCur.height / 2) / 100),
-                        (int) (background_image.getWidth() * faceCur.width / 100), (int) (background_image.getHeight()
-                                * faceCur.height / 100));
+               
+                double k1 = Math.min(2 * faceCur.centerX / faceCur.width, 2 * (100 -  faceCur.centerX) / faceCur.width);
+                double k2 = Math.min(2 * faceCur.centerY / faceCur.height, 2 * (100 -  faceCur.centerY) / faceCur.height);
+                double k = Math.min(k1, k2);
+                k = Math.min(FACE_MORE, k);
+                double faceCurWidth = faceCur.width * k;
+                double faceCurHeight = faceCur.height * k;
+                Log.i("sdsd", "dd " + k);
+                // TODO проверить на дисктретность
+                int x1 = (int) (background_image.getWidth() * (faceCur.centerX - faceCurWidth / 2) / 100);
+                int y1 = (int) (background_image.getHeight() * (faceCur.centerY - faceCurHeight / 2) / 100);
+                int x2 = x1 + (int) (background_image.getWidth() * faceCurWidth / 100);
+                int y2 = y1 + (int) (background_image.getHeight() * faceCurHeight / 100);
+                x1 = Math.max(x1, 0);
+                y1 = Math.max(y1,  0);
+                x2 = Math.min(x2, background_image.getWidth());
+                y2 = Math.min(y2, background_image.getHeight());
+                
+                Bitmap bmTmp = Bitmap.createBitmap(background_image, x1, y1,
+                        x2 - x1, y2 - y1);
                 bm = getResizedBitmap(bmTmp, FACES_SIZE, FACES_SIZE);
                 Log.v("DataHolder", "file dir " + context.getFilesDir());
                 file = new File(context.getFilesDir(), faceId + ".jpg");
