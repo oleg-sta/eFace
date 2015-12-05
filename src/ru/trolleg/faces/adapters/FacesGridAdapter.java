@@ -7,14 +7,19 @@ import java.util.Set;
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
+import ru.trolleg.faces.activities.DisplayCommonPhoto;
+import ru.trolleg.faces.activities.ShowCommonPhoto;
 import ru.trolleg.faces.data.Face;
 import android.app.Activity;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -57,15 +62,16 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
         Bitmap bm = DataHolder.getInstance().getLittleFace(db, face.guid, getContext());
         db.close();
         view.setImageBitmap(bm);
-//        view.setOnLongClickListener(new OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View view) {
-//                ClipData data = ClipData.newPlainText("", "");
-//                DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
-//                view.startDrag(data, shadowBuilder, faceId, 0);
-//                return true;
-//            }
-//        });
+        view.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                String photo = dbHelper.getPhotoPathByFaceId(faceId);
+                Intent personIntent = new Intent(context, ShowCommonPhoto.class);
+                personIntent.putExtra("photo", photo);
+                context.startActivity(personIntent);
+                return true;
+            }
+        });
         view.setOnTouchListener(new OnTouchListener() {
             
             @Override
