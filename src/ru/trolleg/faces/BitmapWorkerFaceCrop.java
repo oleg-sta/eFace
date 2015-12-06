@@ -64,7 +64,7 @@ public class BitmapWorkerFaceCrop  extends AsyncTask<String, Void, BitmapDrawabl
 
     public static void loadImage(Face face, Context context, ViewHolder2 holder, int position2) {
         BitmapDrawable value = null;
-        value = DataHolder.mMemoryCache2.get(face.guid);
+        value = DataHolder.getInstance().mMemoryCache2.get(face.guid);
         // TODO add disk cache
         if (value != null) {
             holder.view.setImageDrawable(value);

@@ -100,6 +100,12 @@
                             android:horizontalSpacing="2dp"
                             android:verticalSpacing="2dp" >
                         </GridView>
+                        <TextView
+                            android:id="@+id/empty_faces"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Нет ни одного найденного лица, если есть необработанные фотографии, нажмите кнопку запуска." />
+
                     </LinearLayout>
 
                     <View
@@ -128,6 +134,11 @@
                             android:layout_height="wrap_content" 
                             android:background="@color/action_button_color">
                         </ListView>
+                        <TextView
+                            android:id="@+id/empty_men"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Нет ни одного человека, выделите фотографии и нажмите кнопку добавить." />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>

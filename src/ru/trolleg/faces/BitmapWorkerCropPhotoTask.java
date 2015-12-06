@@ -58,7 +58,7 @@ public class BitmapWorkerCropPhotoTask extends AsyncTask<String, Void, BitmapDra
     
     public static void loadImage(String photo, Activity context, ViewHolder holder, int position) {
         BitmapDrawable value = null;
-        value = DataHolder.mMemoryCache2.get(photo);
+        value = DataHolder.getInstance().mMemoryCache2.get(photo);
         if (value != null) {
             holder.image.setImageDrawable(value);
             holder.bar.setVisibility(ProgressBar.INVISIBLE);

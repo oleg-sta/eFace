@@ -62,6 +62,7 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
         adapterFaces = new FacesGridAdapter(getActivity(), dbHelper.getAllIdsFacesForPerson(currentMan));
         final GridView listView = (GridView) rootView.findViewById(R.id.listFaces);
         listView.setAdapter(adapterFaces);
+        listView.setEmptyView(rootView.findViewById(R.id.empty_faces));
         adapterFaces.notifyDataSetChanged();
         Log.i("MainActivity", "size persons " + adapterFaces.faces.size());
         
@@ -83,6 +84,7 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
         adapterMans = new PersonListToRecogniseAdapter(getActivity(), dbHelper.getAllIdsPerson(), this);
         final ListView listView2 = (ListView) rootView.findViewById(R.id.listOfMan);
         listView2.setAdapter(adapterMans);
+        listView2.setEmptyView(rootView.findViewById(R.id.empty_men));
         adapterMans.notifyDataSetChanged();
         
         button = (ImageView) rootView.findViewById(R.id.start_stop);
