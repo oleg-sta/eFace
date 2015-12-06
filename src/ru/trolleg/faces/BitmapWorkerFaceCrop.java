@@ -69,18 +69,12 @@ public class BitmapWorkerFaceCrop  extends AsyncTask<String, Void, BitmapDrawabl
         if (value != null) {
             holder.view.setImageDrawable(value);
         } else if (cancelPotentialWork(face, holder)) {
-//            holder.view.setBackgroundColor(Color.GRAY);
-//            final BitmapWorkerFaceCrop task = new BitmapWorkerFaceCrop(holder, context, face, position2);
-//            task.execute();
-            
+            holder.view.setImageBitmap(null);
+            holder.view.setBackgroundColor(Color.GRAY);
             final BitmapWorkerFaceCrop task = new BitmapWorkerFaceCrop(holder, context, face, position2);
             final AsyncDrawable asyncDrawable =
                     new AsyncDrawable(context.getResources(), null, task);
             holder.view.setImageDrawable(asyncDrawable);
-
-            // NOTE: This uses a custom version of AsyncTask that has been pulled from the
-            // framework and slightly modified. Refer to the docs at the top of the class
-            // for more info on what was changed.
             task.execute();
         }
 
@@ -89,9 +83,7 @@ public class BitmapWorkerFaceCrop  extends AsyncTask<String, Void, BitmapDrawabl
     // Остановлена ли для view загрузка
     public static boolean cancelPotentialWork(Face face2, ViewHolder2 holder) {
         ImageView imageView = holder.view;
-        //BEGIN_INCLUDE(cancel_potential_work)
         final BitmapWorkerFaceCrop bitmapWorkerTask = getBitmapWorkerTask(imageView);
-
         if (bitmapWorkerTask != null) {
             final Face bitmapData = bitmapWorkerTask.face;
             if (bitmapData == null || bitmapData.guid == null || !bitmapData.guid.equals(face2.guid)) {

@@ -36,12 +36,13 @@ public class DataHolder {
     private static final DataHolder holder = new DataHolder();
 
     public static DataHolder getInstance() {
+        Log.i("DataHolder", "mem " + (Runtime.getRuntime().maxMemory() / 1024));
         // TODO ������������ ��� ��� ������� �������
         if (mMemoryCache == null) {
             final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
 
             // Use 1/8th of the available memory for this memory cache.
-            final int cacheSize = maxMemory / 8;
+            final int cacheSize = maxMemory / 4;
 
             mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
                 @Override
@@ -56,7 +57,7 @@ public class DataHolder {
             final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
 
             // Use 1/8th of the available memory for this memory cache.
-            final int cacheSize = maxMemory / 8;
+            final int cacheSize = maxMemory / 4;
 
             mMemoryCache2 = new LruCache<String, BitmapDrawable>(cacheSize) {
                 @Override
