@@ -11,12 +11,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Paint;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.support.v4.util.LruCache;
 import android.util.Log;
-import android.widget.ImageView;
 
 
 public class DataHolder {
@@ -27,11 +31,7 @@ public class DataHolder {
 	public static int SIZE_PHOTO_TO_FIND_FACES = 500;
 	public static final String FACE_ID = "faceId";
     public static final String PERSON_ID = "personId";
-    // ��� ���������� ���
     public static LruCache<String, Bitmap> mMemoryCache;
-    public static LruCache<String, BitmapDrawable> mMemoryCache2;
-
-    //public boolean processPhotos = false;
 
     private static final DataHolder holder = new DataHolder();
 
@@ -50,26 +50,6 @@ public class DataHolder {
                     // The cache size will be measured in kilobytes rather than
                     // number of items.
                     return bitmap.getByteCount() / 1024;
-                }
-            };
-        }
-        if (mMemoryCache2 == null) {
-            final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-
-            // Use 1/8th of the available memory for this memory cache.
-            final int cacheSize = maxMemory / 4;
-
-            mMemoryCache2 = new LruCache<String, BitmapDrawable>(cacheSize) {
-                @Override
-                protected int sizeOf(String key, BitmapDrawable bitmap) {
-                    // The cache size will be measured in kilobytes rather than
-                    // number of items.
-                    Bitmap a = bitmap.getBitmap();
-                    if (a != null) {
-                        return a.getByteCount() / 1024;
-                    } else {
-                        return 1;
-                    }
                 }
             };
         }
@@ -101,6 +81,27 @@ public class DataHolder {
         return res;
     }
     
+    public Bitmap getLittleFaceInCirle(SQLiteDatabase db, String faceId, Context context) {
+        Bitmap squaredFace = getLittleFace(db, faceId, context);
+        Bitmap output = Bitmap.createBitmap(squaredFace.getWidth(),
+                squaredFace.getHeight(), Config.ARGB_8888);
+        
+        Canvas canvas = new Canvas(output);
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, squaredFace.getWidth(),
+                squaredFace.getHeight());
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        // paint.setColor(color);
+        canvas.drawCircle(squaredFace.getWidth() / 2,
+                squaredFace.getHeight() / 2, squaredFace.getWidth() / 2, paint);
+        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+        canvas.drawBitmap(squaredFace, rect, rect, paint);
+        return output;
+        
+    }
     public Bitmap getLittleFace(SQLiteDatabase db, String faceId, Context context) {
         Bitmap bm = mMemoryCache.get(faceId);
         Log.i("DataHolder", "faceId " + faceId);

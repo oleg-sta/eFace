@@ -43,7 +43,7 @@ public class BitmapWorkerFaceCrop  extends AsyncTask<String, Void, BitmapDrawabl
         Bitmap myBitmap = DataHolder.getInstance().getLittleFace(db, face.guid, context);
         db.close();
         BitmapDrawable drawable = new BitmapDrawable(context.getResources(), myBitmap);
-        DataHolder.mMemoryCache2.put(face.guid, drawable);
+        //DataHolder.mMemoryCache2.put(face.guid, drawable);
         return drawable;
     }
 
@@ -64,7 +64,10 @@ public class BitmapWorkerFaceCrop  extends AsyncTask<String, Void, BitmapDrawabl
 
     public static void loadImage(Face face, Context context, ViewHolder2 holder, int position2) {
         BitmapDrawable value = null;
-        value = DataHolder.getInstance().mMemoryCache2.get(face.guid);
+        Bitmap alue = DataHolder.getInstance().mMemoryCache.get(face.guid);
+        if (alue != null) {
+            value = new BitmapDrawable(context.getResources(), alue);
+        }
         // TODO add disk cache
         if (value != null) {
             holder.view.setImageDrawable(value);

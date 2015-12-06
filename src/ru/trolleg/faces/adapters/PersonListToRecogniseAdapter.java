@@ -67,7 +67,7 @@ public class PersonListToRecogniseAdapter extends ArrayAdapter<Integer> {
         if (faces.size() > 0) {
             Face face = dbHelper.getFaceForId(faces.get(0));
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-            bm = DataHolder.getInstance().getLittleFace(db, face.guid, getContext());
+            bm = DataHolder.getInstance().getLittleFaceInCirle(db, face.guid, getContext());
             db.close();
             view.setImageBitmap(bm);
         } else {

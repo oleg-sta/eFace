@@ -131,8 +131,8 @@
                         <ListView
                             android:id="@+id/listOfMan"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" 
-                            android:background="@color/action_button_color">
+                            android:layout_height="wrap_content">
+                            <!-- android:background="@color/action_button_color"-->
                         </ListView>
                         <TextView
                             android:id="@+id/empty_men"

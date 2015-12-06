@@ -40,7 +40,7 @@ public class BitmapWorkerCropPhotoTask extends AsyncTask<String, Void, BitmapDra
         //final BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap myBitmap = DataHolder.getInstance().getLittleCropedPhoto(data, context);
         BitmapDrawable drawable = new BitmapDrawable(context.getResources(), myBitmap);
-        DataHolder.mMemoryCache2.put(data, drawable);
+        //DataHolder.mMemoryCache2.put(data, drawable);
         return drawable;
     }
 
@@ -58,7 +58,10 @@ public class BitmapWorkerCropPhotoTask extends AsyncTask<String, Void, BitmapDra
     
     public static void loadImage(String photo, Activity context, ViewHolder holder, int position) {
         BitmapDrawable value = null;
-        value = DataHolder.getInstance().mMemoryCache2.get(photo);
+        Bitmap alue = DataHolder.getInstance().mMemoryCache.get(photo);
+        if (alue != null) {
+            value = new BitmapDrawable(context.getResources(), alue);
+        }
         if (value != null) {
             holder.image.setImageDrawable(value);
             holder.bar.setVisibility(ProgressBar.INVISIBLE);
