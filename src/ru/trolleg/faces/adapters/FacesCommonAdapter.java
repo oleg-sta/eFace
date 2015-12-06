@@ -45,9 +45,9 @@ public class FacesCommonAdapter extends ArrayAdapter<Integer> {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.one_face, null, true);
         }
-        //final ImageView view2 = (ImageView)convertView.findViewById(R.id.checked);
-        //view2.setVisibility(checked.contains(position)? View.VISIBLE : View.INVISIBLE);
+        // TODO images get in background
         ImageView view = (ImageView)convertView.findViewById(R.id.one_face1);
+        ImageView view2 = (ImageView)convertView.findViewById(R.id.one_face2);
         final int faceId = faces.get(position);
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
         Face face = dbHelper.getFaceForId(faceId);
@@ -56,11 +56,9 @@ public class FacesCommonAdapter extends ArrayAdapter<Integer> {
         db.close();
         view.setImageBitmap(bm);
         if (position != selected) {
-            convertView.setPadding(0, 0, 0, 0);
-            convertView.setBackgroundColor(Color.TRANSPARENT);
+            view2.setVisibility(View.GONE);
         } else {
-            convertView.setPadding(2, 2, 2, 2);
-            convertView.setBackgroundColor(Color.YELLOW);
+            view2.setVisibility(View.VISIBLE);
             imLast = convertView;
         }
         return convertView;

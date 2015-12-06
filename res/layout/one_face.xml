@@ -1,7 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -12,10 +12,20 @@
         android:max="100"
         android:visibility="invisible" />
     
+    <FrameLayout
+        android:layout_width="80dp"
+        android:layout_height="80dp">
     <ImageView
         android:id="@+id/one_face1"
         android:layout_width="80dp"
         android:layout_height="80dp" />
+    <ImageView
+        android:id="@+id/one_face2" 
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:visibility="gone"
+        android:background="@drawable/border"/>
+    </FrameLayout>
     
     <ImageView
         android:id="@+id/checked"
