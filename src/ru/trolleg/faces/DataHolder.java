@@ -28,7 +28,8 @@ public class DataHolder {
 	public static final String FACE_ID = "faceId";
     public static final String PERSON_ID = "personId";
     // ��� ���������� ���
-    private static LruCache<String, Bitmap> mMemoryCache;
+    public static LruCache<String, Bitmap> mMemoryCache;
+    public static LruCache<String, BitmapDrawable> mMemoryCache2;
 
     //public boolean processPhotos = false;
 
@@ -48,6 +49,26 @@ public class DataHolder {
                     // The cache size will be measured in kilobytes rather than
                     // number of items.
                     return bitmap.getByteCount() / 1024;
+                }
+            };
+        }
+        if (mMemoryCache2 == null) {
+            final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+
+            // Use 1/8th of the available memory for this memory cache.
+            final int cacheSize = maxMemory / 8;
+
+            mMemoryCache2 = new LruCache<String, BitmapDrawable>(cacheSize) {
+                @Override
+                protected int sizeOf(String key, BitmapDrawable bitmap) {
+                    // The cache size will be measured in kilobytes rather than
+                    // number of items.
+                    Bitmap a = bitmap.getBitmap();
+                    if (a != null) {
+                        return a.getByteCount() / 1024;
+                    } else {
+                        return 1;
+                    }
                 }
             };
         }

@@ -44,11 +44,10 @@ public class GridPhotosAdapter extends ArrayAdapter<String> {
         //final ImageView view2 = (ImageView)convertView.findViewById(R.id.checked);
         //ImageView view = (ImageView)convertView.findViewById(R.id.one_face1);
         final String photo = photos.get(position);
-        holder.image.setImageBitmap(null);
-        holder.image.setBackgroundColor(Color.GRAY);
         holder.position = position;
-        final BitmapWorkerCropPhotoTask task = new BitmapWorkerCropPhotoTask(holder, context, position);
-        task.execute(photo);
+        BitmapWorkerCropPhotoTask.loadImage(photo, context, holder, position);
+//        final BitmapWorkerCropPhotoTask task = new BitmapWorkerCropPhotoTask(holder, context, position);
+//        task.execute(photo);
         
         return convertView;
     }

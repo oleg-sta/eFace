@@ -2,6 +2,7 @@ package ru.trolleg.faces;
 
 import java.lang.ref.WeakReference;
 
+import ru.trolleg.faces.adapters.FacesGridAdapter.ViewHolder2;
 import ru.trolleg.faces.adapters.GridPhotosAdapter.ViewHolder;
 import ru.trolleg.faces.data.Face;
 import ru.trolleg.faces.data.InfoPhoto;
@@ -47,6 +48,21 @@ public class BitmapWorkerCropPhotoTask extends AsyncTask<String, Void, Bitmap> {
                 imageView.bar.setVisibility(ProgressBar.INVISIBLE);
             }
         }
+    }
+    
+    public static void loadImage(String photo, Activity context, ViewHolder holder, int position) {
+        Bitmap value = null;
+        value = DataHolder.mMemoryCache.get(photo);
+        if (value != null) {
+            holder.image.setImageBitmap(value);
+            holder.bar.setVisibility(ProgressBar.INVISIBLE);
+        } else {
+            holder.image.setImageBitmap(null);
+            holder.image.setBackgroundColor(Color.GRAY);
+            final BitmapWorkerCropPhotoTask task = new BitmapWorkerCropPhotoTask(holder, context, position);
+            task.execute(photo);
+        }
+
     }
 
 }
