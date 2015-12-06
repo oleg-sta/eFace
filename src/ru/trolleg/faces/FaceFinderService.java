@@ -293,9 +293,9 @@ public class FaceFinderService extends IntentService {
                         faceCur.centerX = 100 * (face.x + face.width / 2) / (double) background_image.getWidth();
                         faceCur.guid = UUID.randomUUID().toString();
                         dbHelper.addFace(faceCur, photoId);
-                        SQLiteDatabase db = dbHelper.getReadableDatabase();
-                        dataHolder.getLittleFace(db, faceCur.guid, getApplicationContext());
-                        db.close();
+//                        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//                        dataHolder.getLittleFace(db, faceCur.guid, getApplicationContext());
+//                        db.close();
                     }
                     b = new Bundle();
                     b.putString("photo", photo);

@@ -13,12 +13,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapRegionDecoder;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.RectF;
+import android.media.ExifInterface;
 import android.support.v4.util.LruCache;
 import android.util.Log;
 
@@ -120,9 +123,40 @@ public class DataHolder {
                     e.printStackTrace();
                 }
             } else {
-                final BitmapFactory.Options options = new BitmapFactory.Options();
-                Bitmap background_image = FaceFinderService.decodeSampledBitmapFromResource(path, SIZE_PHOTO_TO_FIND_FACES, SIZE_PHOTO_TO_FIND_FACES, options, true);
-                if (background_image == null) {
+                //final BitmapFactory.Options options = new BitmapFactory.Options();
+                BitmapRegionDecoder bitmapRegionDecoder  = null;
+                try {
+                    bitmapRegionDecoder = BitmapRegionDecoder.newInstance(path, false);
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+                
+                
+                BitmapFactory.Options tmpOptions = new BitmapFactory.Options();
+                tmpOptions.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(path, tmpOptions);
+                int width = tmpOptions.outWidth;
+                int height = tmpOptions.outHeight;
+                
+                BitmapFactory.Options options2 = new BitmapFactory.Options();
+                options2.inPreferredConfig = Bitmap.Config.RGB_565;
+                ExifInterface exif = null;
+                try {
+                    exif = new ExifInterface(path);
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                int orient = FaceFinderService.getOrient(orientation);
+                if (orient % 2 == 1) {
+                    int w1 = height;
+                    height = width;
+                    width = w1;
+                }
+                //Bitmap background_image = FaceFinderService.decodeSampledBitmapFromResource(path, SIZE_PHOTO_TO_FIND_FACES, SIZE_PHOTO_TO_FIND_FACES, options, true);
+                if (width == 0) {
                     Log.i("DataHolder", "null path " + path + " " + faceId + " " + faceCur.photoId);
                     return null;
                 }
@@ -135,18 +169,47 @@ public class DataHolder {
                 double faceCurHeight = faceCur.height * k;
                 Log.i("sdsd", "dd " + k);
                 // TODO проверить на дисктретность
-                int x1 = (int) (background_image.getWidth() * (faceCur.centerX - faceCurWidth / 2) / 100);
-                int y1 = (int) (background_image.getHeight() * (faceCur.centerY - faceCurHeight / 2) / 100);
-                int x2 = x1 + (int) (background_image.getWidth() * faceCurWidth / 100);
-                int y2 = y1 + (int) (background_image.getHeight() * faceCurHeight / 100);
+                int x1 = (int) (width * (faceCur.centerX - faceCurWidth / 2) / 100);
+                int y1 = (int) (height * (faceCur.centerY - faceCurHeight / 2) / 100);
+                int x2 = x1 + (int) (width * faceCurWidth / 100);
+                int y2 = y1 + (int) (height * faceCurHeight / 100);
+
+
                 x1 = Math.max(x1, 0);
                 y1 = Math.max(y1,  0);
-                x2 = Math.min(x2, background_image.getWidth());
-                y2 = Math.min(y2, background_image.getHeight());
+                x2 = Math.min(x2, width);
+                y2 = Math.min(y2, height);
                 
-                Bitmap bmTmp = Bitmap.createBitmap(background_image, x1, y1,
-                        x2 - x1, y2 - y1);
-                bm = getResizedBitmap(bmTmp, FACES_SIZE, FACES_SIZE);
+                if (Math.abs(x2 - x1) > 800 || Math.abs(y2 - y2) > 800 || (width < SIZE_PHOTO_TO_FIND_FACES * 2 && height < SIZE_PHOTO_TO_FIND_FACES * 2)) {
+                    // TODO!!!!!!! если размеры вырезаемойц зоны очень большие,
+                    // надо уменьшать фотку и вырезать как раньше
+                    bm = getLittleFaceoldWay(path, faceCur);
+                } else {
+                    Rect rect = new Rect(x1, y1, x2, y2);
+
+                    RectF f = new RectF(rect);
+                    Matrix m = new Matrix();
+                    // point is the point about which to rotate.
+                    m.setRotate(orient * 90, 0, 0);
+                    m.mapRect(f);
+                    int xx1 = Math.abs((int) f.left);
+                    int yy1 = Math.abs((int) f.top);
+                    int xx2 = Math.abs((int) f.right);
+                    int yy2 = Math.abs((int) f.bottom);
+                    rect = new Rect(Math.min(xx1, xx2), Math.min(yy1, yy2), Math.max(xx1, xx2), Math.max(yy1, yy2));
+
+                    Bitmap bmTmp = bitmapRegionDecoder.decodeRegion(rect, options2);
+
+                    // Bitmap bmTmp = Bitmap.createBitmap(background_image, x1,
+                    // y1,
+                    // x2 - x1, y2 - y1);
+                    bm = getResizedBitmap(bmTmp, FACES_SIZE, FACES_SIZE, true, orient);
+
+//                    Matrix matrix = new Matrix();
+//                    matrix.postRotate(orient * 90);
+//                    bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
+                }
+                
                 Log.v("DataHolder", "file dir " + context.getFilesDir());
                 file = new File(context.getFilesDir(), faceId + ".jpg");
                 try {
@@ -164,6 +227,36 @@ public class DataHolder {
             
             mMemoryCache.put(faceId, bm);
         }
+        return bm;
+    }
+    private Bitmap getLittleFaceoldWay(String path, Face faceCur) {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        Bitmap background_image = FaceFinderService.decodeSampledBitmapFromResource(path, SIZE_PHOTO_TO_FIND_FACES, SIZE_PHOTO_TO_FIND_FACES, options, true);
+        if (background_image == null) {
+            Log.i("DataHolder", "null path " + path + " " + " " + faceCur.photoId);
+            return null;
+        }
+       
+        double k1 = Math.min(2 * faceCur.centerX / faceCur.width, 2 * (100 -  faceCur.centerX) / faceCur.width);
+        double k2 = Math.min(2 * faceCur.centerY / faceCur.height, 2 * (100 -  faceCur.centerY) / faceCur.height);
+        double k = Math.min(k1, k2);
+        k = Math.min(FACE_MORE, k);
+        double faceCurWidth = faceCur.width * k;
+        double faceCurHeight = faceCur.height * k;
+        Log.i("sdsd", "dd " + k);
+        // TODO проверить на дисктретность
+        int x1 = (int) (background_image.getWidth() * (faceCur.centerX - faceCurWidth / 2) / 100);
+        int y1 = (int) (background_image.getHeight() * (faceCur.centerY - faceCurHeight / 2) / 100);
+        int x2 = x1 + (int) (background_image.getWidth() * faceCurWidth / 100);
+        int y2 = y1 + (int) (background_image.getHeight() * faceCurHeight / 100);
+        x1 = Math.max(x1, 0);
+        y1 = Math.max(y1,  0);
+        x2 = Math.min(x2, background_image.getWidth());
+        y2 = Math.min(y2, background_image.getHeight());
+        
+        Bitmap bmTmp = Bitmap.createBitmap(background_image, x1, y1,
+                x2 - x1, y2 - y1);
+        Bitmap bm = getResizedBitmap(bmTmp, FACES_SIZE, FACES_SIZE);
         return bm;
     }
 
@@ -226,6 +319,24 @@ public class DataHolder {
             mMemoryCache.put(photo, bm);
         }
         return bm;
+    }
+    
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight, boolean filter, int orient) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+        matrix.postRotate(orient * 90);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+            bm, 0, 0, width, height, matrix, filter);
+        bm.recycle();
+        return resizedBitmap;
     }
     
     public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
