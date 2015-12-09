@@ -160,43 +160,42 @@ public class DataHolder {
                     Log.i("DataHolder", "null path " + path + " " + faceId + " " + faceCur.photoId);
                     return null;
                 }
-               
-                double k1 = Math.min(2 * faceCur.centerX / faceCur.width, 2 * (100 -  faceCur.centerX) / faceCur.width);
-                double k2 = Math.min(2 * faceCur.centerY / faceCur.height, 2 * (100 -  faceCur.centerY) / faceCur.height);
-                double k = Math.min(k1, k2);
-                k = Math.min(FACE_MORE, k);
-                double faceCurWidth = faceCur.width * k;
-                double faceCurHeight = faceCur.height * k;
-                Log.i("sdsd", "dd " + k);
-                // TODO проверить на дисктретность
-                int x1 = (int) (width * (faceCur.centerX - faceCurWidth / 2) / 100);
-                int y1 = (int) (height * (faceCur.centerY - faceCurHeight / 2) / 100);
-                int x2 = x1 + (int) (width * faceCurWidth / 100);
-                int y2 = y1 + (int) (height * faceCurHeight / 100);
-
-
-                x1 = Math.max(x1, 0);
-                y1 = Math.max(y1,  0);
-                x2 = Math.min(x2, width);
-                y2 = Math.min(y2, height);
                 
-                if (Math.abs(x2 - x1) > 800 || Math.abs(y2 - y2) > 800 || (width < SIZE_PHOTO_TO_FIND_FACES * 2 && height < SIZE_PHOTO_TO_FIND_FACES * 2)) {
-                    // TODO!!!!!!! если размеры вырезаемойц зоны очень большие,
-                    // надо уменьшать фотку и вырезать как раньше
+                if (faceCur.width * width > 800 || faceCur.height * height > 800 || true) {
                     bm = getLittleFaceoldWay(path, faceCur);
                 } else {
-                    Rect rect = new Rect(x1, y1, x2, y2);
-
-                    RectF f = new RectF(rect);
+                    RectF f = new RectF((float) (faceCur.centerX - faceCur.width / 2),
+                            (float) (faceCur.centerY - faceCur.height / 2),
+                            (float) (faceCur.centerX + faceCur.width / 2),
+                            (float) (faceCur.centerY + faceCur.height / 2));
                     Matrix m = new Matrix();
                     // point is the point about which to rotate.
-                    m.setRotate(orient * 90, 0, 0);
+                    m.setRotate(-orient * 90, 50, 50);
                     m.mapRect(f);
-                    int xx1 = Math.abs((int) f.left);
-                    int yy1 = Math.abs((int) f.top);
-                    int xx2 = Math.abs((int) f.right);
-                    int yy2 = Math.abs((int) f.bottom);
-                    rect = new Rect(Math.min(xx1, xx2), Math.min(yy1, yy2), Math.max(xx1, xx2), Math.max(yy1, yy2));
+                    float centerX = (f.left + f.right) / 2;
+                    float centerY = (f.top + f.bottom) / 2;
+                    float fWidth = f.right - f.left;
+                    float fHeight = f.bottom - f.top;
+
+                    double k1 = Math.min(2 * centerX / fWidth, 2 * (100 - centerX) / fWidth);
+                    double k2 = Math.min(2 * centerY / fHeight, 2 * (100 - centerY) / fHeight);
+                    double k = Math.min(k1, k2);
+                    k = Math.min(FACE_MORE, k);
+                    double faceCurWidth = fWidth * k;
+                    double faceCurHeight = fHeight * k;
+                    Log.i("sdsd", "dd " + k);
+                    // TODO проверить на дисктретность
+                    int x1 = (int) (width * (centerX - faceCurWidth / 2) / 100);
+                    int y1 = (int) (height * (centerY - faceCurHeight / 2) / 100);
+                    int x2 = x1 + (int) (width * faceCurWidth / 100);
+                    int y2 = y1 + (int) (height * faceCurHeight / 100);
+
+                    x1 = Math.max(x1, 0);
+                    y1 = Math.max(y1, 0);
+                    x2 = Math.min(x2, width);
+                    y2 = Math.min(y2, height);
+
+                    Rect rect = new Rect(x1, y1, x2, y2);
 
                     Bitmap bmTmp = bitmapRegionDecoder.decodeRegion(rect, options2);
 
@@ -205,9 +204,10 @@ public class DataHolder {
                     // x2 - x1, y2 - y1);
                     bm = getResizedBitmap(bmTmp, FACES_SIZE, FACES_SIZE, true, orient);
 
-//                    Matrix matrix = new Matrix();
-//                    matrix.postRotate(orient * 90);
-//                    bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
+                    // Matrix matrix = new Matrix();
+                    // matrix.postRotate(orient * 90);
+                    // bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(),
+                    // bm.getHeight(), matrix, true);
                 }
                 
                 Log.v("DataHolder", "file dir " + context.getFilesDir());
