@@ -54,59 +54,56 @@ public class FirstFacesOnPersonActivity extends ArrayAdapter<Integer>{
         final String name = dbHelper.getPersonName(manId);
         text.setText(name);
         List<Integer> faces = dbHelper.getAllIdsFacesForPerson(manId);
-        LinearLayout l1 = (LinearLayout) convertView.findViewById(R.id.faces);
-        l1.removeAllViews();
-        countText.setText(" (кол-во фото " + faces.size() + ")");
+        ImageView l1 = (ImageView) convertView.findViewById(R.id.first_face);
+        //l1.removeAllViews();
+        countText.setText(faces.size() + " фотографий");
         if (faces.size() > 0) {
-            for (int i = 0; (i < faces.size()) && (i < 3); i++) {
-                Face face = dbHelper.getFaceForId(faces.get(i));
-                SQLiteDatabase db = dbHelper.getReadableDatabase();
-                Bitmap bm = DataHolder.getInstance().getLittleFace(db, face.guid, getContext());
-                db.close();
-                ImageView imageView2 = new ImageView(context);
-                imageView2.setId(i);
-                imageView2.setImageBitmap(bm);
-                l1.addView(imageView2);
-                imageView2.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent personIntent = new Intent(context, FacesActivity.class);
-                        Log.i("MenListOnPeopleActivity", "manId " + manId);
-                        personIntent.putExtra(DataHolder.PERSON_ID, manId);
-                        context.startActivity(personIntent);
+            Face face = dbHelper.getFaceForId(faces.get(0));
+            SQLiteDatabase db = dbHelper.getReadableDatabase();
+            Bitmap bm = DataHolder.getInstance().getLittleFaceInCirle(db, face.guid, getContext());
+            db.close();
+            //ImageView imageView2 = new ImageView(context);
+            //imageView2.setId(i);
+            l1.setImageBitmap(bm);
+            convertView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent personIntent = new Intent(context, FacesActivity.class);
+                    Log.i("MenListOnPeopleActivity", "manId " + manId);
+                    personIntent.putExtra(DataHolder.PERSON_ID, manId);
+                    context.startActivity(personIntent);
 
-                    }
-                });
+                }
+            });
 
-            }
         }
-        ImageView penView = (ImageView) convertView.findViewById(R.id.pen);
-        penView.setOnClickListener(new OnClickListener() {
-            
-            @Override
-            public void onClick(View v) {
-                final EditText input = new EditText(context);
-                input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-                input.setText(name);
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setMessage("Введите имя");
-                builder.setView(input).setPositiveButton("Да", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        String newName =  input.getText().toString();
-                        dbHelper.updatePersonName(manId, newName);
-                        text.setText(newName);
-                        //act.adapterMans.notifyDataSetChanged();
-                    }
-                }).setNegativeButton("Нет", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-                alertDialog.show();
-                
-            }
-        });
+//        ImageView penView = (ImageView) convertView.findViewById(R.id.pen);
+//        penView.setOnClickListener(new OnClickListener() {
+//            
+//            @Override
+//            public void onClick(View v) {
+//                final EditText input = new EditText(context);
+//                input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+//                input.setText(name);
+//                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//                builder.setMessage("Введите имя");
+//                builder.setView(input).setPositiveButton("Да", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        String newName =  input.getText().toString();
+//                        dbHelper.updatePersonName(manId, newName);
+//                        text.setText(newName);
+//                        //act.adapterMans.notifyDataSetChanged();
+//                    }
+//                }).setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                    }
+//                });
+//                AlertDialog alertDialog = builder.create();
+//                alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+//                alertDialog.show();
+//                
+//            }
+//        });
         
         return convertView;
     }

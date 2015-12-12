@@ -6,28 +6,31 @@ import java.util.Set;
 
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
-import ru.trolleg.faces.DragOverManListener;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.activities.RecognizeFragment;
 import ru.trolleg.faces.data.Face;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.text.InputType;
+import android.graphics.Point;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class PersonListToRecogniseAdapter extends ArrayAdapter<Integer> {
+public class PersonListToRecogniseAdapter extends PagerAdapter {
 
     private final Activity context;
     public final List<Integer> men; // �������������� ������
@@ -35,7 +38,6 @@ public class PersonListToRecogniseAdapter extends ArrayAdapter<Integer> {
     RecognizeFragment act;
 
     public PersonListToRecogniseAdapter(Activity context, List<Integer> men, RecognizeFragment act) {
-        super(context, R.layout.one_face_and_name, men);
         this.men = men;
         this.context = context;
         this.act = act;
@@ -46,18 +48,16 @@ public class PersonListToRecogniseAdapter extends ArrayAdapter<Integer> {
         return men.size() + 0;
     }
     
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = context.getLayoutInflater();
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.one_face_and_name, null, true);
-        }
-        ImageView view = (ImageView) convertView.findViewById(R.id.one_face1);
-        TextView text = (TextView) convertView.findViewById(R.id.name_face);
-        if (position == men.size()) {
-            view.setImageBitmap(null);
-            text.setText("");
-            return convertView;
-        }
+    public Object instantiateItem(ViewGroup container, int position) {
+        
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View viewLayout = inflater.inflate(R.layout.one_face_and_name, container,
+                false);
+        
+        
+        ImageView view = (ImageView) viewLayout.findViewById(R.id.one_face1);
+        TextView text = (TextView) viewLayout.findViewById(R.id.name_face);
+
         final int manId = men.get(position);
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
         String name = dbHelper.getPersonName(manId);
@@ -67,13 +67,12 @@ public class PersonListToRecogniseAdapter extends ArrayAdapter<Integer> {
         if (faces.size() > 0) {
             Face face = dbHelper.getFaceForId(faces.get(0));
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-            bm = DataHolder.getInstance().getLittleFaceInCirle(db, face.guid, getContext());
+            bm = DataHolder.getInstance().getLittleFaceInCirle(db, face.guid, context);
             db.close();
             view.setImageBitmap(bm);
         } else {
             view.setImageResource(android.R.color.transparent);
         }
-        view.setOnDragListener(new DragOverManListener(manId, act));
         view.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -85,7 +84,7 @@ public class PersonListToRecogniseAdapter extends ArrayAdapter<Integer> {
                     act.setCurrentMan(manId);
                 } else {
                     String toName = dbHelper.getPersonName(manId);
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setMessage("Добавление выделено лиц - " + act.adapterFaces.checked.size() + " в " + toName);
                     builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -119,10 +118,12 @@ public class PersonListToRecogniseAdapter extends ArrayAdapter<Integer> {
                     act.adapterFaces.notifyDataSetChanged();
                     
                 }
-                return true;
+                return false;
             }
         });
-        return convertView;
+        
+        ((ViewPager) container).addView(viewLayout);
+        return viewLayout;
     }
 
     public static void moveFaces(RecognizeFragment act, int manId, DictionaryOpenHelper dbHelper) {
@@ -138,7 +139,7 @@ public class PersonListToRecogniseAdapter extends ArrayAdapter<Integer> {
         }
         if (currMan != null) {
             if (dbHelper.getAllIdsFacesForPerson(currMan).size() == 0) {
-                act.adapterMans.remove(currMan);
+                act.adapterMans.men.remove(currMan);
                 dbHelper.removePerson(currMan);
                 act.setCurrentMan(null);
             }
@@ -147,4 +148,30 @@ public class PersonListToRecogniseAdapter extends ArrayAdapter<Integer> {
         act.adapterFaces.notifyDataSetChanged();
         act.adapterMans.notifyDataSetChanged();
     }
+
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        ((ViewPager) container).removeView((LinearLayout) object);
+  
+    }
+
+    @Override
+    public float getPageWidth(int position) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return (float)DataHolder.dp2Px(80, context) / (size.x - (float)DataHolder.dp2Px(80, context));
+    }
+    @Override
+    public boolean isViewFromObject(View view, Object object) {
+        return view == ((LinearLayout) object);
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        // TODO Auto-generated method stub
+        return PagerAdapter.POSITION_NONE;
+    }
+    
+    
 }

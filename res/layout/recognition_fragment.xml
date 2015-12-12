@@ -7,142 +7,117 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="0dp"
+        android:layout_weight="1" >
 
-        <LinearLayout
-            android:id="@+id/mainLay33"
+        <GridView
+            android:id="@+id/listFaces"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:horizontalSpacing="2dp"
+            android:numColumns="4"
+            android:verticalSpacing="2dp" >
+        </GridView>
+
+        <ImageView
+            android:id="@+id/add_face2"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="right|bottom"
+            android:layout_margin="5dp"
+            android:src="@drawable/add_face" />
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/action_bar_color" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
             android:orientation="vertical" >
 
-            <LinearLayout
-                android:id="@+id/mainLay23"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/action_button_color"
-                android:orientation="horizontal"
-                android:gravity="center_horizontal" >
-
-                <ImageView
-                    android:id="@+id/start_stop"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_margin="5dp"
-                    android:alpha="0.5"
-                    android:src="@drawable/start" />
-
-                <ImageView
-                    android:id="@+id/add_face2"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_margin="5dp"
-                    android:src="@drawable/add_face" />
-
-                <ImageView
-                    android:id="@+id/trash"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_margin="5dp"
-                    android:src="@drawable/full_trash" />
-            </LinearLayout>
-
             <TextView
-                android:id="@+id/text_message"
-                style="CodeFont"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Состояние"
-                android:textSize="16sp" />
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="fill_parent"
+                android:text="фото на телефоне"
+                style="@style/CodeFontStatsName" />
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:max="100"
-                android:visibility="gone" />
-
-            <LinearLayout
-                android:id="@+id/mainLay333"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin" >
-
-                <LinearLayout
-                    android:id="@+id/mainLay"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal" >
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="left"
-                        android:orientation="vertical" >
-
-                        <TextView
-                            android:id="@+id/name"
-                            style="CodeFont"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:text="Лица"
-                            android:textStyle="bold" />
-
-                        <GridView
-                            android:id="@+id/listFaces"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:horizontalSpacing="2dp"
-                            android:verticalSpacing="2dp" >
-                        </GridView>
-                        <TextView
-                            android:id="@+id/empty_faces"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Нет ни одного найденного лица, если есть необработанные фотографии, нажмите кнопку запуска." />
-
-                    </LinearLayout>
-
-                    <View
-                        android:id="@+id/vie"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <LinearLayout
-                        android:id="@+id/listOfManLayout"
-                        android:layout_width="80dp"
-                        android:layout_height="fill_parent"
-                        android:gravity="right"
-                        android:orientation="vertical" >
-
-                        <TextView
-                            style="CodeFont"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:text="Люди"
-                            android:textStyle="bold" />
-
-                        <ListView
-                            android:id="@+id/listOfMan"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-                            <!-- android:background="@color/action_button_color"-->
-                        </ListView>
-                        <TextView
-                            android:id="@+id/empty_men"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Нет ни одного человека, выделите фотографии и нажмите кнопку добавить." />
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
+                android:text="0"
+                android:layout_gravity="center_horizontal"
+                style="@style/CodeFontStatsValue" />
         </LinearLayout>
-    </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="обработано фото"
+                style="@style/CodeFontStatsName"
+                android:textColor="@color/all_text" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/all_text"
+                android:layout_gravity="center_horizontal"
+                style="@style/CodeFontStatsValue"
+                android:text="0" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+           android:layout_alignParentRight="true"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/all_text"
+                style="@style/CodeFontStatsName"
+                android:text="найдено лиц" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/all_text"
+                android:layout_gravity="center_horizontal"
+                style="@style/CodeFontStatsValue"
+                android:text="0" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#FFFFFF" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        android:background="@color/action_button_color" >
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/aaa"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/trash"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="5dp"
+            android:src="@drawable/full_trash" />
+    </LinearLayout>
 
 </LinearLayout>

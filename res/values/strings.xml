@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Галерея лиц</string>
+    <string name="app_name">uFace</string>
     <string name="act_people_name">Галерея лиц</string>
     <string name="menu_menu">Меню</string>
     <string name="menu_help">Справка</string>

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
         <color name="background_color_little_photos">#FFFFFF</color>
-        <color name="action_bar_color">#2196F3</color>
-        <color name="action_button_color">#E1F5FE</color>
+        <color name="action_bar_color">#9377C4</color>
+        <color name="action_button_color">#675489</color>
+        <color name="photo_border">#000000</color>
+        <color name="all_text">#FFFFFF</color>
 </resources>

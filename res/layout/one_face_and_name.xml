@@ -14,7 +14,10 @@
         android:layout_width="80dp"
         android:layout_height="wrap_content"
         style="CodeFont"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:gravity="center_horizontal" />
     
     <View
         android:layout_width="80dp"
