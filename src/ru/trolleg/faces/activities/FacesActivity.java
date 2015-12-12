@@ -37,17 +37,17 @@ public class FacesActivity extends Activity {
         final FacesActivity d = this;
         
         final LinearLayout la1 = (LinearLayout)findViewById(R.id.lay);
-        la1.addOnLayoutChangeListener(new OnLayoutChangeListener() {
-            
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight,
-                    int oldBottom) {
-                //TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, la1.getMeasuredWidth(), metrics)
-                Log.i("MainActivity", "size2 " + la1.getMeasuredWidth());
-                int num = DataHolder.px2Dp(la1.getMeasuredWidth(), d) / (80 + 2);
-                gridFaces.getLayoutParams().width = num * DataHolder.dp2Px(80 + 2, d);
-                gridFaces.setNumColumns(num);
-            }
-        });
+//        la1.addOnLayoutChangeListener(new OnLayoutChangeListener() {
+//            
+//            @Override
+//            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight,
+//                    int oldBottom) {
+//                //TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, la1.getMeasuredWidth(), metrics)
+//                Log.i("MainActivity", "size2 " + la1.getMeasuredWidth());
+//                int num = DataHolder.px2Dp(la1.getMeasuredWidth(), d) / (80 + 2);
+//                gridFaces.getLayoutParams().width = num * DataHolder.dp2Px(80 + 2, d);
+//                gridFaces.setNumColumns(num);
+//            }
+//        });
     }
 }
