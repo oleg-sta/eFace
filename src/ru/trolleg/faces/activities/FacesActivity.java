@@ -4,12 +4,24 @@ import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.FacesGridShow;
+import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnLayoutChangeListener;
+import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -25,29 +37,56 @@ public class FacesActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.faces_activity);
+        
+
+        ActionBar actionBar = getActionBar();
+        LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflator.inflate(R.layout.custom_action, null);
+        
+
+        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        layoutParams.gravity = Gravity.RIGHT;
+        //v.getLayoutParams().height = actionBar.getHeight();
+        actionBar.setCustomView(v, layoutParams);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        
         Integer personId = getIntent().getIntExtra(DataHolder.PERSON_ID, 0);
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
         
-        TextView namePerson = (TextView) findViewById(R.id.name_man);
+        TextView namePerson = (TextView) v.findViewById(R.id.text_action);
+        TextView namePerson2 = (TextView) v.findViewById(R.id.text_action2);
         namePerson.setText(dbHelper.getPersonName(personId));
         
+        
+        ImageView iv = (ImageView) v.findViewById(R.id.img_action);
+        String photo = dbHelper.getFaceForId(dbHelper.getAllIdsFacesForPerson(personId).get(0)).guid;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Log.i("PeopleFragment", "photo " + photo);
+        iv.setImageBitmap(DataHolder.getInstance().getLittleFaceInCirle(db, photo, this));
+        db.close();
+        
         FacesGridShow facesGrid = new FacesGridShow(this, dbHelper.getAllIdsFacesForPerson(personId));
+        namePerson2.setText(facesGrid.getCount() + " фотографий");
         final GridView gridFaces = (GridView) findViewById(R.id.grid_faces);
         gridFaces.setAdapter(facesGrid);
-        final FacesActivity d = this;
-        
-        final LinearLayout la1 = (LinearLayout)findViewById(R.id.lay);
-//        la1.addOnLayoutChangeListener(new OnLayoutChangeListener() {
-//            
-//            @Override
-//            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight,
-//                    int oldBottom) {
-//                //TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, la1.getMeasuredWidth(), metrics)
-//                Log.i("MainActivity", "size2 " + la1.getMeasuredWidth());
-//                int num = DataHolder.px2Dp(la1.getMeasuredWidth(), d) / (80 + 2);
-//                gridFaces.getLayoutParams().width = num * DataHolder.dp2Px(80 + 2, d);
-//                gridFaces.setNumColumns(num);
-//            }
-//        });
+
     }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    
+    
 }

@@ -16,6 +16,8 @@
             android:layout_height="match_parent"
             android:horizontalSpacing="2dp"
             android:numColumns="4"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
             android:verticalSpacing="2dp" >
         </GridView>
 
@@ -98,26 +100,58 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="#FFFFFF" />
+        android:background="@color/background_color_little_photos" />
 
     <LinearLayout
+        android:id="@+id/men_lay"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="0dp"
         android:orientation="horizontal"
         android:background="@color/action_button_color" >
 
         <android.support.v4.view.ViewPager
             android:id="@+id/aaa"
             android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_weight="1" />
+            android:layout_height="match_parent"
+            android:layout_weight="4" />
 
-        <ImageView
+        <LinearLayout
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:orientation="vertical" >
+
+    <ru.trolleg.faces.views.SquaredImageView
+        android:id="@+id/trash"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:layout_gravity="top"
+        android:src="@drawable/full_trash" 
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp" />
+
+    <TextView
+        android:id="@+id/name_face"
+        style="CodeFont"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:padding="0dp"
+        android:text="Корзина"
+        android:singleLine="true"
+        android:textSize="12sp" />
+
+</LinearLayout>
+        <!-- <ImageView
             android:id="@+id/trash"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_margin="5dp"
-            android:src="@drawable/full_trash" />
+            android:src="@drawable/full_trash" />-->
     </LinearLayout>
 
 </LinearLayout>

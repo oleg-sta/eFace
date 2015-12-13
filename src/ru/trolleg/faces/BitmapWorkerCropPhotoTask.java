@@ -51,7 +51,6 @@ public class BitmapWorkerCropPhotoTask extends AsyncTask<String, Void, BitmapDra
             final ViewHolder imageView = imageViewReference.get();
             if (imageView != null && imageView.position == position && imageView.image != null) {
                 imageView.image.setImageDrawable(bitmap);
-                imageView.bar.setVisibility(ProgressBar.INVISIBLE);
             }
         }
     }
@@ -64,7 +63,6 @@ public class BitmapWorkerCropPhotoTask extends AsyncTask<String, Void, BitmapDra
         }
         if (value != null) {
             holder.image.setImageDrawable(value);
-            holder.bar.setVisibility(ProgressBar.INVISIBLE);
         } else if (cancelPotentialWork(photo, holder)) {
             holder.image.setImageBitmap(null);
             holder.image.setBackgroundColor(Color.GRAY);

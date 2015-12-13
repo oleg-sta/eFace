@@ -156,11 +156,12 @@ public class PersonListToRecogniseAdapter extends PagerAdapter {
 
     @Override
     public float getPageWidth(int position) {
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        return (float)DataHolder.dp2Px(80, context) / (size.x - (float)DataHolder.dp2Px(80, context));
+        return 1f / 4;
+//        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+//        Display display = wm.getDefaultDisplay();
+//        Point size = new Point();
+//        display.getSize(size);
+//        return (float)DataHolder.dp2Px(80, context) / (size.x - (float)DataHolder.dp2Px(80, context));
     }
     @Override
     public boolean isViewFromObject(View view, Object object) {

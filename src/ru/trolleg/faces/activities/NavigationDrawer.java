@@ -5,6 +5,7 @@ import ru.trolleg.faces.R;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,16 +14,25 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 public class NavigationDrawer extends FragmentActivity implements ActionBar.TabListener {
     AppSectionsPagerAdapter mAppSectionsPagerAdapter; 
     ViewPager mViewPager;
     DictionaryOpenHelper dbHelper;
     static RecognizeFragment rf;
+    static Fragment oldFr;
+    static Fragment newFr;
+    ImageView startMenu;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +45,9 @@ public class NavigationDrawer extends FragmentActivity implements ActionBar.TabL
 
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
+//        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
+//                | ActionBar.DISPLAY_SHOW_HOME);
+
 
         // Specify that the Home/Up button should not be enabled, since there is no hierarchical
         // parent.
@@ -54,6 +67,26 @@ public class NavigationDrawer extends FragmentActivity implements ActionBar.TabL
                 // We can also use ActionBar.Tab#select() to do this if we have a reference to the
                 // Tab.
                 actionBar.setSelectedNavigationItem(position);
+                // TODO change menu
+                // mAppSectionsPagerAdapter.getItem(position).ionResume();
+                Object obj = mAppSectionsPagerAdapter.instantiateItem(mViewPager, position);
+                if (obj != null && obj instanceof YourFragmentInterface) {
+                    ((YourFragmentInterface)obj).fragmentBecameVisible();
+                }
+                
+                if (obj != null & obj instanceof RecognizeFragment) {
+                    LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    View v = inflator.inflate(R.layout.custom_action_reco, null);
+                    ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    layoutParams.gravity = Gravity.RIGHT;
+                    // v.getLayoutParams().height = actionBar.getHeight();
+                    actionBar.setCustomView(v, layoutParams);
+                    startMenu = (ImageView) v.findViewById(R.id.img_action);
+                    ((RecognizeFragment)obj).setStartMenu(startMenu);
+                } else {
+                    actionBar.setCustomView(null);
+                }
             }
         });
 
@@ -63,9 +96,8 @@ public class NavigationDrawer extends FragmentActivity implements ActionBar.TabL
             // Create a tab with text corresponding to the page title defined by the adapter.
             // Also specify this Activity object, which implements the TabListener interface, as the
             // listener for when this tab is selected.
-            View v = new View(this);
-            v.setBackgroundColor(getResources().getColor(R.color.action_button_color));
-            Tab tab = actionBar.newTab();
+            //View v = new View(this);
+            //v.setBackgroundColor(getResources().getColor(R.color.action_button_color));
             actionBar.addTab(
                     actionBar.newTab()
                             .setText(mAppSectionsPagerAdapter.getPageTitle(i))
@@ -112,6 +144,13 @@ public class NavigationDrawer extends FragmentActivity implements ActionBar.TabL
         }
     }
     
+    
+    @Override
+    public void onBackPressed() {
+        Log.i("NavigationDrawer", "onBackPressed()");
+        super.onBackPressed();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.i("ND", "w");
@@ -124,12 +163,6 @@ public class NavigationDrawer extends FragmentActivity implements ActionBar.TabL
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action buttons
         switch(item.getItemId()) {
-        case R.id.action_start:
-            Fragment ft = rf;
-            if (ft != null && ft instanceof RecognizeFragment) {
-                ((RecognizeFragment)ft).buttonStart(this);
-            }
-            return true;
         case R.id.reset:
             dbHelper.recreate();
             return true;

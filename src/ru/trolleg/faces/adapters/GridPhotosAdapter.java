@@ -33,7 +33,6 @@ public class GridPhotosAdapter extends ArrayAdapter<String> {
             convertView = inflater.inflate(R.layout.one_face, null, true);
             holder = new ViewHolder();
             holder.image = (ImageView)convertView.findViewById(R.id.one_face1);
-            holder.bar = (ProgressBar) convertView.findViewById(R.id.progressBar);
 
             convertView.setTag(holder);
         } else {
@@ -54,7 +53,6 @@ public class GridPhotosAdapter extends ArrayAdapter<String> {
     
     public static class ViewHolder {
         public ImageView image;
-        public ProgressBar bar;
         public int position;
     }
 }

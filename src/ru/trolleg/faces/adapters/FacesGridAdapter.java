@@ -25,7 +25,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -41,6 +43,7 @@ import android.widget.TextView;
  */
 public class FacesGridAdapter extends ArrayAdapter<Integer> {
 
+    public static final int WIDTH_NUM_PICS = 4;
     private final Activity context;
     public final List<Integer> faces; // �������������� ������
     public final Set<Integer> checked = new HashSet<Integer>(); // TODO лучше faces id хранить, так независимо будет от единичного убирания
@@ -51,8 +54,45 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
         this.context = context;
     }
 
+    
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public int getCount() {
+        return faces.size() + WIDTH_NUM_PICS;
+    }
+
+
+    @Override
+    public int getItemViewType(int position) {
+        return (position < WIDTH_NUM_PICS) ? 1 : 0;
+    }
+
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+
+    @Override
+    public Integer getItem(int position) {
+        return position < WIDTH_NUM_PICS ?
+                null : faces.get(position - WIDTH_NUM_PICS);
+    }
+    
+    @Override
+    public View getView(final int pos, View convertView, ViewGroup parent) {
+        final int position = pos - WIDTH_NUM_PICS;
+        
+        if (position < 0) {
+            if (convertView == null) {
+                convertView = new View(context);
+            }
+            // Set empty view with height of ActionBar
+            convertView.setLayoutParams(new AbsListView.LayoutParams(
+                    LayoutParams.MATCH_PARENT, 0));
+            return convertView;
+        }
+        
         ViewHolder2 holder;
         LayoutInflater inflater = context.getLayoutInflater();
         if (convertView == null) {
@@ -79,17 +119,6 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
      
         view.setImageBitmap(null);
         BitmapWorkerFaceCrop.loadImage(face, context, holder, position);
-        
-//        view.setBackgroundColor(Color.GRAY);
-//        final BitmapWorkerFaceCrop task = new BitmapWorkerFaceCrop(holder, context, face, position);
-//        task.execute();
-        
-//        Bit
-//        SQLiteDatabase db = dbHelper.getReadableDatabase();
-//        Bitmap bm = DataHolder.getInstance().getLittleFace(db, face.guid, getContext());
-//        db.close();
-//        view.setImageBitmap(bm);
-        
         
         view.setOnLongClickListener(new OnLongClickListener() {
             @Override

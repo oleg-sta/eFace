@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">uFace</string>
-    <string name="act_people_name">Галерея лиц</string>
+    <string name="act_people_name">uFace</string>
     <string name="menu_menu">Меню</string>
     <string name="menu_help">Справка</string>
     <string name="menu_recogntion">Распознавание</string>

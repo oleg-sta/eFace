@@ -1,5 +1,6 @@
 package ru.trolleg.faces.activities;
 
+import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.FaceFinderService;
 import ru.trolleg.faces.FaceFinderService.Operation;
@@ -26,6 +27,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -37,6 +39,7 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
     public Integer currentMan = null;
     Context context;
     //ImageView button;
+    protected ImageView startMenu;
     
     public RecognizeFragment() {
     }
@@ -58,7 +61,7 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
 
         adapterFaces = new FacesGridAdapter(getActivity(), dbHelper.getAllIdsFacesForPerson(currentMan));
         final GridView listView = (GridView) rootView.findViewById(R.id.listFaces);
-        listView.setColumnWidth(getResources().getDisplayMetrics().widthPixels / 4);
+        listView.setColumnWidth(getResources().getDisplayMetrics().widthPixels / FacesGridAdapter.WIDTH_NUM_PICS);
         //listView.set
         listView.setAdapter(adapterFaces);
         adapterFaces.notifyDataSetChanged();
@@ -120,6 +123,9 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
             getActivity().startService(intent);
         }
             
+        LinearLayout men_lay = (LinearLayout) rootView.findViewById(R.id.men_lay);
+        men_lay.getLayoutParams().height = getResources().getDisplayMetrics().widthPixels / (FacesGridAdapter.WIDTH_NUM_PICS + 1) + DataHolder.dp2Px(16, context);
+        
         ImageView im2 = (ImageView) rootView.findViewById(R.id.add_face2);
         im2.setImageResource(R.drawable.add_face);
         im2.setOnClickListener(new OnClickListener() {
@@ -181,7 +187,7 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
         return rootView;
     }
 
-    public void buttonStart(Context context) {
+    public boolean buttonStart(Context context) {
         FaceFinderService.buttonStart = !FaceFinderService.buttonStart;
         if (!FaceFinderService.buttonStart) {
             //button.setImageResource(R.drawable.start);
@@ -198,6 +204,7 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
                 context.startService(intent);
             }
         }
+        return FaceFinderService.buttonStart;
     }
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
@@ -205,8 +212,8 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
         String message = resultData.getString("message");
         String progressStr = resultData.getString("progress");
         boolean ended = resultData.getBoolean("ended", false);
-        if (ended) {
-            //button.setImageResource(R.drawable.start);
+        if (ended && startMenu != null) {
+            startMenu.setImageResource(R.drawable.start);
         }
         if (photo != null && currentMan == null) {
             Log.i("sss", "s " + adapterFaces + " " + this.adapterFaces);
@@ -250,6 +257,32 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
         adapterFaces.addAll(dbHelper.getAllIdsFacesForPerson(currentMan));
         Log.i("MainActivity", "size persons " + adapterFaces.faces.size());
         adapterFaces.notifyDataSetChanged();
+    }
+
+
+    public void setStartMenu(ImageView startMenu2) {
+        startMenu = startMenu2;
+        final RecognizeFragment thiz = this;
+        startMenu.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                FaceFinderService.buttonStart = !FaceFinderService.buttonStart;
+                if (!FaceFinderService.buttonStart) {
+                    startMenu.setImageResource(R.drawable.start);
+                } else {
+                    startMenu.setImageResource(R.drawable.pause);
+                    // TODO нельзя запускать, если работает
+                    if (FaceFinderService.getInstance() == null) {
+                        Intent intent = new Intent(context, FaceFinderService.class);
+                        NotificationReceiver receiver = new NotificationReceiver(new Handler());
+                        receiver.setListener(thiz);
+                        intent.putExtra("receiver", receiver);
+                        getActivity().startService(intent);
+                    }
+                }
+            }
+        });
     }
 
 }
