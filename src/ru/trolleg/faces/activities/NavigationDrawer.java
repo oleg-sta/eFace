@@ -21,9 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 public class NavigationDrawer extends FragmentActivity implements ActionBar.TabListener {
     AppSectionsPagerAdapter mAppSectionsPagerAdapter; 
@@ -39,28 +37,15 @@ public class NavigationDrawer extends FragmentActivity implements ActionBar.TabL
         setContentView(R.layout.navigation_drawer);
 
         dbHelper = new DictionaryOpenHelper(this);
-        // Create the adapter that will return a fragment for each of the three primary sections
-        // of the app.
         mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the action bar.
         final ActionBar actionBar = getActionBar();
-//        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
-//                | ActionBar.DISPLAY_SHOW_HOME);
-
-
-        // Specify that the Home/Up button should not be enabled, since there is no hierarchical
-        // parent.
-        actionBar.setHomeButtonEnabled(false);
-
-        // Specify that we will be displaying tabs in the action bar.
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-        // Set up the ViewPager, attaching the adapter and setting up a listener for when the
-        // user swipes between sections.
+        // обходное решение для предотвращения показа tab'ов сверху actionbar, такая бага на некоторых версиях андроида
+        actionBar.setIcon(R.drawable.no_image);
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mAppSectionsPagerAdapter);
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 // When swiping between different app sections, select the corresponding tab.
