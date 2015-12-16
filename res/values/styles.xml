@@ -13,11 +13,13 @@
         <item name="android:textSize">20sp</item>
     </style>
 
-        <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+
         <!-- Customize your theme here. -->
         <item name="windowActionBar">false</item>
         <item name="android:textColorPrimary">#FFFFFF</item>
     </style>
+
     <style name="MyTheme" parent="@android:style/Theme.Holo.Light">
         <item name="android:actionBarStyle">@style/MyActionBar</item>
         <item name="android:textColor">@color/all_text</item>
@@ -37,4 +39,9 @@
     <style name="actionBarTabBarStyle" parent="@android:style/Widget.Holo.ActionBar.TabBar">
         <item name="android:showDividers">none</item>
     </style>
+
+    <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">@color/all_text</item>
+    </style>
+
 </resources>
