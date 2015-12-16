@@ -1,18 +1,20 @@
 package ru.trolleg.faces.activities;
 
+import it.neokree.materialtabs.MaterialTab;
+import it.neokree.materialtabs.MaterialTabHost;
+import it.neokree.materialtabs.MaterialTabListener;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import android.app.ActionBar;
-import android.app.ActionBar.Tab;
-import android.app.FragmentTransaction;
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,7 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-public class NavigationDrawer extends FragmentActivity implements ActionBar.TabListener {
+public class NavigationDrawer extends ActionBarActivity implements MaterialTabListener {
     AppSectionsPagerAdapter mAppSectionsPagerAdapter; 
     ViewPager mViewPager;
     DictionaryOpenHelper dbHelper;
@@ -32,17 +34,32 @@ public class NavigationDrawer extends FragmentActivity implements ActionBar.TabL
     static Fragment newFr;
     ImageView startMenu;
 
+    MaterialTabHost tabHost;
+
+    
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.navigation_drawer);
 
+        final Toolbar toolbar = (android.support.v7.widget.Toolbar) this.findViewById(R.id.toolbar);
+        this.setSupportActionBar(toolbar);
+        LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflator.inflate(R.layout.custom_action_reco, null);
+        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        layoutParams.gravity = Gravity.RIGHT;
+        // v.getLayoutParams().height = actionBar.getHeight();
+        toolbar.addView(v, layoutParams);
+        startMenu = (ImageView) v.findViewById(R.id.img_action);
+        
         dbHelper = new DictionaryOpenHelper(this);
         mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager());
 
-        final ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        tabHost = (MaterialTabHost) this.findViewById(R.id.tabHost);
+        //final ActionBar actionBar = getActionBar();
+        //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         // обходное решение для предотвращения показа tab'ов сверху actionbar, такая бага на некоторых версиях андроида
-        actionBar.setIcon(R.drawable.no_image);
+        //actionBar.setIcon(R.drawable.no_image);
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mAppSectionsPagerAdapter);
         mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -51,7 +68,7 @@ public class NavigationDrawer extends FragmentActivity implements ActionBar.TabL
                 // When swiping between different app sections, select the corresponding tab.
                 // We can also use ActionBar.Tab#select() to do this if we have a reference to the
                 // Tab.
-                actionBar.setSelectedNavigationItem(position);
+                tabHost.setSelectedNavigationItem(position);
                 // TODO change menu
                 // mAppSectionsPagerAdapter.getItem(position).ionResume();
                 Object obj = mAppSectionsPagerAdapter.instantiateItem(mViewPager, position);
@@ -60,22 +77,25 @@ public class NavigationDrawer extends FragmentActivity implements ActionBar.TabL
                 }
                 
                 if (obj != null & obj instanceof RecognizeFragment) {
-                    LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    View v = inflator.inflate(R.layout.custom_action_reco, null);
-                    ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(
-                            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    layoutParams.gravity = Gravity.RIGHT;
-                    // v.getLayoutParams().height = actionBar.getHeight();
-                    actionBar.setCustomView(v, layoutParams);
-                    startMenu = (ImageView) v.findViewById(R.id.img_action);
+//                    LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//                    View v = inflator.inflate(R.layout.custom_action_reco, null);
+//                    ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(
+//                            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//                    layoutParams.gravity = Gravity.RIGHT;
+//                    // v.getLayoutParams().height = actionBar.getHeight();
+//                    toolbar.addView(v, layoutParams);
+                    //actionBar.setCustomView(v, layoutParams);
+                    //startMenu = (ImageView) v.findViewById(R.id.img_action);
+                    startMenu.setVisibility(View.VISIBLE);
                     ((RecognizeFragment)obj).setStartMenu(startMenu);
                 } else {
-                    actionBar.setCustomView(null);
+                    startMenu.setVisibility(View.GONE);
+                    //actionBar.setCustomView(null);
                 }
             }
         });
 
-        actionBar.setStackedBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.action_bar_color)));
+        //actionBar.setStackedBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.action_bar_color)));
         // For each of the sections in the app, add a tab to the action bar.
         for (int i = 0; i < mAppSectionsPagerAdapter.getCount(); i++) {
             // Create a tab with text corresponding to the page title defined by the adapter.
@@ -83,10 +103,9 @@ public class NavigationDrawer extends FragmentActivity implements ActionBar.TabL
             // listener for when this tab is selected.
             //View v = new View(this);
             //v.setBackgroundColor(getResources().getColor(R.color.action_button_color));
-            actionBar.addTab(
-                    actionBar.newTab()
-                            .setText(mAppSectionsPagerAdapter.getPageTitle(i))
-                            .setTabListener(this));
+            tabHost.addTab(
+                    tabHost.newTab().setText(mAppSectionsPagerAdapter.getPageTitle(i)).setTabListener(this)
+                            );
         } 
     }
     
@@ -159,19 +178,21 @@ public class NavigationDrawer extends FragmentActivity implements ActionBar.TabL
         }
     }
 
+
     @Override
-    public void onTabSelected(Tab tab, FragmentTransaction ft) {
+    public void onTabSelected(MaterialTab tab) {
         mViewPager.setCurrentItem(tab.getPosition());
+        
     }
 
     @Override
-    public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+    public void onTabReselected(MaterialTab tab) {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void onTabReselected(Tab tab, FragmentTransaction ft) {
+    public void onTabUnselected(MaterialTab tab) {
         // TODO Auto-generated method stub
         
     }

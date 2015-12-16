@@ -14,7 +14,8 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" android:theme="@style/MyTheme">
+        android:label="@string/app_name" android:theme="@style/AppTheme">
+        <!-- android:label="@string/app_name" android:theme="@style/Theme.AppCompat.Light.NoActionBar"-->
         <!-- android:label="@string/app_name" android:theme="@android:style/Theme.DeviceDefault.Light"-->
         
         <activity
@@ -52,7 +53,8 @@
         <service android:name=".FaceFinderService" />
         <activity
             android:label="@string/act_people_name"
-            android:name="ru.trolleg.faces.activities.FacesActivity">
+            android:name="ru.trolleg.faces.activities.FacesActivity"
+            android:theme="@style/MyTheme">
         </activity>
         <activity
             android:label="@string/act_people_name"
