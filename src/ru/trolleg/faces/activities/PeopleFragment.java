@@ -8,16 +8,21 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.SearchView.OnCloseListener;
+import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-public class PeopleFragment extends Fragment implements YourFragmentInterface {
+public class PeopleFragment extends Fragment implements YourFragmentInterface, OnQueryTextListener, OnCloseListener   {
     FirstFacesOnPersonActivity adapterMans;
     DictionaryOpenHelper dbHelper;
     
@@ -62,7 +67,39 @@ public class PeopleFragment extends Fragment implements YourFragmentInterface {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         Log.i("PeopleFragment", "onCreateOptionsMenu");
-        // TODO Add your menu entries here
+        inflater.inflate(R.menu.people_menu, menu);
+        
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setQueryHint("Поиск");
+        searchView.setOnQueryTextListener(this);
+        searchView.setOnCloseListener(this);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+
+    @Override
+    public boolean onQueryTextChange(String textNew) {
+        Log.i("QUERY", "New text is " + textNew);
+        return true;
+    }
+
+
+    @Override
+    public boolean onQueryTextSubmit(String textNew) {
+        Log.i("QUERY", "New text is1 " + textNew);
+        adapterMans.clear();
+        adapterMans.addAll(dbHelper.getAllIdsPerson(textNew));
+        adapterMans.notifyDataSetChanged();
+        return true;
+    }
+
+
+    @Override
+    public boolean onClose() {
+        adapterMans.clear();
+        adapterMans.addAll(dbHelper.getAllIdsPerson());
+        adapterMans.notifyDataSetChanged();
+        return false;
     }
 }

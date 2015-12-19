@@ -20,6 +20,8 @@ import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -44,7 +46,11 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
     public RecognizeFragment() {
     }
 
-    
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.recognition_fragment, container, false);
@@ -260,6 +266,13 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
     }
 
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Log.i("PeopleFragment", "onCreateOptionsMenu");
+        inflater.inflate(R.menu.recognition, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    
     public void setStartMenu(ImageView startMenu2) {
         startMenu = startMenu2;
         final RecognizeFragment thiz = this;

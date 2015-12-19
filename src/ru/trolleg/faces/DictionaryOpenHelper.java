@@ -1,6 +1,7 @@
 package ru.trolleg.faces;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -238,6 +239,17 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         s.close();
         return faces;
     }
+    public List<Integer> getAllIdsPerson(String textNew) {
+        List<Integer> faces = new ArrayList<Integer>();
+        SQLiteDatabase s = getReadableDatabase();
+        Cursor c = s.rawQuery("select p.id from person p where p.name <> '"+MainActivity.NO_FACES+"' and p.name like '%"+textNew+"%' order by p.name, p.id", null);
+        while (c.moveToNext()) {
+            faces.add(c.getInt(0));
+        }
+        c.close();
+        s.close();
+        return faces;
+    }
     public List<Integer> getAllIdsFaces() {
     	List<Integer> faces = new ArrayList<Integer>();
         SQLiteDatabase s = getReadableDatabase();
@@ -444,4 +456,5 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         s.close();
         return res;
     }
+
 }
