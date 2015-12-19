@@ -33,7 +33,9 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@color/action_bar_color" >
+        android:background="@color/action_bar_color"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp" >
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -42,16 +44,18 @@
             android:orientation="vertical" >
 
             <TextView
+                style="@style/CodeFontStatsName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="фото на телефоне"
-                style="@style/CodeFontStatsName" />
+                android:typeface="sans"
+                android:text="фото на телефоне" />
+
             <TextView
+                style="@style/CodeFontStatsValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0"
                 android:layout_gravity="center_horizontal"
-                style="@style/CodeFontStatsValue" />
+                android:text="0" />
         </LinearLayout>
 
         <LinearLayout
@@ -61,39 +65,43 @@
             android:orientation="vertical" >
 
             <TextView
+                style="@style/CodeFontStatsName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="обработано фото"
-                style="@style/CodeFontStatsName"
+                android:typeface="sans"
                 android:textColor="@color/all_text" />
+
             <TextView
+                style="@style/CodeFontStatsValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/all_text"
                 android:layout_gravity="center_horizontal"
-                style="@style/CodeFontStatsValue"
-                android:text="0" />
+                android:text="0"
+                android:textColor="@color/all_text" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-           android:layout_alignParentRight="true"
+            android:layout_alignParentRight="true"
             android:orientation="vertical" >
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/all_text"
                 style="@style/CodeFontStatsName"
-                android:text="найдено лиц" />
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/all_text"
-                android:layout_gravity="center_horizontal"
+                android:text="найдено лиц"
+                android:typeface="sans"
+                android:textColor="@color/all_text" />
+
+            <TextView
                 style="@style/CodeFontStatsValue"
-                android:text="0" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="0"
+                android:textColor="@color/all_text" />
         </LinearLayout>
     </RelativeLayout>
 
@@ -106,8 +114,8 @@
         android:id="@+id/men_lay"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:background="@color/action_button_color" >
+        android:background="@color/action_button_color"
+        android:orientation="horizontal" >
 
         <android.support.v4.view.ViewPager
             android:id="@+id/aaa"
@@ -116,42 +124,43 @@
             android:layout_weight="4" />
 
         <LinearLayout
-    android:layout_width="0dp"
-    android:layout_height="match_parent"
-    android:layout_weight="1"
-    android:orientation="vertical" >
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical" >
 
-    <ru.trolleg.faces.views.SquaredImageView
-        android:id="@+id/trash"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="0dp"
-        android:paddingBottom="0dp"
-        android:layout_gravity="top"
-        android:src="@drawable/full_trash" 
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp" />
+            <ru.trolleg.faces.views.SquaredImageView
+                android:id="@+id/trash"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:paddingBottom="0dp"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:paddingTop="0dp"
+                android:src="@drawable/full_trash" />
 
-    <TextView
-        android:id="@+id/name_face"
-        style="CodeFont"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:ellipsize="end"
-        android:gravity="center_horizontal"
-        android:padding="0dp"
-        android:text="Корзина"
-        android:singleLine="true"
-        android:textSize="12sp" />
-
-</LinearLayout>
-        <!-- <ImageView
+            <TextView
+                android:id="@+id/name_face"
+                style="CodeFont"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="center_horizontal"
+                android:padding="0dp"
+                android:singleLine="true"
+                android:text="Корзина"
+                android:textSize="12sp" />
+        </LinearLayout>
+        <!--
+             <ImageView
             android:id="@+id/trash"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_margin="5dp"
-            android:src="@drawable/full_trash" />-->
+            android:src="@drawable/full_trash" />
+        -->
     </LinearLayout>
 
 </LinearLayout>

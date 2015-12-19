@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/action_bar_color"
-        android:theme="@style/ToolbarTheme" />
+        android:theme="@style/ToolbarTheme"
+        app:titleTextAppearance="@style/Toolbar.TitleText" />
 
     <it.neokree.materialtabs.MaterialTabHost
         android:id="@+id/tabHost"

@@ -4,11 +4,11 @@ import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.FacesGridShow;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.Toolbar.LayoutParams;
@@ -56,9 +56,16 @@ public class FacesActivity extends AppCompatActivity {
 
         LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = getLayoutInflater().inflate(R.layout.custom_action, null);
-        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        //LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        //layoutParams.gravity = Gravity.RIGHT;
         //layoutParams.gravity = Gravity.RIGHT;
         //v.getLayoutParams().height = actionBar.getHeight();
+        final ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,
+                Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+        layoutParams.gravity = Gravity.RIGHT;
+        //v.setLayoutParams(layoutParams);
+        //getSupportActionBar().setCustomView(v);
         getSupportActionBar().setCustomView(v, layoutParams);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         //toolbar.setDisplayHomeAsUpEnabled(true);

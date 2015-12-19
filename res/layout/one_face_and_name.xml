@@ -23,6 +23,7 @@
         android:ellipsize="end"
         android:gravity="center_horizontal"
         android:padding="0dp"
+        android:typeface="sans"
         android:singleLine="true"
         android:textSize="12sp" />
 

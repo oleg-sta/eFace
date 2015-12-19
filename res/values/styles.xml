@@ -44,4 +44,7 @@
         <item name="android:textColorPrimary">@color/all_text</item>
     </style>
 
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <item name="android:textSize">24sp</item>
+</style>
 </resources>
