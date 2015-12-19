@@ -53,8 +53,7 @@
         <service android:name=".FaceFinderService" />
         <activity
             android:label="@string/act_people_name"
-            android:name="ru.trolleg.faces.activities.FacesActivity"
-            android:theme="@style/MyTheme">
+            android:name="ru.trolleg.faces.activities.FacesActivity">
         </activity>
         <activity
             android:label="@string/act_people_name"
@@ -63,6 +62,10 @@
         <activity
             android:label="@string/act_people_name"
             android:name="ru.trolleg.faces.activities.ShowCommonPhoto">
+        </activity>
+        <activity
+            android:label="@string/act_people_name"
+            android:name="ru.trolleg.faces.activities.PhotoGridFragment">
         </activity>
         </application>
 

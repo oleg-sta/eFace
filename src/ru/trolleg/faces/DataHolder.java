@@ -33,6 +33,7 @@ public class DataHolder {
     public static final int FACES_PADDING_MAIN = 2;
 	public static int SIZE_PHOTO_TO_FIND_FACES = 500;
 	public static final String FACE_ID = "faceId";
+	public static final String ALBUM_ID = "albumId";
     public static final String PERSON_ID = "personId";
     public static LruCache<String, Bitmap> mMemoryCache;
 

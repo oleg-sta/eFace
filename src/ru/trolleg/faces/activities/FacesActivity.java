@@ -9,6 +9,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.Toolbar.LayoutParams;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -31,7 +34,7 @@ import android.widget.TextView;
  * @author sov
  *
  */
-public class FacesActivity extends Activity {
+public class FacesActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,16 +42,27 @@ public class FacesActivity extends Activity {
         setContentView(R.layout.faces_activity);
         
 
-        ActionBar actionBar = getActionBar();
-        LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflator.inflate(R.layout.custom_action, null);
+        final Toolbar toolbar = (android.support.v7.widget.Toolbar) this.findViewById(R.id.toolbar);
+        this.setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //toolbar.setNavigationIcon(R.drawable.ic_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         
 
-        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        layoutParams.gravity = Gravity.RIGHT;
+        LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = getLayoutInflater().inflate(R.layout.custom_action, null);
+        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        //layoutParams.gravity = Gravity.RIGHT;
         //v.getLayoutParams().height = actionBar.getHeight();
-        actionBar.setCustomView(v, layoutParams);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setCustomView(v, layoutParams);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        //toolbar.setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setCustomView(arg0)
         
         Integer personId = getIntent().getIntExtra(DataHolder.PERSON_ID, 0);
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);

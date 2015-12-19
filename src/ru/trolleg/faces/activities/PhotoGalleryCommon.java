@@ -23,6 +23,7 @@ public class PhotoGalleryCommon extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        final String albumId = getIntent().getStringExtra(DataHolder.ALBUM_ID);
         int position = getIntent().getIntExtra(PHOTO_ID, 0);
         
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -32,8 +33,9 @@ public class PhotoGalleryCommon extends Activity {
 
         TextView nameView = (TextView) findViewById(R.id.name_man);
         final DeactivableViewPager mPager = (DeactivableViewPager) findViewById(R.id.pager);
-        DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
-        List<String> photos = dbHelper.getAllPhotos();
+        //DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
+        //List<String> photos = dbHelper.getAllPhotos();
+        List<String> photos = MainActivity.getCameraImages(this, albumId);
         final PagerAdapter mPagerAdapter = new CommonPhotoAdapter2(this, photos, nameView, mPager);
         mPager.setAdapter(mPagerAdapter);
         mPager.setCurrentItem(position);

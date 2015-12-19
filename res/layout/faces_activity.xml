@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/lay"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:orientation="vertical" >
+    android:background="#FFFFFF" >
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/action_bar_color"
+        android:theme="@style/ToolbarTheme" />
+        
     <GridView
         android:id="@+id/grid_faces"
         android:layout_width="match_parent"
@@ -15,6 +21,7 @@
         android:horizontalSpacing="2dp"
         android:verticalSpacing="2dp"
         android:paddingLeft="2dp"
-        android:paddingRight="2dp" />
+        android:paddingRight="2dp"
+        android:layout_below="@+id/toolbar" />
 
-</LinearLayout>
+</RelativeLayout>

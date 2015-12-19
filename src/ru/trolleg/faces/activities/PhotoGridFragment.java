@@ -2,12 +2,16 @@ package ru.trolleg.faces.activities;
 
 import java.util.List;
 
+import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.GridPhotosAdapter;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,19 +20,41 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 
-public class PhotoGridFragment extends Fragment {
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.gallery_photo_fragment, container, false);
-        DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(getActivity());
-        List<String> photosId = dbHelper.getAllPhotos();
-        GridView photos = (GridView) rootView.findViewById(R.id.gallery_photos);
+/**
+ * просмотр всех фотографий альбома
+ * 
+ * @author sov
+ *
+ */
+public class PhotoGridFragment extends AppCompatActivity {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.gallery_photo_fragment);
+        final Toolbar toolbar = (android.support.v7.widget.Toolbar) this.findViewById(R.id.toolbar);
+        this.setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //toolbar.setNavigationIcon(R.drawable.ic_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        
+        final String albumId = getIntent().getStringExtra(DataHolder.ALBUM_ID);
+        List<String> photosId = MainActivity.getCameraImages(this, albumId);
+        final PhotoGridFragment d =this;
+        //DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
+        //List<String> photosId = dbHelper.convertByNameToIds(photosNames);
+        GridView photos = (GridView) findViewById(R.id.gallery_photos);
         Log.i("s",  "" + photos);
-        photos.setAdapter(new GridPhotosAdapter(getActivity(), photosId));
+        photos.setAdapter(new GridPhotosAdapter(this, photosId));
         photos.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent in = new Intent(getActivity(), PhotoGalleryCommon.class);
+                Intent in = new Intent(d, PhotoGalleryCommon.class);
+                in.putExtra(DataHolder.ALBUM_ID, albumId);
                 in.putExtra(PhotoGalleryCommon.PHOTO_ID, position);
                 startActivity(in);
                 
@@ -41,7 +67,6 @@ public class PhotoGridFragment extends Fragment {
 //        final PagerAdapter mPagerAdapter = new CommonPhotoAdapter2(getActivity(), photos, nameView);
 //        mPager.setAdapter(mPagerAdapter);
         
-        return rootView;
     }
 
 }
