@@ -52,8 +52,10 @@
 
             <TextView
                 style="@style/CodeFontStatsValue"
+                android:id="@+id/all_photos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="-5dp"
                 android:layout_gravity="center_horizontal"
                 android:text="0" />
         </LinearLayout>
@@ -74,10 +76,12 @@
 
             <TextView
                 style="@style/CodeFontStatsValue"
+                android:id="@+id/photos_processed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="0"
+                android:layout_marginTop="-5dp"
                 android:textColor="@color/all_text" />
         </LinearLayout>
 
@@ -97,10 +101,12 @@
 
             <TextView
                 style="@style/CodeFontStatsValue"
+                android:id="@+id/face_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="0"
+                android:layout_marginTop="-5dp"
                 android:textColor="@color/all_text" />
         </LinearLayout>
     </RelativeLayout>

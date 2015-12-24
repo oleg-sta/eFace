@@ -13,6 +13,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -31,6 +32,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class RecognizeFragment extends Fragment implements NotificationReceiver.Listener {
@@ -42,6 +44,11 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
     Context context;
     //ImageView button;
     protected ImageView startMenu;
+    
+    TextView phoCOuntTw;
+    TextView phoProCOuntTw;
+    TextView facesCountTw;
+    
     
     public RecognizeFragment() {
     }
@@ -80,6 +87,9 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
         
         gal.setAdapter(adapterMans);
 
+        phoCOuntTw = (TextView) rootView.findViewById(R.id.all_photos);
+        phoProCOuntTw = (TextView) rootView.findViewById(R.id.photos_processed);
+        facesCountTw = (TextView) rootView.findViewById(R.id.face_count);
         
         //button = (ImageView) rootView.findViewById(R.id.start_stop);
         int newPhotos = dbHelper.getCountNewPhotos();
@@ -146,6 +156,7 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
                     }
                 } else {
                     final EditText input = new EditText(getActivity());
+                    input.setTextColor(Color.BLACK);
                     input.setHint("Введите имя");
                     input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS | InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -215,40 +226,27 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
         String photo = resultData.getString("photo");
-        String message = resultData.getString("message");
-        String progressStr = resultData.getString("progress");
+        int photoCount = resultData.getInt(FaceFinderService.ALL_PHOTOS, -1);
+        int processedPhoto = resultData.getInt(FaceFinderService.PROCESSED_PHOTOS, -1);
+        int facesCount = resultData.getInt(FaceFinderService.FACES_FOUND, -1);
         boolean ended = resultData.getBoolean("ended", false);
         if (ended && startMenu != null) {
             startMenu.setImageResource(R.drawable.start);
+        }
+        if (photoCount > 0) {
+            phoCOuntTw.setText("" + photoCount);
+        }
+        if (processedPhoto > 0) {
+            phoProCOuntTw.setText("" + processedPhoto);
+        }
+        if (facesCount > 0) {
+            facesCountTw.setText("" + facesCount);
         }
         if (photo != null && currentMan == null) {
             Log.i("sss", "s " + adapterFaces + " " + this.adapterFaces);
             adapterFaces.addAll(dbHelper.getIdsFacesForPhoto(photo));
             adapterFaces.notifyDataSetChanged();
         }
-        if (message != null && getView() != null) {
-            ProgressBar bar = (ProgressBar) getView().findViewById(R.id.progressBar);
-            int progress = 0;
-            if (progressStr != null) {
-                progress = Integer.valueOf(progressStr);
-//                if (progress < 100) {
-//                    if (button != null) {
-//                        bar.setVisibility(View.VISIBLE);
-//                        button.setAlpha(1f);
-//                    }
-//                } else {
-//                    if (button != null) {
-//                        bar.setVisibility(View.GONE);
-//                        //button.setAlpha(0.5f);
-//                    }
-//                }
-            }
-
-            //bar.setVisibility(View.VISIBLE);
-            //bar.setProgress(progress);
-        }
-        // show button start
-        //adapterFaces.notifyDataSetChanged();
         
     }
     

@@ -41,7 +41,6 @@ public class DataHolder {
 
     public static DataHolder getInstance() {
         Log.i("DataHolder", "mem " + (Runtime.getRuntime().maxMemory() / 1024));
-        // TODO ������������ ��� ��� ������� �������
         if (mMemoryCache == null) {
             final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
 

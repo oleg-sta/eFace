@@ -81,6 +81,9 @@ public class PeopleFragment extends Fragment implements YourFragmentInterface, O
     @Override
     public boolean onQueryTextChange(String textNew) {
         Log.i("QUERY", "New text is " + textNew);
+        adapterMans.clear();
+        adapterMans.addAll(dbHelper.getAllIdsPerson(textNew));
+        adapterMans.notifyDataSetChanged();
         return true;
     }
 

@@ -1,15 +1,12 @@
 package ru.trolleg.faces;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 import ru.trolleg.faces.activities.MainActivity;
 import ru.trolleg.faces.data.Face;
 import ru.trolleg.faces.data.InfoPhoto;
-
-
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,6 +15,12 @@ import android.util.Log;
 
 public class DictionaryOpenHelper extends SQLiteOpenHelper {
 
+
+    public static final String TABLE_PHOTOS = "photos";
+    public static final String TABLE_FACES = "faces";
+    public static final String TABLE_PERSON = "person";
+    public static final String COL_NAME_UPPER = "name_upper";
+    
     private static final int DATABASE_VERSION = 10;
 
     public DictionaryOpenHelper(Context context) {
@@ -28,14 +31,14 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE photos (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, path TEXT, time_processed real);");
         db.execSQL("create table faces (guid text, photo_id integer, person_id text, height real, width real, centerX real, centerY real, id integer PRIMARY KEY AUTOINCREMENT NOT NULL);");
-        db.execSQL("create table person (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, name text, deleted INTEGER);");
+        db.execSQL("create table "+TABLE_PERSON+" (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, name text, name_upper text,deleted INTEGER);");
     }
     
     public void recreate() {
     	SQLiteDatabase db = getWritableDatabase();
     	db.execSQL("drop table photos;");
     	db.execSQL("drop table faces;");
-    	db.execSQL("drop table person;");
+    	db.execSQL("drop table "+TABLE_PERSON);
     	onCreate(db);
     	db.close();
     }
@@ -63,11 +66,30 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         return photos;
     }
 
-    /**
-     * �������� ������ ����� ����
-     * 
-     * @param photos
-     */
+    public int getAllCountPhotosProcessed() {
+        int count = 0;
+        SQLiteDatabase s = getReadableDatabase();
+        Cursor c = s.rawQuery("select count(*) from photos where time_processed is not null", null);
+        if (c.moveToNext()) {
+            count = c.getInt(0);
+        }
+        c.close();
+        s.close();
+        return count;
+    }
+    
+    public int getFacesCount() {
+        int count = 0;
+        SQLiteDatabase s = getReadableDatabase();
+        Cursor c = s.rawQuery("select count(*) from faces", null);
+        if (c.moveToNext()) {
+            count = c.getInt(0);
+        }
+        c.close();
+        s.close();
+        return count;
+    }
+    
     public int addNewPhotos(List<String> photos) {
         int i = 0;
         SQLiteDatabase s = getWritableDatabase();
@@ -91,7 +113,11 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     }
     public void updatePersonName(Integer id, String newName) {
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("update person set name = '"+newName+"' where id = " + id + "");
+        ContentValues values = new ContentValues();
+        values.put("name", newName);
+        values.put("name_upper", newName.toUpperCase());
+        //s.execSQL("update "+TABLE_PERSON+" set name = '"+newName+"', name_upper = '"+newName.toUpperCase()+"' where id = " + id + "");
+        s.update(TABLE_PERSON, values, "id = ?", new String[] { String.valueOf(id)});
         s.close();
     }
 
@@ -127,7 +153,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
 
     public int addPerson(String name) {
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("insert into person (name) values ('"+name+"')");
+        s.execSQL("insert into "+TABLE_PERSON+" (name, "+COL_NAME_UPPER+") values ('"+name+"', '"+name.toUpperCase()+"')");
         int id = getLastId(s);
         s.close();
         return id;
@@ -171,7 +197,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public String getPersonName(Integer id) {
     	String name = null;
     	SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select name from person where id = " + id, null);
+        Cursor c = s.rawQuery("select name from "+TABLE_PERSON+" where id = " + id, null);
         if (c.moveToNext()) {
             name = c.getString(0);
         }
@@ -200,7 +226,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public List<Face> getFacesForPhoto(int id) {
         List<Face> faces = new ArrayList<Face>();
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select f.guid, f.photo_id, f.person_id, f.height, f.width, f.centerX, f.centerY from faces f where f.photo_id = "+id + " and (f.person_id not in (select id from person where name = '"+MainActivity.NO_FACES+"') or f.person_id is null)", null);
+        Cursor c = s.rawQuery("select f.guid, f.photo_id, f.person_id, f.height, f.width, f.centerX, f.centerY from faces f where f.photo_id = "+id + " and (f.person_id not in (select id from "+TABLE_PERSON+" where name = '"+MainActivity.NO_FACES+"') or f.person_id is null)", null);
         while (c.moveToNext()) {
             Face face = new Face();
             face.guid = c.getString(0);
@@ -231,7 +257,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public List<Integer> getAllIdsPerson() {
     	List<Integer> faces = new ArrayList<Integer>();
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select p.id from person p where p.name <> '"+MainActivity.NO_FACES+"' order by p.name, p.id", null);
+        Cursor c = s.rawQuery("select p.id from "+TABLE_PERSON+" p where p.name <> '"+MainActivity.NO_FACES+"' order by p.name, p.id", null);
         while (c.moveToNext()) {
             faces.add(c.getInt(0));
         }
@@ -242,7 +268,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public List<Integer> getAllIdsPerson(String textNew) {
         List<Integer> faces = new ArrayList<Integer>();
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select p.id from person p where p.name <> '"+MainActivity.NO_FACES+"' and p.name like '%"+textNew+"%' order by p.name, p.id", null);
+        Cursor c = s.rawQuery("select p.id from "+TABLE_PERSON+" p where p.name <> '"+MainActivity.NO_FACES+"' and p."+COL_NAME_UPPER+" like '%"+textNew.toUpperCase()+"%' order by p.name, p.id", null);
         while (c.moveToNext()) {
             faces.add(c.getInt(0));
         }
@@ -280,7 +306,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public void removeGroups() {
         Log.v("DictionaryOpenHelper", "removeGroups");
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("delete from person");
+        s.execSQL("delete from "+TABLE_PERSON+"");
         s.close();
     }
 
@@ -295,7 +321,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public Integer getPersonByName(String name) {
     	Integer res = null;
     	SQLiteDatabase s = getReadableDatabase();
-    	Cursor c = s.rawQuery("select id from person where name = '" + name + "'", null);
+    	Cursor c = s.rawQuery("select id from "+TABLE_PERSON+" where name = '" + name + "'", null);
         if (c.moveToNext()) {
             res = c.getInt(0);
         }
@@ -372,14 +398,14 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
 
     public void removePerson(Integer oldPersonId) {
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("delete from person where id = " + oldPersonId);
+        s.execSQL("delete from "+TABLE_PERSON+" where id = " + oldPersonId);
         s.close();
     }
 
     public void facesToNullPeople() {
         SQLiteDatabase s = getWritableDatabase();
         s.execSQL("update faces set person_id = null");
-        s.execSQL("delete from person");
+        s.execSQL("delete from "+TABLE_PERSON);
         s.close();
     }
 
