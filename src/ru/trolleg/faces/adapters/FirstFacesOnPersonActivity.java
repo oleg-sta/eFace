@@ -9,30 +9,23 @@ import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.activities.FacesActivity;
 import ru.trolleg.faces.data.Face;
-import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class FirstFacesOnPersonActivity extends ArrayAdapter<Integer>{
     private final Activity context;
-    public final List<Integer> men; // �������������� ������
+    public final List<Integer> men;
     public final Set<Integer> checked = new HashSet<Integer>();
 
     public FirstFacesOnPersonActivity(Activity context, List<Integer> men) {
@@ -46,7 +39,6 @@ public class FirstFacesOnPersonActivity extends ArrayAdapter<Integer>{
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.name_faces, null, true);
         }
-        //ImageView view = (ImageView) convertView.findViewById(R.id.face_man);
         final TextView text = (TextView) convertView.findViewById(R.id.name_man);
         final TextView countText = (TextView) convertView.findViewById(R.id.faces_count);
         final int manId = men.get(position);
@@ -55,15 +47,14 @@ public class FirstFacesOnPersonActivity extends ArrayAdapter<Integer>{
         text.setText(name);
         List<Integer> faces = dbHelper.getAllIdsFacesForPerson(manId);
         ImageView l1 = (ImageView) convertView.findViewById(R.id.first_face);
-        //l1.removeAllViews();
-        countText.setText(faces.size() + " фотографий");
+        Resources res = getContext().getResources();
+        String photoCount = res.getQuantityString(R.plurals.numberOfPhoto, faces.size(), faces.size());
+        countText.setText(photoCount);
         if (faces.size() > 0) {
             Face face = dbHelper.getFaceForId(faces.get(0));
             SQLiteDatabase db = dbHelper.getReadableDatabase();
             Bitmap bm = DataHolder.getInstance().getLittleFaceInCirle(db, face.guid, getContext());
             db.close();
-            //ImageView imageView2 = new ImageView(context);
-            //imageView2.setId(i);
             l1.setImageBitmap(bm);
             convertView.setOnClickListener(new OnClickListener() {
                 @Override
@@ -77,35 +68,6 @@ public class FirstFacesOnPersonActivity extends ArrayAdapter<Integer>{
             });
 
         }
-//        ImageView penView = (ImageView) convertView.findViewById(R.id.pen);
-//        penView.setOnClickListener(new OnClickListener() {
-//            
-//            @Override
-//            public void onClick(View v) {
-//                final EditText input = new EditText(context);
-//                input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-//                input.setText(name);
-//                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-//                builder.setMessage("Введите имя");
-//                builder.setView(input).setPositiveButton("Да", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        String newName =  input.getText().toString();
-//                        dbHelper.updatePersonName(manId, newName);
-//                        text.setText(newName);
-//                        //act.adapterMans.notifyDataSetChanged();
-//                    }
-//                }).setNegativeButton("Нет", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                    }
-//                });
-//                AlertDialog alertDialog = builder.create();
-//                alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-//                alertDialog.show();
-//                
-//            }
-//        });
-        
         return convertView;
     }
-
 }
