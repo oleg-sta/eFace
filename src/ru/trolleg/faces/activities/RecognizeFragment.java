@@ -81,7 +81,7 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
         Log.i("MainActivity", "size persons " + adapterFaces.faces.size());
         
         GalleryAdapter j = new GalleryAdapter(getActivity(), dbHelper.getAllIdsFaces());
-        adapterMans = new PersonListToRecogniseAdapter(getActivity(), dbHelper.getAllIdsPerson(), this);
+        adapterMans = new PersonListToRecogniseAdapter(getActivity(), dbHelper.getAllIdsPerson(0, true), this);
 
         android.support.v4.view.ViewPager gal = (android.support.v4.view.ViewPager) rootView.findViewById(R.id.aaa);
         

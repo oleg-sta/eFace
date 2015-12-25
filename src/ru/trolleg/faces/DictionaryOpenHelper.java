@@ -254,21 +254,28 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         return faces;
     }
 
-    public List<Integer> getAllIdsPerson() {
-    	List<Integer> faces = new ArrayList<Integer>();
-        SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select p.id from "+TABLE_PERSON+" p where p.name <> '"+MainActivity.NO_FACES+"' order by p.name, p.id", null);
-        while (c.moveToNext()) {
-            faces.add(c.getInt(0));
-        }
-        c.close();
-        s.close();
-        return faces;
+    /**
+     *  0 - по имени
+     *  1 - по количеству
+     * @param sortMode
+     * @return
+     */
+    public List<Integer> getAllIdsPerson(int sortMode, boolean sortAsc) {
+        return getAllIdsPerson(sortMode, sortAsc, null);
     }
-    public List<Integer> getAllIdsPerson(String textNew) {
+    public List<Integer> getAllIdsPerson(int sortMode, boolean sortAsc, String textNew) {
+        String addWhere = "";
+        if (textNew != null) {
+            addWhere = " and p." + COL_NAME_UPPER + " like '%" + textNew.toUpperCase() + "%' ";
+        }
+        String sortOrder = " order by p.name " + (sortAsc? "" : "DESC") + ", p.id";
         List<Integer> faces = new ArrayList<Integer>();
+        String sql = "select p.id from " + TABLE_PERSON + " p where p.name <> '"+MainActivity.NO_FACES+"' " + addWhere + " order by p.name "+(sortAsc? "" : "DESC") +", p.id";
+        if (sortMode != 0) {
+            sql = "select p.id, count(*) c from " + TABLE_PERSON + " p, faces f where f.person_id = p.id and p.name <> '"+MainActivity.NO_FACES+"' " + addWhere + " group by p.id order by c "+(sortAsc? "DESC" : "ASC") +", p.id";
+        }
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select p.id from "+TABLE_PERSON+" p where p.name <> '"+MainActivity.NO_FACES+"' and p."+COL_NAME_UPPER+" like '%"+textNew.toUpperCase()+"%' order by p.name, p.id", null);
+        Cursor c = s.rawQuery(sql, null);
         while (c.moveToNext()) {
             faces.add(c.getInt(0));
         }

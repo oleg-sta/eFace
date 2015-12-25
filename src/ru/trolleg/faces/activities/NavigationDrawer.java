@@ -166,7 +166,6 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action buttons
         switch(item.getItemId()) {
         case R.id.reset:
             dbHelper.recreate();

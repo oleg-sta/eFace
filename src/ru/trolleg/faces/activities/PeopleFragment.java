@@ -26,15 +26,17 @@ public class PeopleFragment extends Fragment implements YourFragmentInterface, O
     FirstFacesOnPersonActivity adapterMans;
     DictionaryOpenHelper dbHelper;
     
+    private String filterName = null;
+    private int sortMode = 0;
+    private boolean sortAsc = true;
+    
     public PeopleFragment() {
     }
 
     
     @Override
     public void onResume() {
-        adapterMans.clear();
-        adapterMans.addAll(dbHelper.getAllIdsPerson());
-        adapterMans.notifyDataSetChanged();
+        researchPeople();
         super.onResume();
     }
 
@@ -49,7 +51,7 @@ public class PeopleFragment extends Fragment implements YourFragmentInterface, O
         View rootView = inflater.inflate(R.layout.people_fragment, container, false);
         
         dbHelper = new DictionaryOpenHelper(getActivity());
-        adapterMans = new FirstFacesOnPersonActivity(getActivity(), dbHelper.getAllIdsPerson());
+        adapterMans = new FirstFacesOnPersonActivity(getActivity(), dbHelper.getAllIdsPerson(sortMode, sortAsc));
         final ListView listView2 = (ListView) rootView.findViewById(R.id.list_man);
         listView2.setEmptyView(rootView.findViewById(R.id.empty));
         listView2.setAdapter(adapterMans);
@@ -59,9 +61,7 @@ public class PeopleFragment extends Fragment implements YourFragmentInterface, O
 
     @Override
     public void fragmentBecameVisible() {
-        adapterMans.clear();
-        adapterMans.addAll(dbHelper.getAllIdsPerson());
-        adapterMans.notifyDataSetChanged();
+        researchPeople();
     }
     
     @Override
@@ -79,11 +79,40 @@ public class PeopleFragment extends Fragment implements YourFragmentInterface, O
 
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.sort_people_by_name:
+            sortMode(0);
+            return true;
+        case R.id.sort_people_by_count:
+            sortMode(1);
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+    private void sortMode(int i) {
+        if (sortMode == i) {
+            sortAsc = !sortAsc;
+        }
+        sortMode = i;
+        researchPeople();
+        
+    }
+    
+    private void researchPeople() {
+        adapterMans.clear();
+        adapterMans.addAll(dbHelper.getAllIdsPerson(sortMode, sortAsc, filterName));
+        adapterMans.notifyDataSetChanged();
+    }
+
+    @Override
     public boolean onQueryTextChange(String textNew) {
         Log.i("QUERY", "New text is " + textNew);
-        adapterMans.clear();
-        adapterMans.addAll(dbHelper.getAllIdsPerson(textNew));
-        adapterMans.notifyDataSetChanged();
+        filterName = textNew;
+        researchPeople();
         return true;
     }
 
@@ -91,18 +120,17 @@ public class PeopleFragment extends Fragment implements YourFragmentInterface, O
     @Override
     public boolean onQueryTextSubmit(String textNew) {
         Log.i("QUERY", "New text is1 " + textNew);
-        adapterMans.clear();
-        adapterMans.addAll(dbHelper.getAllIdsPerson(textNew));
-        adapterMans.notifyDataSetChanged();
+//        adapterMans.clear();
+//        adapterMans.addAll(dbHelper.getAllIdsPerson(sortMode, textNew));
+//        adapterMans.notifyDataSetChanged();
         return true;
     }
 
 
     @Override
     public boolean onClose() {
-        adapterMans.clear();
-        adapterMans.addAll(dbHelper.getAllIdsPerson());
-        adapterMans.notifyDataSetChanged();
+        filterName = null;
+        researchPeople();
         return false;
     }
 }

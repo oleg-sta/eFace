@@ -20,13 +20,13 @@
             <group>
                 
 			    <item
-			        android:id="@+id/menuPurchasesListSortOrderCategory"
+			        android:id="@+id/sort_people_by_name"
 			        android:orderInCategory="100"
 			        android:showAsAction="never"
 			        android:title="По имени"/>                
                 
 			    <item
-			        android:id="@+id/menuPurchasesListSortOrderName"
+			        android:id="@+id/sort_people_by_count"
 			        android:orderInCategory="200"
 			        android:showAsAction="never"
 			        android:title="По количеству"/>                

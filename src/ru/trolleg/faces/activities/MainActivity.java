@@ -2,11 +2,13 @@ package ru.trolleg.faces.activities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.FaceFinderService;
@@ -103,7 +105,29 @@ public class MainActivity {
                 }
             } while (cursor.moveToNext());
         }
+        ValueComparator bvc = new ValueComparator(albumsId);
+        TreeMap sorted_map = new TreeMap(bvc);
+        sorted_map.putAll(albumsId);
         cursor.close();
-        return new ArrayList<Album>(albumsId.values());
+        return new ArrayList<Album>(sorted_map.values());
+    }
+    
+    static class ValueComparator implements Comparator<String> {
+        Map<String, Album> base;
+
+        public ValueComparator(Map<String, Album> base) {
+            this.base = base;
+        }
+
+        // Note: this comparator imposes orderings that are inconsistent with
+        // equals.
+        public int compare(String a, String b) {
+            if (base.get(a).count >= base.get(b).count) {
+                return -1;
+            } else {
+                return 1;
+            } // returning 0 would merge keys
+        }
+
     }
 }
