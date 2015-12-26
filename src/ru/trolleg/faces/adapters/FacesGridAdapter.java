@@ -57,13 +57,13 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
     
     @Override
     public int getCount() {
-        return faces.size() + WIDTH_NUM_PICS;
+        return faces.size() + WIDTH_NUM_PICS + 1;
     }
 
 
     @Override
     public int getItemViewType(int position) {
-        return (position < WIDTH_NUM_PICS) ? 1 : 0;
+        return (position < WIDTH_NUM_PICS || position >= (faces.size() + WIDTH_NUM_PICS)) ? 1 : 0;
     }
 
 
@@ -75,21 +75,26 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
 
     @Override
     public Integer getItem(int position) {
-        return position < WIDTH_NUM_PICS ?
+        return (position < WIDTH_NUM_PICS || position >= (faces.size() + WIDTH_NUM_PICS)) ?
                 null : faces.get(position - WIDTH_NUM_PICS);
     }
+    
     
     @Override
     public View getView(final int pos, View convertView, ViewGroup parent) {
         final int position = pos - WIDTH_NUM_PICS;
-        
-        if (position < 0) {
+        if (position < 0 || position >= faces.size()) {
             if (convertView == null) {
                 convertView = new View(context);
             }
-            // Set empty view with height of ActionBar
-            convertView.setLayoutParams(new AbsListView.LayoutParams(
-                    LayoutParams.MATCH_PARENT, 0));
+            if (position < 0) {
+                convertView.setLayoutParams(new AbsListView.LayoutParams(LayoutParams.MATCH_PARENT, 0));
+            } else if (position / WIDTH_NUM_PICS == (faces.size() - 1) / WIDTH_NUM_PICS) {
+                // TODO не совсем верный размер вычисляется, но благодярю ему добавляеи дополнительный паддинг снизу
+                convertView.setLayoutParams(new AbsListView.LayoutParams(LayoutParams.MATCH_PARENT, context.getResources().getDisplayMetrics().widthPixels / WIDTH_NUM_PICS));
+            } else {
+                convertView.setLayoutParams(new AbsListView.LayoutParams(LayoutParams.MATCH_PARENT, DataHolder.dp2Px(80, context)));
+            }
             return convertView;
         }
         

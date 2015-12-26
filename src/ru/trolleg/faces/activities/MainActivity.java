@@ -45,6 +45,17 @@ public class MainActivity {
     public static List<String> getCameraImages(Context context) {
         return getCameraImages(context, null);
     }
+    
+    public static String getAlbumName(Context context, final String albumId) {
+        String albumName = "";
+        final Cursor cursor = context.getContentResolver().query(Images.Media.EXTERNAL_CONTENT_URI, new String[]{Images.Media.BUCKET_DISPLAY_NAME},
+                MediaStore.Images.Media.BUCKET_ID + " = ?", new String[]{ albumId }, null);
+        if (cursor.moveToFirst()) {
+            albumName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME));
+        }
+        return albumName;
+        
+    }
     public static List<String> getCameraImages(Context context, final String albumId) {
         Log.i("MainActivity", "getCameraImages");
         final String[] projection = { MediaStore.Images.Media.DATA, Images.Media.BUCKET_DISPLAY_NAME, Images.Media._ID};

@@ -42,6 +42,7 @@ public class PhotoGridFragment extends AppCompatActivity {
         });
         
         final String albumId = getIntent().getStringExtra(DataHolder.ALBUM_ID);
+        setTitle(MainActivity.getAlbumName(getApplication(), albumId));
         List<String> photosId = MainActivity.getCameraImages(this, albumId);
         final PhotoGridFragment d =this;
         //DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
