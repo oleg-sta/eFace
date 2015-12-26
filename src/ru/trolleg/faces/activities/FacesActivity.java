@@ -2,7 +2,9 @@ package ru.trolleg.faces.activities;
 
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
+import ru.trolleg.faces.FaceFinderService;
 import ru.trolleg.faces.R;
+import ru.trolleg.faces.adapters.FacesGridAdapter;
 import ru.trolleg.faces.adapters.FacesGridShow;
 import android.app.Activity;
 import android.content.Context;
@@ -87,8 +89,9 @@ public class FacesActivity extends AppCompatActivity {
         db.close();
         
         FacesGridShow facesGrid = new FacesGridShow(this, dbHelper.getAllIdsFacesForPerson(personId));
-        namePerson2.setText(facesGrid.getCount() + " фотографий");
+        namePerson2.setText(getResources().getQuantityString(R.plurals.numberOfPhoto, facesGrid.faces.size(), facesGrid.faces.size()));
         final GridView gridFaces = (GridView) findViewById(R.id.grid_faces);
+        gridFaces.setNumColumns(FacesGridAdapter.WIDTH_NUM_PICS);
         gridFaces.setAdapter(facesGrid);
 
     }

@@ -13,12 +13,14 @@
         <TextView
             android:id="@+id/text_action"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/all_text" />
 
         <TextView
             android:id="@+id/text_action2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/all_text" />
     </LinearLayout>
 
     <ImageView

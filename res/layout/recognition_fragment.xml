@@ -155,6 +155,7 @@
                 android:ellipsize="end"
                 android:gravity="center_horizontal"
                 android:padding="0dp"
+                android:textColor="@color/all_text"
                 android:singleLine="true"
                 android:text="Корзина"
                 android:textSize="12sp" />

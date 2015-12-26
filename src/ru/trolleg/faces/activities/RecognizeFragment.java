@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -31,7 +32,6 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +43,8 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
     public Integer currentMan = null;
     Context context;
     //ImageView button;
-    protected ImageView startMenu;
+    MenuItem stMenu;
+    //protected ImageView startMenu;
     
     TextView phoCOuntTw;
     TextView phoProCOuntTw;
@@ -230,8 +231,8 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
         int processedPhoto = resultData.getInt(FaceFinderService.PROCESSED_PHOTOS, -1);
         int facesCount = resultData.getInt(FaceFinderService.FACES_FOUND, -1);
         boolean ended = resultData.getBoolean("ended", false);
-        if (ended && startMenu != null) {
-            startMenu.setImageResource(R.drawable.start);
+        if (ended && stMenu != null) {
+            stMenu.setIcon(R.drawable.start);
         }
         if (photoCount > 0) {
             phoCOuntTw.setText("" + photoCount);
@@ -268,32 +269,37 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         Log.i("PeopleFragment", "onCreateOptionsMenu");
         inflater.inflate(R.menu.recognition, menu);
+        stMenu = menu.findItem(R.id.miCompose);
         super.onCreateOptionsMenu(menu, inflater);
     }
     
-    public void setStartMenu(ImageView startMenu2) {
-        startMenu = startMenu2;
-        final RecognizeFragment thiz = this;
-        startMenu.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                FaceFinderService.buttonStart = !FaceFinderService.buttonStart;
-                if (!FaceFinderService.buttonStart) {
-                    startMenu.setImageResource(R.drawable.start);
-                } else {
-                    startMenu.setImageResource(R.drawable.pause);
-                    // TODO нельзя запускать, если работает
-                    if (FaceFinderService.getInstance() == null) {
-                        Intent intent = new Intent(context, FaceFinderService.class);
-                        NotificationReceiver receiver = new NotificationReceiver(new Handler());
-                        receiver.setListener(thiz);
-                        intent.putExtra("receiver", receiver);
-                        getActivity().startService(intent);
-                    }
-                }
-            }
-        });
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.miCompose:
+            onClickStart22();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
     }
+    
+    private void onClickStart22() {
+        FaceFinderService.buttonStart = !FaceFinderService.buttonStart;
+        if (!FaceFinderService.buttonStart) {
+            stMenu.setIcon(R.drawable.start);
+        } else {
+            stMenu.setIcon(R.drawable.pause);
+            // TODO нельзя запускать, если работает
+            if (FaceFinderService.getInstance() == null) {
+                Intent intent = new Intent(context, FaceFinderService.class);
+                NotificationReceiver receiver = new NotificationReceiver(new Handler());
+                receiver.setListener(this);
+                intent.putExtra("receiver", receiver);
+                getActivity().startService(intent);
+            }
+        }
+    }
+
 
 }

@@ -33,7 +33,7 @@ public class GridAlbumsAdapter extends BaseAdapter {
 
         LayoutInflater inflater = context.getLayoutInflater();
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.one_face_and_name, null, true);
+            convertView = inflater.inflate(R.layout.album_name, null, true);
         }
         final Album album = albums.get(position);
         ImageView im = (ImageView) convertView.findViewById(R.id.one_face1);

@@ -5,26 +5,17 @@ import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
-import android.app.ActionBar;
-import android.content.Context;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 
 public class NavigationDrawer extends AppCompatActivity  implements MaterialTabListener {
     AppSectionsPagerAdapter mAppSectionsPagerAdapter; 
@@ -33,7 +24,6 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
     static RecognizeFragment rf;
     static Fragment oldFr;
     static Fragment newFr;
-    ImageView startMenu;
 
     MaterialTabHost tabHost;
 
@@ -44,23 +34,9 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
 
         final Toolbar toolbar = (android.support.v7.widget.Toolbar) this.findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
-        LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflator.inflate(R.layout.custom_action_reco, null);
-        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        layoutParams.gravity = Gravity.RIGHT;
-        // v.getLayoutParams().height = actionBar.getHeight();
-        toolbar.addView(v, layoutParams);
-        startMenu = (ImageView) v.findViewById(R.id.img_action);
-        
         dbHelper = new DictionaryOpenHelper(this);
         mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager());
-
         tabHost = (MaterialTabHost) this.findViewById(R.id.tabHost);
-        //final ActionBar actionBar = getActionBar();
-        //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        // обходное решение для предотвращения показа tab'ов сверху actionbar, такая бага на некоторых версиях андроида
-        //actionBar.setIcon(R.drawable.no_image);
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mAppSectionsPagerAdapter);
         mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -77,22 +53,6 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
                     ((YourFragmentInterface)obj).fragmentBecameVisible();
                 }
                 
-                if (obj != null & obj instanceof RecognizeFragment) {
-//                    LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//                    View v = inflator.inflate(R.layout.custom_action_reco, null);
-//                    ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(
-//                            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//                    layoutParams.gravity = Gravity.RIGHT;
-//                    // v.getLayoutParams().height = actionBar.getHeight();
-//                    toolbar.addView(v, layoutParams);
-                    //actionBar.setCustomView(v, layoutParams);
-                    //startMenu = (ImageView) v.findViewById(R.id.img_action);
-                    startMenu.setVisibility(View.VISIBLE);
-                    ((RecognizeFragment)obj).setStartMenu(startMenu);
-                } else {
-                    startMenu.setVisibility(View.GONE);
-                    //actionBar.setCustomView(null);
-                }
             }
         });
 

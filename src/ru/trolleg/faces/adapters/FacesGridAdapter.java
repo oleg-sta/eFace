@@ -143,6 +143,7 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
                 case MotionEvent.ACTION_DOWN: {
                     ImageView view = (ImageView) v;
                     // argb
+                    view.setBackgroundColor(Color.WHITE);
                     view.setPadding(5, 5, 5, 5);
                     view.invalidate();
                     break;

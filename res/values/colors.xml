@@ -5,5 +5,6 @@
         <color name="action_button_color">#675489</color>
         <color name="photo_border">#000000</color>
         <color name="all_text">#FFFFFF</color>
+        <color name="albums_text">#000000</color>
         <color name="subtext">#C4C4C4</color>
 </resources>
