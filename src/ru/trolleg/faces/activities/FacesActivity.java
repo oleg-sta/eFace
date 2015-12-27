@@ -40,7 +40,8 @@ public class FacesActivity extends AppCompatActivity {
 
     TextView namePerson;
     DictionaryOpenHelper dbHelper;
-    Integer personId;
+    public Integer personId;
+    ImageView iv;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,10 +86,10 @@ public class FacesActivity extends AppCompatActivity {
         namePerson.setText(dbHelper.getPersonName(personId));
         
         
-        ImageView iv = (ImageView) v.findViewById(R.id.img_action);
-        String photo = dbHelper.getFaceForId(dbHelper.getAllIdsFacesForPerson(personId).get(0)).guid;
+        iv = (ImageView) v.findViewById(R.id.img_action);
+        Integer avaId = dbHelper.getAvaFace(personId);
+        String photo = dbHelper.getFaceForId(avaId).guid;
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Log.i("PeopleFragment", "photo " + photo);
         iv.setImageBitmap(DataHolder.getInstance().getLittleFaceInCirle(db, photo, this));
         db.close();
         
@@ -136,6 +137,12 @@ public class FacesActivity extends AppCompatActivity {
         return true;
     }
 
-    
+    public void updateAva() {
+        Integer avaId = dbHelper.getAvaFace(personId);
+        String photo = dbHelper.getFaceForId(avaId).guid;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        iv.setImageBitmap(DataHolder.getInstance().getLittleFaceInCirle(db, photo, this));
+        db.close();
+    }
     
 }

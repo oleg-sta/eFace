@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:theme="@style/ToolbarTheme"
+        app:popupTheme="@style/Toolbar_Popup"
         app:titleTextAppearance="@style/Toolbar.TitleText" />
 
     <it.neokree.materialtabs.MaterialTabHost

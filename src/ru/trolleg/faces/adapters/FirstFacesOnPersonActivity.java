@@ -45,13 +45,14 @@ public class FirstFacesOnPersonActivity extends ArrayAdapter<Integer>{
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
         final String name = dbHelper.getPersonName(manId);
         text.setText(name);
-        List<Integer> faces = dbHelper.getAllIdsFacesForPerson(manId);
+        List<Integer> faces2 = dbHelper.getAllIdsFacesForPerson(manId);
+        Integer avaId = dbHelper.getAvaFace(manId);
         ImageView l1 = (ImageView) convertView.findViewById(R.id.first_face);
         Resources res = getContext().getResources();
-        String photoCount = res.getQuantityString(R.plurals.numberOfPhoto, faces.size(), faces.size());
+        String photoCount = res.getQuantityString(R.plurals.numberOfPhoto, faces2.size(), faces2.size());
         countText.setText(photoCount);
-        if (faces.size() > 0) {
-            Face face = dbHelper.getFaceForId(faces.get(0));
+        if (avaId != null) {
+            Face face = dbHelper.getFaceForId(avaId);
             SQLiteDatabase db = dbHelper.getReadableDatabase();
             Bitmap bm = DataHolder.getInstance().getLittleFaceInCirle(db, face.guid, getContext());
             db.close();

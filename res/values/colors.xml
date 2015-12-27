@@ -7,4 +7,6 @@
         <color name="all_text">#FFFFFF</color>
         <color name="albums_text">#000000</color>
         <color name="subtext">#C4C4C4</color>
+        <color name="menu_text">#000000</color>
+        <color name="menu_background">#FFFFFF</color>
 </resources>

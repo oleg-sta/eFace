@@ -62,10 +62,11 @@ public class PersonListToRecogniseAdapter extends PagerAdapter {
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
         String name = dbHelper.getPersonName(manId);
         text.setText(name);
-        List<Integer> faces = dbHelper.getAllIdsFacesForPerson(manId);
+        //List<Integer> faces = dbHelper.getAllIdsFacesForPerson(manId);
+        Integer faceAva = dbHelper.getAvaFace(manId);
         Bitmap bm = null;
-        if (faces.size() > 0) {
-            Face face = dbHelper.getFaceForId(faces.get(0));
+        if (faceAva != null) {
+            Face face = dbHelper.getFaceForId(faceAva);
             SQLiteDatabase db = dbHelper.getReadableDatabase();
             bm = DataHolder.getInstance().getLittleFaceInCirle(db, face.guid, context);
             db.close();

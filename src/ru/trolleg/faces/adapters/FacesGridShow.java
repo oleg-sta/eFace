@@ -10,12 +10,17 @@ import ru.trolleg.faces.R;
 import ru.trolleg.faces.activities.DisplayCommonPhoto;
 import ru.trolleg.faces.activities.FacesActivity;
 import ru.trolleg.faces.data.Face;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -91,6 +96,29 @@ public class FacesGridShow extends ArrayAdapter<Integer> {
                 personIntent.putExtra(DataHolder.FACE_ID, faceId);
                 context.startActivity(personIntent);
 
+            }
+        });
+        view.setOnLongClickListener(new OnLongClickListener() {
+            
+            @Override
+            public boolean onLongClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("Сделать фотографию главной?");
+                builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dbHelper.setAvaId(context.personId, faceId);
+                        // TODO так нехорошо делать
+                        context.updateAva();
+                    }
+                }).setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Log.i("DragOverListMen", "No");
+                    }
+                });
+                // Create the AlertDialog object and return it
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+                return true;
             }
         });
        

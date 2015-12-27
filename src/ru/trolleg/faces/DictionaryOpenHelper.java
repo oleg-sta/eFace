@@ -31,7 +31,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE photos (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, path TEXT, time_processed real);");
         db.execSQL("create table faces (guid text, photo_id integer, person_id text, height real, width real, centerX real, centerY real, id integer PRIMARY KEY AUTOINCREMENT NOT NULL);");
-        db.execSQL("create table "+TABLE_PERSON+" (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, name text, name_upper text,deleted INTEGER);");
+        db.execSQL("create table "+TABLE_PERSON+" (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, name text, name_upper text,deleted INTEGER, ava_id integer);");
     }
     
     public void recreate() {
@@ -488,6 +488,34 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         }
         s.close();
         return res;
+    }
+
+    public Integer getAvaFace(int personId) {
+        Integer avaId = null;
+        SQLiteDatabase s = getReadableDatabase();
+        Cursor c = s.rawQuery("select f.ava_id from person f where f.id = " + personId, null);
+        if (c.moveToNext()) {
+            avaId = c.getInt(0);
+            if (c.isNull(0)) {
+                avaId = null;
+            }
+        }
+        c.close();
+        if (avaId == null) {
+            c = s.rawQuery("select f.id from faces f where f.person_id = " + personId + " order by f.id", null);
+            if (c.moveToNext()) {
+                avaId = c.getInt(0);
+            }
+            c.close();
+        }
+        s.close();
+        return avaId;
+    }
+    
+    public void setAvaId(int personId, int faceId) {
+        SQLiteDatabase s = getWritableDatabase();
+        s.execSQL("update person set ava_id = "+faceId+" where id = " + personId);
+        s.close();
     }
 
 }
