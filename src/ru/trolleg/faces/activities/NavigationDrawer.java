@@ -67,7 +67,8 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
             tabHost.addTab(
                     tabHost.newTab().setText(mAppSectionsPagerAdapter.getPageTitle(i)).setTabListener(this)
                             );
-        } 
+        }
+        AppRater.appLaunched(this);
     }
     
     public static class AppSectionsPagerAdapter extends FragmentPagerAdapter {
