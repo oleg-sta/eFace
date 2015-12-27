@@ -3,15 +3,16 @@ package ru.trolleg.faces.adapters;
 import java.util.List;
 
 import ru.trolleg.faces.BitmapWorkerCropPhotoTask;
+import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.R;
 import android.app.Activity;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 
 public class GridPhotosAdapter extends ArrayAdapter<String> {
@@ -26,7 +27,39 @@ public class GridPhotosAdapter extends ArrayAdapter<String> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public int getCount() {
+        return photos.size() + FacesGridAdapter.WIDTH_NUM_PICS;
+    }
+
+
+    @Override
+    public int getItemViewType(int position) {
+        return (position < FacesGridAdapter.WIDTH_NUM_PICS) ? 1 : 0;
+    }
+
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+
+    @Override
+    public String getItem(int position) {
+        return (position < FacesGridAdapter.WIDTH_NUM_PICS ) ?
+                null : photos.get(position - FacesGridAdapter.WIDTH_NUM_PICS);
+    }
+    
+    @Override
+    public View getView(int pos, View convertView, ViewGroup parent) {
+        final int position = pos - FacesGridAdapter.WIDTH_NUM_PICS;
+        if (position < 0) {
+            if (convertView == null) {
+                convertView = new View(context);
+            }
+            convertView.setLayoutParams(new AbsListView.LayoutParams(LayoutParams.MATCH_PARENT, 0));
+            return convertView;
+        }
         ViewHolder holder;
         LayoutInflater inflater = context.getLayoutInflater();
         if (convertView == null) {

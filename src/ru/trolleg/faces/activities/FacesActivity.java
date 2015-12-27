@@ -2,32 +2,32 @@ package ru.trolleg.faces.activities;
 
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
-import ru.trolleg.faces.FaceFinderService;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.FacesGridAdapter;
 import ru.trolleg.faces.adapters.FacesGridShow;
-import android.app.Activity;
+import ru.trolleg.faces.adapters.PersonListToRecogniseAdapter;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.Toolbar.LayoutParams;
+import android.text.InputType;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnLayoutChangeListener;
-import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -38,6 +38,10 @@ import android.widget.TextView;
  */
 public class FacesActivity extends AppCompatActivity {
 
+    TextView namePerson;
+    DictionaryOpenHelper dbHelper;
+    Integer personId;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,10 +77,10 @@ public class FacesActivity extends AppCompatActivity {
         //toolbar.setDisplayHomeAsUpEnabled(true);
         //getSupportActionBar().setCustomView(arg0)
         
-        Integer personId = getIntent().getIntExtra(DataHolder.PERSON_ID, 0);
-        final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
+        personId = getIntent().getIntExtra(DataHolder.PERSON_ID, 0);
+        dbHelper = new DictionaryOpenHelper(this);
         
-        TextView namePerson = (TextView) v.findViewById(R.id.text_action);
+        namePerson = (TextView) v.findViewById(R.id.text_action);
         TextView namePerson2 = (TextView) v.findViewById(R.id.text_action2);
         namePerson.setText(dbHelper.getPersonName(personId));
         
@@ -100,6 +104,27 @@ public class FacesActivity extends AppCompatActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
+            case R.id.change_name:
+                final EditText input = new EditText(this);
+                input.setTextColor(Color.BLACK);
+                input.setHint("Введите имя");
+                input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS | InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+                input.setText(namePerson.getText());
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setView(input).setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        String newName =  input.getText().toString();
+                        dbHelper.updatePersonName(personId, newName);
+                        namePerson.setText(newName);
+                    }
+                }).setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                alertDialog.show();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -107,7 +132,7 @@ public class FacesActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        inflater.inflate(R.menu.man_menu, menu);
         return true;
     }
 

@@ -5,6 +5,7 @@ import java.util.List;
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
+import ru.trolleg.faces.adapters.FacesGridAdapter;
 import ru.trolleg.faces.adapters.GridPhotosAdapter;
 import android.app.Activity;
 import android.content.Intent;
@@ -48,7 +49,7 @@ public class PhotoGridFragment extends AppCompatActivity {
         //DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
         //List<String> photosId = dbHelper.convertByNameToIds(photosNames);
         GridView photos = (GridView) findViewById(R.id.gallery_photos);
-        Log.i("s",  "" + photos);
+        photos.setNumColumns(FacesGridAdapter.WIDTH_NUM_PICS);
         photos.setAdapter(new GridPhotosAdapter(this, photosId));
         photos.setOnItemClickListener(new OnItemClickListener() {
 

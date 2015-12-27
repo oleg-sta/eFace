@@ -35,7 +35,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class RecognizeFragment extends Fragment implements NotificationReceiver.Listener {
+public class RecognizeFragment extends Fragment implements NotificationReceiver.Listener, YourFragmentInterface {
     
     DictionaryOpenHelper dbHelper;
     public FacesGridAdapter adapterFaces;
@@ -299,6 +299,11 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
                 getActivity().startService(intent);
             }
         }
+    }
+
+    @Override
+    public void fragmentBecameVisible() {
+        adapterMans.notifyDataSetChanged();
     }
 
 

@@ -1,11 +1,8 @@
 package ru.trolleg.faces.activities;
 
-import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.FirstFacesOnPersonActivity;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -19,7 +16,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 public class PeopleFragment extends Fragment implements YourFragmentInterface, OnQueryTextListener, OnCloseListener   {
@@ -71,7 +67,7 @@ public class PeopleFragment extends Fragment implements YourFragmentInterface, O
         
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setQueryHint("Поиск");
+        searchView.setQueryHint("Поиск...");
         searchView.setOnQueryTextListener(this);
         searchView.setOnCloseListener(this);
         super.onCreateOptionsMenu(menu, inflater);

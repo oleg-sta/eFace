@@ -42,9 +42,10 @@
 
     <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:textColorPrimary">@color/all_text</item>
+        <item name="android:background">@color/action_button_color</item>
     </style>
 
     <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-    <item name="android:textSize">24sp</item>
+    <item name="android:textSize">32sp</item>
 </style>
 </resources>

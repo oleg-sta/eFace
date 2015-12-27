@@ -10,7 +10,6 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/action_bar_color"
         android:theme="@style/ToolbarTheme"
         app:titleTextAppearance="@style/Toolbar.TitleText" />
 
@@ -18,10 +17,11 @@
         android:id="@+id/tabHost"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        app:materialTabsPrimaryColor="@color/action_bar_color"
+        app:materialTabsPrimaryColor="@color/action_button_color"
         app:accentColor="@color/all_text"
         android:layout_below="@+id/toolbar"
          />
+    <!-- app:materialTabsPrimaryColor="@color/action_bar_color"-->
 
     <ru.trolleg.faces.adapters.MyViewPager
         xmlns:android="http://schemas.android.com/apk/res/android"
