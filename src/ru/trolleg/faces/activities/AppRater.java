@@ -18,7 +18,7 @@ public class AppRater {
     private final static int LAUNCHES_UNTIL_PROMPT = 7;
 
     public static void appLaunched(Context mContext) {
-        SharedPreferences prefs = mContext.getSharedPreferences("apprater", 0);
+        SharedPreferences prefs = mContext.getSharedPreferences("apprater", Context.MODE_PRIVATE);
         if (prefs.getBoolean(DONT_SHOW_AGAIN, false)) {
             return;
         }
