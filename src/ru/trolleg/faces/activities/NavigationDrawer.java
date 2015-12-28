@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
 
 public class NavigationDrawer extends AppCompatActivity  implements MaterialTabListener {
     AppSectionsPagerAdapter mAppSectionsPagerAdapter; 
@@ -32,6 +34,10 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.navigation_drawer);
 
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        
         final Toolbar toolbar = (android.support.v7.widget.Toolbar) this.findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
         dbHelper = new DictionaryOpenHelper(this);
