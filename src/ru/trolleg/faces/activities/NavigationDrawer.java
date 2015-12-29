@@ -94,7 +94,7 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
                     rf = new RecognizeFragment();
                     return rf;
                 default:
-                    return new AlbumGridFragment();
+                    return new FragmentAlbumManager();
             }
         }
 
