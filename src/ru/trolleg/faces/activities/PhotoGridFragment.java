@@ -56,7 +56,7 @@ public class PhotoGridFragment extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent in = new Intent(d, PhotoGalleryCommon.class);
                 in.putExtra(DataHolder.ALBUM_ID, albumId);
-                in.putExtra(PhotoGalleryCommon.PHOTO_ID, position);
+                in.putExtra(PhotoGalleryCommon.PHOTO_ID, position - FacesGridAdapter.WIDTH_NUM_PICS);
                 startActivity(in);
                 
             }

@@ -12,8 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class FragmentAlbumManager extends Fragment {
-    private Fragment fragment1;
+    private AlbumGridFragment fragment1;
     private Fragment fragment2;
+    public Fragment3 fragment3;
     private FragmentTransaction transaction;
     
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -22,8 +23,8 @@ public class FragmentAlbumManager extends Fragment {
         super.onCreate(savedInstanceState);
         
         fragment1 = new AlbumGridFragment();
-        fragment2 = new Fragment2();
-        
+        fragment2 = new Fragment2(this);
+        fragment3 = new Fragment3();
         transaction = getFragmentManager().beginTransaction();
         
         // transaction.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_right);

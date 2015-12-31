@@ -1,6 +1,8 @@
 package ru.trolleg.faces.activities;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.GridAlbumsAdapter;
@@ -16,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 
 public class AlbumGridFragment extends Fragment {
-
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,8 +27,9 @@ public class AlbumGridFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.album_fragment, container, false);
-        // DictionaryOpenHelper dbHelper = new
-        // DictionaryOpenHelper(getActivity());
+        
+        // TODO use filters
+
         List<Album> albums = MainActivity.getBucketImages(getActivity());
         GridView photos = (GridView) rootView.findViewById(R.id.gallery_photos);
         photos.setAdapter(new GridAlbumsAdapter(getActivity(), albums));

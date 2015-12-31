@@ -85,6 +85,12 @@ public class DataHolder {
     }
     
     public Bitmap getLittleFaceInCirle(SQLiteDatabase db, String faceId, Context context) {
+        String key = faceId + "_circle";
+        Bitmap bm = mMemoryCache.get(key);
+        if (bm != null) {
+            return bm;
+        }
+        
         Bitmap squaredFace = getLittleFace(db, faceId, context);
         Bitmap output = Bitmap.createBitmap(squaredFace.getWidth(),
                 squaredFace.getHeight(), Config.ARGB_8888);
@@ -102,6 +108,7 @@ public class DataHolder {
                 squaredFace.getHeight() / 2, squaredFace.getWidth() / 2, paint);
         paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
         canvas.drawBitmap(squaredFace, rect, rect, paint);
+        mMemoryCache.put(key, output);
         return output;
         
     }

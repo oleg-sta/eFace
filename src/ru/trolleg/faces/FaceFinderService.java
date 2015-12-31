@@ -12,6 +12,7 @@ import java.util.UUID;
 import ru.trolleg.faces.activities.MainActivity;
 import ru.trolleg.faces.activities.NavigationDrawer;
 import ru.trolleg.faces.data.Face;
+import ru.trolleg.faces.data.Photo;
 import ru.trolleg.faces.jni.Computations;
 import android.app.IntentService;
 import android.app.Notification;
@@ -114,7 +115,7 @@ public class FaceFinderService extends IntentService {
                 if (rec != null) {
                     rec.send(0, b);
                 }
-                List<String> allPhotos = MainActivity.getCameraImages(getApplicationContext());
+                List<Photo> allPhotos = MainActivity.getCameraPhotos(getApplicationContext());
                 Log.d("FaceFinderService", "onHandleIntent photos " + allPhotos.size());
                 dbHelper.addNewPhotos(allPhotos);
                 int newPhotos = dbHelper.getCountNewPhotos();

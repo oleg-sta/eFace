@@ -1,11 +1,14 @@
 package ru.trolleg.faces;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import ru.trolleg.faces.activities.MainActivity;
 import ru.trolleg.faces.data.Face;
 import ru.trolleg.faces.data.InfoPhoto;
+import ru.trolleg.faces.data.Photo;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -21,7 +24,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public static final String TABLE_PERSON = "person";
     public static final String COL_NAME_UPPER = "name_upper";
     
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 1;
 
     public DictionaryOpenHelper(Context context) {
         super(context, "faces.db", null, DATABASE_VERSION);
@@ -29,8 +32,8 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE photos (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, path TEXT, time_processed real);");
-        db.execSQL("create table faces (guid text, photo_id integer, person_id text, height real, width real, centerX real, centerY real, id integer PRIMARY KEY AUTOINCREMENT NOT NULL);");
+        db.execSQL("CREATE TABLE photos (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, path TEXT, time_processed real, time_photo integer);");
+        db.execSQL("create table faces (guid text, photo_id integer, person_id integer, height real, width real, centerX real, centerY real, id integer PRIMARY KEY AUTOINCREMENT NOT NULL);");
         db.execSQL("create table "+TABLE_PERSON+" (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, name text, name_upper text,deleted INTEGER, ava_id integer);");
     }
     
@@ -90,13 +93,13 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         return count;
     }
     
-    public int addNewPhotos(List<String> photos) {
+    public int addNewPhotos(List<Photo> photos) {
         int i = 0;
         SQLiteDatabase s = getWritableDatabase();
-        for (String photo : photos) {
+        for (Photo photo : photos) {
             Cursor c = s.rawQuery("select path from photos where path = '" + photo + "'", null);
             if (!c.moveToNext()) {
-                s.execSQL("insert into photos (path) values ('" + photo + "')");
+                s.execSQL("insert into photos (path, time_photo) values ('" + photo.path + "'," + photo.dateTaken.getTime() + ")");
                 i++;
             } else {
             }
@@ -517,5 +520,23 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         s.execSQL("update person set ava_id = "+faceId+" where id = " + personId);
         s.close();
     }
+
+    // TODO выдавать результат с указанием сколько людей на фотке нашлось и впорядке уменьшения количества наденных
+    public List<String> getPhotoIds(Set<Integer> filterMan, Date startDate, Date endDate) {
+        List<String> photos = new ArrayList<String>();
+        String inds = "(-666";
+        for (Integer idMan : filterMan) {
+            inds += "," + idMan;
+        }
+        inds = inds + ")";
+        Log.i("DictionaryOpenHelper", "query " + inds);
+        SQLiteDatabase s = getReadableDatabase();
+        Cursor c = s.rawQuery("select ph.path, count(*) c from photos ph inner join faces f on f.photo_id = ph.id join person p on p.id = f.person_id where p.id in " + inds + " group by ph.path order by c desc", null);
+        while (c.moveToNext()) {
+            photos.add(c.getString(0));
+        }
+        return photos;
+    }
+
 
 }

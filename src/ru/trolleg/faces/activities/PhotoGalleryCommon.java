@@ -1,5 +1,6 @@
 package ru.trolleg.faces.activities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.trolleg.faces.DataHolder;
@@ -25,6 +26,8 @@ public class PhotoGalleryCommon extends Activity {
 
         final String albumId = getIntent().getStringExtra(DataHolder.ALBUM_ID);
         int position = getIntent().getIntExtra(PHOTO_ID, 0);
+        List<String> photos = getIntent().getExtras().getStringArrayList("photos_array");
+        Log.i("PhotoGalleryCommon", "photos " + photos);
         
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -33,9 +36,9 @@ public class PhotoGalleryCommon extends Activity {
 
         TextView nameView = (TextView) findViewById(R.id.name_man);
         final DeactivableViewPager mPager = (DeactivableViewPager) findViewById(R.id.pager);
-        //DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
-        //List<String> photos = dbHelper.getAllPhotos();
-        List<String> photos = MainActivity.getCameraImages(this, albumId);
+        if (photos == null) {
+            photos = MainActivity.getCameraImages(this, albumId);
+        }
         final PagerAdapter mPagerAdapter = new CommonPhotoAdapter2(this, photos, nameView, mPager);
         mPager.setAdapter(mPagerAdapter);
         mPager.setCurrentItem(position);
