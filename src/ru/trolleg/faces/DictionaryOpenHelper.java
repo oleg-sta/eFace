@@ -98,7 +98,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         int i = 0;
         SQLiteDatabase s = getWritableDatabase();
         for (Photo photo : photos) {
-            Cursor c = s.rawQuery("select path from photos where path = '" + photo + "'", null);
+            Cursor c = s.rawQuery("select path from photos where path = '" + photo.path + "'", null);
             if (!c.moveToNext()) {
                 s.execSQL("insert into photos (path, time_photo) values ('" + photo.path + "'," + photo.dateTaken.getTime() + ")");
                 i++;
