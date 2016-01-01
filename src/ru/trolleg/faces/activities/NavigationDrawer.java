@@ -1,11 +1,17 @@
 package ru.trolleg.faces.activities;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
+
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -140,11 +146,38 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
         case R.id.reset_people:
             dbHelper.facesToNullPeople();
             return true;
+        case R.id.copy_db:
+            copyDb();
+            return true;
         default:
             return super.onOptionsItemSelected(item);
         }
     }
 
+    private void copyDb() {
+        Log.i("NavigationDrawer", "copyDb...");
+        try {
+            File sd = Environment.getExternalStorageDirectory();
+            File data = Environment.getDataDirectory();
+
+                String currentDBPath = "/data/data/" + getPackageName() + "/databases/faces.db";
+                //String backupDBPath = "/storage/emulated/0/Download/backupname.db";
+                File currentDB = new File(currentDBPath);
+                File backupDB = new File("/storage/emulated/0/download/faces_back.db.txt");
+
+                if (currentDB.exists()) {
+                    Log.i("NavigationDrawer", "copyDb");
+                    FileChannel src = new FileInputStream(currentDB).getChannel();
+                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                    dst.transferFrom(src, 0, src.size());
+                    src.close();
+                    dst.close();
+                    Log.i("NavigationDrawer", "copyDbied");
+                }
+        } catch (Exception e) {
+            Log.i("NavigationDrawer", "copyDb some error " + e.getMessage());
+        }
+    }
 
     @Override
     public void onTabSelected(MaterialTab tab) {

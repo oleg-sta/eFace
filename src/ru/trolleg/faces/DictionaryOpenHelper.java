@@ -1,6 +1,7 @@
 package ru.trolleg.faces;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -522,21 +523,58 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     }
 
     // TODO выдавать результат с указанием сколько людей на фотке нашлось и впорядке уменьшения количества наденных
-    public List<String> getPhotoIds(Set<Integer> filterMan, Date startDate, Date endDate) {
+    public List<String> getPhotoIds(Set<Integer> filterMan, Date startDate2, Date endDate2) {
+        Date startDate;
+        Date endDate;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(startDate2);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        startDate = cal.getTime();
+        cal.setTime(endDate2);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        endDate = cal.getTime();
         List<String> photos = new ArrayList<String>();
-        String inds = "(-666";
-        for (Integer idMan : filterMan) {
-            inds += "," + idMan;
+        String where = " where 1 = 1 ";
+        if (!filterMan.isEmpty()) {
+            String inds = "(-666";
+            for (Integer idMan : filterMan) {
+                inds += "," + idMan;
+            }
+            inds = inds + ")";
+            where += " and p.id in " + inds + " ";
         }
-        inds = inds + ")";
-        Log.i("DictionaryOpenHelper", "query " + inds);
+        if (startDate != null) {
+            where += " and time_photo >= " + startDate.getTime(); 
+        }
+        if (endDate != null) {
+            where += " and time_photo < " + endDate.getTime();
+        }
+        Log.i("DictionaryOpenHelper", "query " + where);
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select ph.path, count(*) c from photos ph inner join faces f on f.photo_id = ph.id join person p on p.id = f.person_id where p.id in " + inds + " group by ph.path order by c desc", null);
+        Cursor c = s
+                .rawQuery("select ph.path, count(*) c from photos ph inner join faces f on f.photo_id = ph.id join person p on p.id = f.person_id "
+                                + where + " group by ph.path order by c desc", null);
         while (c.moveToNext()) {
             photos.add(c.getString(0));
         }
         return photos;
     }
-
+    
+    public void getMaxMin(Date startDate, Date endDate) {
+        SQLiteDatabase s = getReadableDatabase();
+        Cursor c = s
+                .rawQuery("select max(time_photo), min(time_photo) c from photos ph inner join faces f on f.photo_id = ph.id join person p on p.id = f.person_id", null);
+        if (c.moveToNext()) {
+            startDate.setTime(c.getLong(1));
+            endDate.setTime(c.getLong(0));
+        }
+    }
 
 }
