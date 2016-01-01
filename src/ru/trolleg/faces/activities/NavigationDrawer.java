@@ -5,11 +5,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
 
-import it.neokree.materialtabs.MaterialTab;
-import it.neokree.materialtabs.MaterialTabHost;
-import it.neokree.materialtabs.MaterialTabListener;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
+import ru.trolleg.materialtabs.MaterialTab;
+import ru.trolleg.materialtabs.MaterialTabHost;
+import ru.trolleg.materialtabs.MaterialTabListener;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -29,7 +29,7 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
     AppSectionsPagerAdapter mAppSectionsPagerAdapter; 
     ViewPager mViewPager;
     DictionaryOpenHelper dbHelper;
-    static RecognizeFragment rf;
+    //static RecognizeFragment rf;
     static Fragment oldFr;
     static Fragment newFr;
 
@@ -93,12 +93,9 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
         public Fragment getItem(int i) {
             switch (i) {
                 case 0:
-                    // The first section of the app is the most interesting -- it offers
-                    // a launchpad into the other demonstrations in this example application.
                     return new PeopleFragment();
                 case 1:
-                    rf = new RecognizeFragment();
-                    return rf;
+                    return new RecognizeFragment();
                 default:
                     return new FragmentAlbumManager();
             }
@@ -154,6 +151,9 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
         }
     }
 
+    /**
+     * только для разработки
+     */
     private void copyDb() {
         Log.i("NavigationDrawer", "copyDb...");
         try {

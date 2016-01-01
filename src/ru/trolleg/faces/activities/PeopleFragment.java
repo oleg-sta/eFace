@@ -3,8 +3,13 @@ package ru.trolleg.faces.activities;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.FirstFacesOnPersonActivity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SearchView.OnCloseListener;
@@ -19,8 +24,12 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 public class PeopleFragment extends Fragment implements YourFragmentInterface, OnQueryTextListener, OnCloseListener   {
+    
+    public final static String UPDATE_PEOPLE = "update_people";
     FirstFacesOnPersonActivity adapterMans;
     DictionaryOpenHelper dbHelper;
+    
+    private BroadcastReceiver broadcastReceiver;
     
     private String filterName = null;
     private int sortMode = 0;
@@ -40,8 +49,30 @@ public class PeopleFragment extends Fragment implements YourFragmentInterface, O
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                researchPeople();
+            }
+        };
+
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver((broadcastReceiver),
+                new IntentFilter(UPDATE_PEOPLE)
+        );
+    }
+    
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver);
+    }
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.people_fragment, container, false);
@@ -57,7 +88,7 @@ public class PeopleFragment extends Fragment implements YourFragmentInterface, O
 
     @Override
     public void fragmentBecameVisible() {
-        researchPeople();
+        //researchPeople();
     }
     
     @Override

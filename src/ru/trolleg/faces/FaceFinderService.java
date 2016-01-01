@@ -121,6 +121,9 @@ public class FaceFinderService extends IntentService {
                 int newPhotos = dbHelper.getCountNewPhotos();
                 Log.d("FaceFinderService", "onHandleIntent newFaces " + newPhotos);
                 buttonStart = false;
+                DataHolder.getInstance().photoCount = allPhotos.size();
+                DataHolder.getInstance().photoProcessedCount = dbHelper.getAllCountPhotosProcessed();
+                DataHolder.getInstance().facesCount = dbHelper.getFacesCount();
                 b.putInt(ALL_PHOTOS, allPhotos.size());
                 b.putInt(PROCESSED_PHOTOS, dbHelper.getAllCountPhotosProcessed());
                 b.putInt(FACES_FOUND, dbHelper.getFacesCount());

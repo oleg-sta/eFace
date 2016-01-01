@@ -10,13 +10,16 @@ import ru.trolleg.faces.adapters.FacesGridAdapter;
 import ru.trolleg.faces.adapters.GalleryAdapter;
 import ru.trolleg.faces.adapters.PersonListToRecogniseAdapter;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -36,6 +39,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class RecognizeFragment extends Fragment implements NotificationReceiver.Listener, YourFragmentInterface {
+    
+    private Intent intent;
+    private LocalBroadcastManager broadcastManager;
+    private BroadcastReceiver broadcastReceiver;
     
     DictionaryOpenHelper dbHelper;
     public FacesGridAdapter adapterFaces;
@@ -58,6 +65,27 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        broadcastManager = LocalBroadcastManager.getInstance(getActivity());
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                adapterMans.notifyDataSetChanged();
+            }
+        };
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver((broadcastReceiver),
+                new IntentFilter(PeopleFragment.UPDATE_PEOPLE)
+        );
+    }
+    
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver);
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -172,6 +200,9 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
                             adapterMans.men.add(newPerson);
                             PersonListToRecogniseAdapter.moveFaces(this1, newPerson, dbHelper);
                             adapterMans.notifyDataSetChanged();
+                            
+                            Intent intent = new Intent(PeopleFragment.UPDATE_PEOPLE);
+                            broadcastManager.sendBroadcast(intent);
                         }
                     }).setNegativeButton("Нет", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -303,8 +334,6 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
 
     @Override
     public void fragmentBecameVisible() {
-        adapterMans.notifyDataSetChanged();
+        //adapterMans.notifyDataSetChanged();
     }
-
-
 }

@@ -1,4 +1,4 @@
-package it.neokree.materialtabs;
+package ru.trolleg.materialtabs;
 
 public interface MaterialTabListener {
 	public void onTabSelected(MaterialTab tab);

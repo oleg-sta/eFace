@@ -1,4 +1,4 @@
-package it.neokree.materialtabs;
+package ru.trolleg.materialtabs;
 
 import java.util.Locale;
 

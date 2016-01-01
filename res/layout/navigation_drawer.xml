@@ -14,7 +14,7 @@
         app:popupTheme="@style/Toolbar_Popup"
         app:titleTextAppearance="@style/Toolbar.TitleText" />
 
-    <it.neokree.materialtabs.MaterialTabHost
+    <ru.trolleg.materialtabs.MaterialTabHost
         android:id="@+id/tabHost"
         android:layout_width="match_parent"
         android:layout_height="48dp"

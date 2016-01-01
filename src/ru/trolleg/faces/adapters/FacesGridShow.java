@@ -9,12 +9,16 @@ import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.activities.DisplayCommonPhoto;
 import ru.trolleg.faces.activities.FacesActivity;
+import ru.trolleg.faces.activities.PeopleFragment;
 import ru.trolleg.faces.data.Face;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +37,10 @@ import android.widget.ImageView;
  *
  */
 public class FacesGridShow extends ArrayAdapter<Integer> {
-
+    
+    private Intent intent;
+    private LocalBroadcastManager broadcastManager;
+    
     private final FacesActivity context;
     public final List<Integer> faces; // �������������� ������
     public final Set<Integer> checked = new HashSet<Integer>();
@@ -42,6 +49,7 @@ public class FacesGridShow extends ArrayAdapter<Integer> {
         super(context, R.layout.one_face, faces);
         this.faces = faces;
         this.context = context;
+        broadcastManager = LocalBroadcastManager.getInstance(context);
     }
 
     @Override
@@ -109,6 +117,9 @@ public class FacesGridShow extends ArrayAdapter<Integer> {
                         dbHelper.setAvaId(context.personId, faceId);
                         // TODO так нехорошо делать
                         context.updateAva();
+                        
+                        Intent intent = new Intent(PeopleFragment.UPDATE_PEOPLE);
+                        broadcastManager.sendBroadcast(intent);
                     }
                 }).setNegativeButton("Нет", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {

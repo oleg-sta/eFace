@@ -36,6 +36,10 @@ public class DataHolder {
 	public static final String ALBUM_ID = "albumId";
     public static final String PERSON_ID = "personId";
     public static LruCache<String, Bitmap> mMemoryCache;
+    
+    public int photoCount;
+    public int photoProcessedCount;
+    public int facesCount;
 
     private static final DataHolder holder = new DataHolder();
 
