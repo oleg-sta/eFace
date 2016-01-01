@@ -23,7 +23,7 @@ public class FragmentAlbumManager extends Fragment {
         super.onCreate(savedInstanceState);
         
         fragment1 = new AlbumGridFragment();
-        fragment2 = new Fragment2(this);
+        fragment2 = new AlbumGridFragment();
         fragment3 = new Fragment3();
         transaction = getFragmentManager().beginTransaction();
         

@@ -23,7 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-public class PeopleFragment extends Fragment implements YourFragmentInterface, OnQueryTextListener, OnCloseListener   {
+public class PeopleFragment extends Fragment implements OnQueryTextListener, OnCloseListener   {
     
     public final static String UPDATE_PEOPLE = "update_people";
     FirstFacesOnPersonActivity adapterMans;
@@ -41,12 +41,14 @@ public class PeopleFragment extends Fragment implements YourFragmentInterface, O
     
     @Override
     public void onResume() {
-        researchPeople();
+        Log.i("PeopleFragment", "onResume");
+        //researchPeople();
         super.onResume();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.i("PeopleFragment", "onCreate");
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         broadcastReceiver = new BroadcastReceiver() {
@@ -75,6 +77,7 @@ public class PeopleFragment extends Fragment implements YourFragmentInterface, O
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.i("PeopleFragment", "onCreateView");
         View rootView = inflater.inflate(R.layout.people_fragment, container, false);
         
         dbHelper = new DictionaryOpenHelper(getActivity());
@@ -85,12 +88,6 @@ public class PeopleFragment extends Fragment implements YourFragmentInterface, O
         return rootView;
     }
 
-
-    @Override
-    public void fragmentBecameVisible() {
-        //researchPeople();
-    }
-    
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         Log.i("PeopleFragment", "onCreateOptionsMenu");

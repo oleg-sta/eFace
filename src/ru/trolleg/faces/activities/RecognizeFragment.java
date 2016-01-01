@@ -38,7 +38,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class RecognizeFragment extends Fragment implements NotificationReceiver.Listener, YourFragmentInterface {
+public class RecognizeFragment extends Fragment implements NotificationReceiver.Listener {
     
     private Intent intent;
     private LocalBroadcastManager broadcastManager;
@@ -120,44 +120,12 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
         phoProCOuntTw = (TextView) rootView.findViewById(R.id.photos_processed);
         facesCountTw = (TextView) rootView.findViewById(R.id.face_count);
         
-        //button = (ImageView) rootView.findViewById(R.id.start_stop);
-        int newPhotos = dbHelper.getCountNewPhotos();
-//        if (newPhotos == 0) {
-//            button.setAlpha(0.5f);
-//        } else {
-//            button.setAlpha(1f);
-//        }
-//        if (FaceFinderService.buttonStart) {
-//            button.setImageResource(R.drawable.pause);
-//        } else {
-//            button.setImageResource(R.drawable.start);
-//        }
         FaceFinderService inst = FaceFinderService.getInstance();
         if (inst != null) {
             NotificationReceiver receiver = new NotificationReceiver(new Handler());
             receiver.setListener(this1);
             inst.setReceiver(receiver);
         }
-//        button.setOnClickListener(new OnClickListener() {
-//            
-//            @Override
-//            public void onClick(View v) {
-//                FaceFinderService.buttonStart = !FaceFinderService.buttonStart;
-//                if (!FaceFinderService.buttonStart) {
-//                    button.setImageResource(R.drawable.start);
-//                } else {
-//                    button.setImageResource(R.drawable.pause);
-//                    // TODO нельзя запускать, если работает
-//                    if (FaceFinderService.getInstance() == null) {
-//                        Intent intent = new Intent(context, FaceFinderService.class);
-//                        NotificationReceiver receiver = new NotificationReceiver(new Handler());
-//                        receiver.setListener(this1);
-//                        intent.putExtra("receiver", receiver);
-//                        getActivity().startService(intent);
-//                    }
-//                }
-//            }
-//        });
         
         if (!FaceFinderService.buttonStart) {
             Intent intent = new Intent(context, FaceFinderService.class);
@@ -332,8 +300,4 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
         }
     }
 
-    @Override
-    public void fragmentBecameVisible() {
-        //adapterMans.notifyDataSetChanged();
-    }
 }

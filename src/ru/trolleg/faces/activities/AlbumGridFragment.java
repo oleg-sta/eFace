@@ -1,12 +1,11 @@
 package ru.trolleg.faces.activities;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.GridAlbumsAdapter;
 import ru.trolleg.faces.data.Album;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -22,7 +21,7 @@ public class AlbumGridFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setHasOptionsMenu(true);
+        setHasOptionsMenu(true);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,7 +43,14 @@ public class AlbumGridFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+        case R.id.action_search2:
+            Intent searchIntent = new Intent(getActivity(), Fragment2.class);
+            getActivity().startActivity(searchIntent);
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
 
     }
 }

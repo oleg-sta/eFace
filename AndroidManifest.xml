@@ -10,6 +10,7 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     
     <application
         android:allowBackup="true"
@@ -66,6 +67,14 @@
         <activity
             android:label="@string/act_people_name"
             android:name="ru.trolleg.faces.activities.PhotoGridFragment">
+        </activity>
+        <activity
+            android:label="поиск по галерее"
+            android:name="ru.trolleg.faces.activities.Fragment2">
+        </activity>
+        <activity
+            android:label="поиск по галерее"
+            android:name="ru.trolleg.faces.activities.Fragment3">
         </activity>
         </application>
 

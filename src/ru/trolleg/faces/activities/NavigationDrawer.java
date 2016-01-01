@@ -29,12 +29,7 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
     AppSectionsPagerAdapter mAppSectionsPagerAdapter; 
     ViewPager mViewPager;
     DictionaryOpenHelper dbHelper;
-    //static RecognizeFragment rf;
-    static Fragment oldFr;
-    static Fragment newFr;
-
     MaterialTabHost tabHost;
-
     
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,28 +49,12 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
         mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                // When swiping between different app sections, select the corresponding tab.
-                // We can also use ActionBar.Tab#select() to do this if we have a reference to the
-                // Tab.
                 tabHost.setSelectedNavigationItem(position);
-                // TODO change menu
-                // mAppSectionsPagerAdapter.getItem(position).ionResume();
                 Object obj = mAppSectionsPagerAdapter.instantiateItem(mViewPager, position);
-                if (obj != null && obj instanceof YourFragmentInterface) {
-                    ((YourFragmentInterface)obj).fragmentBecameVisible();
-                }
-                
             }
         });
 
-        //actionBar.setStackedBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.action_bar_color)));
-        // For each of the sections in the app, add a tab to the action bar.
         for (int i = 0; i < mAppSectionsPagerAdapter.getCount(); i++) {
-            // Create a tab with text corresponding to the page title defined by the adapter.
-            // Also specify this Activity object, which implements the TabListener interface, as the
-            // listener for when this tab is selected.
-            //View v = new View(this);
-            //v.setBackgroundColor(getResources().getColor(R.color.action_button_color));
             tabHost.addTab(
                     tabHost.newTab().setText(mAppSectionsPagerAdapter.getPageTitle(i)).setTabListener(this)
                             );
@@ -97,7 +76,7 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
                 case 1:
                     return new RecognizeFragment();
                 default:
-                    return new FragmentAlbumManager();
+                    return new AlbumGridFragment();
             }
         }
 

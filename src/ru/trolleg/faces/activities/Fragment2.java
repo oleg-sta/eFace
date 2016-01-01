@@ -11,16 +11,17 @@ import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.PersonForSearchAdapter;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.app.DatePickerDialog.OnDateSetListener;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -28,7 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class Fragment2 extends Fragment {
+public class Fragment2 extends AppCompatActivity {
     
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy MMM dd");
     private static final SimpleDateFormat DATE_FORMAT_S = new SimpleDateFormat("dd.MM.yyyy");
@@ -43,18 +44,29 @@ public class Fragment2 extends Fragment {
     Button startDateButton;
     Button endDateButton;
     
-    FragmentAlbumManager fragmentAlbumManager;
-
-    public Fragment2(FragmentAlbumManager fragmentAlbumManager) {
-        this.fragmentAlbumManager = fragmentAlbumManager;
-    }
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_search, null);
-        DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(getActivity());
-        final ListView listView2 = (ListView) v.findViewById(R.id.list_search_people);
-        final PersonForSearchAdapter adap = new PersonForSearchAdapter(getActivity(), dbHelper.getAllIdsPerson(0, true));
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_search);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        final Toolbar toolbar = (android.support.v7.widget.Toolbar) this.findViewById(R.id.toolbar);
+        this.setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //toolbar.setNavigationIcon(R.drawable.ic_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        
+        final Fragment2 fragment2 = this;
+        
+        DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
+        final ListView listView2 = (ListView) findViewById(R.id.list_search_people);
+        final PersonForSearchAdapter adap = new PersonForSearchAdapter(this, dbHelper.getAllIdsPerson(0, true));
         listView2.setAdapter(adap);
 
         if (startDates == null) {
@@ -64,9 +76,9 @@ public class Fragment2 extends Fragment {
             endDateS = new Date();
         }
         dbHelper.getMaxMin(startDates, endDateS);
-        periodView = (TextView) v.findViewById(R.id.period_search2);
+        periodView = (TextView) findViewById(R.id.period_search2);
         updatePeriod();
-        ImageView searchButton = (ImageView) v.findViewById(R.id.search_button_album);
+        ImageView searchButton = (ImageView) findViewById(R.id.search_button_album);
         searchButton.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -77,29 +89,36 @@ public class Fragment2 extends Fragment {
                 for(Integer ch : adap.checked) {
                     personIds.add(adap.men.get(ch));
                 }
-                fragmentAlbumManager.fragment3.filterMan = personIds;
-                fragmentAlbumManager.fragment3.startDate = startDates;
-                fragmentAlbumManager.fragment3.endDate = endDateS;
-                
-                FragmentTransaction transaction = fragmentAlbumManager.getFragmentManager().beginTransaction();
-                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_in_right);
-                transaction.replace(R.id.fragment, fragmentAlbumManager.fragment3);
-                transaction.commit();
+
+                Intent searchIntent = new Intent(fragment2, Fragment3.class);
+                if (startDates != null) {
+                    searchIntent.putExtra("startDate", startDates.getTime());
+                }
+                if (endDateS != null) {
+                    searchIntent.putExtra("endDate", endDateS.getTime());
+                }
+                int[] i = new int[personIds.size()];
+                int k = 0;
+                for (int j : personIds) {
+                    i[k] = j;
+                    k++;
+                }
+                searchIntent.putExtra("personIds", i);
+                fragment2.startActivity(searchIntent);
 
             }
         });
         
-        ImageView calendarButton = (ImageView) v.findViewById(R.id.calendar_search);
+        ImageView calendarButton = (ImageView) findViewById(R.id.calendar_search);
         calendarButton.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 startDate = startDates;
                 endDate = endDateS;
-                AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+                AlertDialog.Builder adb = new AlertDialog.Builder(fragment2);
                 adb.setTitle("Установите период");
-                LinearLayout view = (LinearLayout) getActivity().getLayoutInflater()
+                LinearLayout view = (LinearLayout) getLayoutInflater()
                         .inflate(R.layout.dialog_picker_dates, null);
                 startDateButton = (Button) view.findViewById(R.id.first_date);
                 startDateButton.setOnClickListener(new OnClickListener() {
@@ -110,7 +129,7 @@ public class Fragment2 extends Fragment {
                         if (startDate != null) {
                             cal.setTime(startDate);
                         }
-                        DatePickerDialog tpd = new DatePickerDialog(getActivity(), myCallBack, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH));
+                        DatePickerDialog tpd = new DatePickerDialog(fragment2, myCallBack, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH));
                         tpd.show();
                     }
                 });
@@ -127,7 +146,7 @@ public class Fragment2 extends Fragment {
                         if (endDate != null) {
                             cal.setTime(endDate);
                         }
-                        DatePickerDialog tpd = new DatePickerDialog(getActivity(), myCallBack, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH));
+                        DatePickerDialog tpd = new DatePickerDialog(fragment2, myCallBack, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH));
                         tpd.show();
                     }
                 });
@@ -143,7 +162,6 @@ public class Fragment2 extends Fragment {
                 updateButton();
             }
         });
-        return v;
     }
     
     OnDateSetListener myCallBack = new OnDateSetListener() {
