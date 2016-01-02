@@ -13,7 +13,6 @@ import ru.trolleg.faces.data.Photo;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -182,7 +181,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         InfoPhoto info = new InfoPhoto();
         info.path = path;
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select id, time_processed from photos where path = '" + path + "'", null);
+        Cursor c = s.rawQuery("select id, time_processed from photos where path = '" + path.replaceAll("'", "''") + "'", null);
         if (c.moveToNext()) {
             info.id = c.getInt(0);
             info.timeProccessed = c.getLong(1);
@@ -250,7 +249,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public List<Integer> getIdsFacesForPhoto(String photo) {
     	List<Integer> faces = new ArrayList<Integer>();
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select f.id from faces f inner join photos p on p.id = f.photo_id where p.path = '"+photo+"'", null);
+        Cursor c = s.rawQuery("select f.id from faces f inner join photos p on p.id = f.photo_id where p.path = '"+photo.replaceAll("'", "''")+"'", null);
         while (c.moveToNext()) {
             faces.add(c.getInt(0));
         }
@@ -271,7 +270,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public List<Integer> getAllIdsPerson(int sortMode, boolean sortAsc, String textNew) {
         String addWhere = "";
         if (textNew != null) {
-            addWhere = " and p." + COL_NAME_UPPER + " like '%" + textNew.toUpperCase() + "%' ";
+            addWhere = " and p." + COL_NAME_UPPER + " like '%" + textNew.toUpperCase().replaceAll("'", "''") + "%' ";
         }
         String sortOrder = " order by p.name " + (sortAsc? "" : "DESC") + ", p.id";
         List<Integer> faces = new ArrayList<Integer>();
@@ -391,23 +390,6 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
 	}
 
 	
-	/**
-	 * ���� �� ��� ���������� ����
-	 * @param photo
-	 * @return
-	 */
-	public boolean photoProcessed(String photo) {
-		boolean res = false;
-		SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select time_processed from photos where path = '" + photo + "'", null);
-        while (c.moveToNext()) {
-            res = !c.isNull(0);
-        }
-        c.close();
-        s.close();
-        return res;
-	}
-
     public void removePerson(Integer oldPersonId) {
         SQLiteDatabase s = getWritableDatabase();
         s.execSQL("delete from "+TABLE_PERSON+" where id = " + oldPersonId);
@@ -448,7 +430,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public int getPhotoIdByPath(String photo) {
         int res = 0;
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select id from photos where path = '" + photo + "'", null);
+        Cursor c = s.rawQuery("select id from photos where path = '" + photo.replaceAll("'", "''") + "'", null);
         if (c.moveToNext()) {
             res = c.getInt(0);
         }
@@ -477,22 +459,6 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         c.close();
         s.close();
         return count;
-    }
-
-    public List<String> convertByNameToIds(List<String> photosNames) {
-        List<String> res = new ArrayList<String>(photosNames.size());
-        SQLiteDatabase s = getReadableDatabase();
-        for (String photoName : photosNames) {
-            Cursor c = s.rawQuery("select id from photos where path = '" + photoName + "'", null);
-            if (c.moveToNext()) {
-                String id = c.getString(0);
-                Log.i("DictionaryOpenHelper", photoName + " " + id);
-                res.add(id);
-            }
-            c.close();
-        }
-        s.close();
-        return res;
     }
 
     public Integer getAvaFace(int personId) {
