@@ -13,6 +13,7 @@ import ru.trolleg.faces.data.Photo;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -98,9 +99,9 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         int i = 0;
         SQLiteDatabase s = getWritableDatabase();
         for (Photo photo : photos) {
-            Cursor c = s.rawQuery("select path from photos where path = '" + photo.path + "'", null);
+            Cursor c = s.rawQuery("select path from photos where path = '" + photo.path.replaceAll("'", "''") + "'", null);
             if (!c.moveToNext()) {
-                s.execSQL("insert into photos (path, time_photo) values ('" + photo.path + "'," + photo.dateTaken.getTime() + ")");
+                s.execSQL("insert into photos (path, time_photo) values ('" + photo.path.replaceAll("'", "''") + "'," + photo.dateTaken.getTime() + ")");
                 i++;
             } else {
             }
@@ -157,7 +158,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
 
     public int addPerson(String name) {
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("insert into "+TABLE_PERSON+" (name, "+COL_NAME_UPPER+") values ('"+name+"', '"+name.toUpperCase()+"')");
+        s.execSQL("insert into "+TABLE_PERSON+" (name, "+COL_NAME_UPPER+") values ('"+name.replaceAll("'", "''")+"', '"+name.toUpperCase().replaceAll("'", "''")+"')");
         int id = getLastId(s);
         s.close();
         return id;

@@ -38,11 +38,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class RecognizeFragment extends Fragment implements NotificationReceiver.Listener {
+public class RecognizeFragment extends Fragment {
     
     private Intent intent;
     private LocalBroadcastManager broadcastManager;
     private BroadcastReceiver broadcastReceiver;
+    private BroadcastReceiver broadcastReceiver2;
     
     DictionaryOpenHelper dbHelper;
     public FacesGridAdapter adapterFaces;
@@ -72,13 +73,30 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
                 adapterMans.notifyDataSetChanged();
             }
         };
+        broadcastReceiver2 = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.i("RecognizeFragment", "broadcastReceiver2 onReceive");
+                onReceiveResult2(context, intent);
+            }
+        };
     }
     @Override
     public void onStart() {
+        Log.v("RecognizeFragment", "onStart");
         super.onStart();
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver((broadcastReceiver),
                 new IntentFilter(PeopleFragment.UPDATE_PEOPLE)
         );
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver((broadcastReceiver2),
+                new IntentFilter(PeopleFragment.UPDATE_FACES)
+        );
+        if (!FaceFinderService.buttonStart) {
+            Log.i("RecognizeFragment", "!FaceFinderService.buttonStart");
+            Intent intent = new Intent(context, FaceFinderService.class);
+            intent.putExtra(FaceFinderService.OPER, Operation.FIND_PHOTOS);
+            getActivity().startService(intent);
+        }
     }
     
 
@@ -86,6 +104,7 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
     public void onStop() {
         super.onStop();
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver2);
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -119,23 +138,12 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
         phoCOuntTw = (TextView) rootView.findViewById(R.id.all_photos);
         phoProCOuntTw = (TextView) rootView.findViewById(R.id.photos_processed);
         facesCountTw = (TextView) rootView.findViewById(R.id.face_count);
+        phoCOuntTw.setText("" + DataHolder.photoCount);
+        phoProCOuntTw.setText("" + DataHolder.photoProcessedCount);
+        facesCountTw.setText("" + DataHolder.facesCount);
+        Log.i("RecognizeFragment", "stats " + DataHolder.photoCount + " "+ DataHolder.photoProcessedCount + " " + DataHolder.facesCount);
         
-        FaceFinderService inst = FaceFinderService.getInstance();
-        if (inst != null) {
-            NotificationReceiver receiver = new NotificationReceiver(new Handler());
-            receiver.setListener(this1);
-            inst.setReceiver(receiver);
-        }
-        
-        if (!FaceFinderService.buttonStart) {
-            Intent intent = new Intent(context, FaceFinderService.class);
-            NotificationReceiver receiver = new NotificationReceiver(new Handler());
-            receiver.setListener(this1);
-            intent.putExtra("receiver", receiver);
-            intent.putExtra(FaceFinderService.OPER, Operation.FIND_PHOTOS);
-            getActivity().startService(intent);
-        }
-            
+           
         LinearLayout men_lay = (LinearLayout) rootView.findViewById(R.id.men_lay);
         men_lay.getLayoutParams().height = getResources().getDisplayMetrics().widthPixels / (FacesGridAdapter.WIDTH_NUM_PICS + 1) + DataHolder.dp2Px(16, context);
         
@@ -215,33 +223,22 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
                 Log.i("RecognizeFragment", "" + context);
                 Log.i("RecognizeFragment", "" + this + " " + this.adapterFaces);
                 Intent intent = new Intent(context, FaceFinderService.class);
-                NotificationReceiver receiver = new NotificationReceiver(new Handler());
-                receiver.setListener(this);
-                intent.putExtra("receiver", receiver);
                 context.startService(intent);
             }
         }
         return FaceFinderService.buttonStart;
     }
-    @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-        String photo = resultData.getString("photo");
-        int photoCount = resultData.getInt(FaceFinderService.ALL_PHOTOS, -1);
-        int processedPhoto = resultData.getInt(FaceFinderService.PROCESSED_PHOTOS, -1);
-        int facesCount = resultData.getInt(FaceFinderService.FACES_FOUND, -1);
-        boolean ended = resultData.getBoolean("ended", false);
+    
+    public void onReceiveResult2(Context context2, Intent intent2) {
+        String photo = intent2.getStringExtra("photo");
+        boolean ended = intent2.getBooleanExtra("ended", false);
         if (ended && stMenu != null) {
             stMenu.setIcon(R.drawable.start);
         }
-        if (photoCount > 0) {
-            phoCOuntTw.setText("" + photoCount);
-        }
-        if (processedPhoto > 0) {
-            phoProCOuntTw.setText("" + processedPhoto);
-        }
-        if (facesCount > 0) {
-            facesCountTw.setText("" + facesCount);
-        }
+        Log.i("RecognizeFragment", "stats22 " + DataHolder.photoCount + " "+ DataHolder.photoProcessedCount + " " + DataHolder.facesCount);
+        phoCOuntTw.setText("" + DataHolder.photoCount);
+        phoProCOuntTw.setText("" + DataHolder.photoProcessedCount);
+        facesCountTw.setText("" + DataHolder.facesCount);
         if (photo != null && currentMan == null) {
             Log.i("sss", "s " + adapterFaces + " " + this.adapterFaces);
             adapterFaces.addAll(dbHelper.getIdsFacesForPhoto(photo));
@@ -292,9 +289,6 @@ public class RecognizeFragment extends Fragment implements NotificationReceiver.
             // TODO нельзя запускать, если работает
             if (FaceFinderService.getInstance() == null) {
                 Intent intent = new Intent(context, FaceFinderService.class);
-                NotificationReceiver receiver = new NotificationReceiver(new Handler());
-                receiver.setListener(this);
-                intent.putExtra("receiver", receiver);
                 getActivity().startService(intent);
             }
         }

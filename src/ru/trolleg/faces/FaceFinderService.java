@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import ru.trolleg.faces.activities.MainActivity;
 import ru.trolleg.faces.activities.NavigationDrawer;
+import ru.trolleg.faces.activities.PeopleFragment;
 import ru.trolleg.faces.data.Face;
 import ru.trolleg.faces.data.Photo;
 import ru.trolleg.faces.jni.Computations;
@@ -28,11 +29,10 @@ import android.media.ExifInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.os.ResultReceiver;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import detection.Rectangle;
 
@@ -43,9 +43,7 @@ import detection.Rectangle;
  */
 public class FaceFinderService extends IntentService {
 
-    public final static String ALL_PHOTOS = "all_photos";
-    public final static String PROCESSED_PHOTOS = "processed_photos";
-    public final static String FACES_FOUND = "faces_found";
+    private LocalBroadcastManager broadcastManager;
     
     public final static String OPER = "operation"; 
     public enum Operation { FIND_PHOTOS, FIND_FACES, SHOW_BUTTON, HIDE_BUTTON };
@@ -58,9 +56,6 @@ public class FaceFinderService extends IntentService {
     public final static int PHOTOS_LIMIT = 3000;
     public final static int PHOTOS_SIZE_TO_BE_PROCESSED = 600;
 	public final static int PHOTOS_SIZE_TO_BE_CUT = 600;
-	
-	ResultReceiver rec = null;
-	public Bundle b; // last Bundle
 	
     public FaceFinderService() {
         super("FaceFinderService");
@@ -103,34 +98,24 @@ public class FaceFinderService extends IntentService {
             DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
             Operation oper = null;
             if (intent != null) {
-                rec = (ResultReceiver) intent.getParcelableExtra("receiver");
                 oper = (Operation) intent.getSerializableExtra(OPER);
             } else {
                 buttonStart = true;
             }
             
             if (oper == Operation.FIND_PHOTOS) {
-                b = new Bundle();
-                b.putString("message", "Поиск новых фотографий...");
-                if (rec != null) {
-                    rec.send(0, b);
-                }
                 List<Photo> allPhotos = MainActivity.getCameraPhotos(getApplicationContext());
                 Log.d("FaceFinderService", "onHandleIntent photos " + allPhotos.size());
                 dbHelper.addNewPhotos(allPhotos);
                 int newPhotos = dbHelper.getCountNewPhotos();
                 Log.d("FaceFinderService", "onHandleIntent newFaces " + newPhotos);
                 buttonStart = false;
-                DataHolder.getInstance().photoCount = allPhotos.size();
-                DataHolder.getInstance().photoProcessedCount = dbHelper.getAllCountPhotosProcessed();
-                DataHolder.getInstance().facesCount = dbHelper.getFacesCount();
-                b.putInt(ALL_PHOTOS, allPhotos.size());
-                b.putInt(PROCESSED_PHOTOS, dbHelper.getAllCountPhotosProcessed());
-                b.putInt(FACES_FOUND, dbHelper.getFacesCount());
-                if (rec != null) {
-                    Log.i("FaceFinderService", "message to rec");
-                    rec.send(0, b);
-                }
+                Intent intent22 = new Intent(PeopleFragment.UPDATE_FACES);
+                DataHolder.photoCount = allPhotos.size();
+                DataHolder.photoProcessedCount = dbHelper.getAllCountPhotosProcessed();
+                DataHolder.facesCount = dbHelper.getFacesCount();
+                broadcastManager.sendBroadcast(intent22);
+
                 return;
             }
             lastMessage = "";
@@ -167,13 +152,6 @@ public class FaceFinderService extends IntentService {
                 Log.d("FaceFinderService", "zero photos ");
                 buttonStart = false;
             	return;
-            }
-            b = new Bundle();
-            b.putString("progress", "0");
-            b.putString("message", "Найдено " + photos.size() + " фотографий.");
-            if (rec != null) {
-                Log.i("FaceFinderService", "message to rec");
-                rec.send(0, b);
             }
             if (!buttonStart) {
                 Log.d("FaceFinderService", "button stop ");
@@ -291,14 +269,13 @@ public class FaceFinderService extends IntentService {
 //                        dataHolder.getLittleFace(db, faceCur.guid, getApplicationContext());
 //                        db.close();
                     }
-                    b = new Bundle();
-                    b.putInt(PROCESSED_PHOTOS, dbHelper.getAllCountPhotosProcessed());
-                    b.putInt(FACES_FOUND, dbHelper.getFacesCount());
-                    b.putString("photo", photo);
-                    if (rec != null) {
-                        rec.send(0, b);
-                    }
-                } catch (Exception e) {
+                    Log.d("FaceFinderService", "send processed photo " + photo);
+                    Intent intent22 = new Intent(PeopleFragment.UPDATE_FACES);
+                    DataHolder.photoProcessedCount = dbHelper.getAllCountPhotosProcessed();
+                    DataHolder.facesCount = dbHelper.getFacesCount();
+                    intent22.putExtra("photo", photo);
+                    broadcastManager.sendBroadcast(intent22);
+                 } catch (Exception e) {
                     Log.d("FaceFinderService", "error" + e.getMessage());
                     Logger1.log("error" + e.getMessage());
                     e.printStackTrace();
@@ -309,12 +286,11 @@ public class FaceFinderService extends IntentService {
             }
             if (iPh == photos.size()) {
                 buttonStart = false;
-                Bundle b = new Bundle();
-                b.putInt(PROCESSED_PHOTOS, dbHelper.getAllCountPhotosProcessed());
-                b.putInt(FACES_FOUND, dbHelper.getFacesCount());
-                if (rec != null) {
-                    rec.send(0, b);
-                }
+                
+                Intent intent22 = new Intent(PeopleFragment.UPDATE_FACES);
+                DataHolder.photoProcessedCount = dbHelper.getAllCountPhotosProcessed();
+                DataHolder.facesCount = dbHelper.getFacesCount();
+                broadcastManager.sendBroadcast(intent22);
             }
             mBuilder.setContentText("Обработка завершена");
             mBuilder.setProgress(iPh, iPh, false);
@@ -402,6 +378,7 @@ public class FaceFinderService extends IntentService {
         Logger1.log("onCreate22");
         super.onCreate();
         instance = this;
+        broadcastManager = LocalBroadcastManager.getInstance(this);
     }
 
     public static FaceFinderService getInstance() {
@@ -420,11 +397,9 @@ public class FaceFinderService extends IntentService {
         Logger1.log("onDestroy22");
         instance = null;
         if (!buttonStart) {
-            Bundle b = new Bundle();
-            b.putBoolean("ended", true);
-            if (rec != null) {
-                rec.send(0, b);
-            }
+            Intent intent22 = new Intent(PeopleFragment.UPDATE_FACES);
+            intent22.putExtra("ended", true);
+            broadcastManager.sendBroadcast(intent22);
         }
         // Запустить сервис снова, если стоит start
         if (lastMessage!= null) {
@@ -467,11 +442,6 @@ public class FaceFinderService extends IntentService {
         }
         //Log.d(TAG, "isEmulator=" + isEmulator);
         return isEmulator;
-    }
-
-    public void setReceiver(NotificationReceiver receiver) {
-        rec = receiver;
-        
     }
 
 }
