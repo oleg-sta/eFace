@@ -4,36 +4,26 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import ru.trolleg.faces.BitmapWorkerCropPhotoTask;
 import ru.trolleg.faces.BitmapWorkerFaceCrop;
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
-import ru.trolleg.faces.activities.DisplayCommonPhoto;
 import ru.trolleg.faces.activities.ShowCommonPhoto;
-import ru.trolleg.faces.adapters.GridPhotosAdapter.ViewHolder;
 import ru.trolleg.faces.data.Face;
 import android.app.Activity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 /**
  * Лица для распознавания
@@ -142,7 +132,6 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
                 switch(event.getAction())  {
                 case MotionEvent.ACTION_DOWN: {
                     ImageView view = (ImageView) v;
-                    // argb
                     view.setBackgroundColor(Color.WHITE);
                     view.setPadding(5, 5, 5, 5);
                     view.invalidate();

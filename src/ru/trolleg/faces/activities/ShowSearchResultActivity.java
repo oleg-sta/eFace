@@ -1,33 +1,26 @@
 package ru.trolleg.faces.activities;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.FacesGridAdapter;
 import ru.trolleg.faces.adapters.GridPhotosAdapter;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
 
-public class Fragment3 extends AppCompatActivity {
+public class ShowSearchResultActivity extends AppCompatActivity {
     
     public Set<Integer> filterMan;
     public Date startDate;

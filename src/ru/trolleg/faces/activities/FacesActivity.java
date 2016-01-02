@@ -9,9 +9,11 @@ import ru.trolleg.faces.adapters.PersonListToRecogniseAdapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -38,6 +40,7 @@ import android.widget.TextView;
  */
 public class FacesActivity extends AppCompatActivity {
 
+    private LocalBroadcastManager broadcastManager;
     TextView namePerson;
     DictionaryOpenHelper dbHelper;
     public Integer personId;
@@ -50,6 +53,7 @@ public class FacesActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        broadcastManager = LocalBroadcastManager.getInstance(getApplication());
         final Toolbar toolbar = (android.support.v7.widget.Toolbar) this.findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -118,6 +122,10 @@ public class FacesActivity extends AppCompatActivity {
                         String newName =  input.getText().toString();
                         dbHelper.updatePersonName(personId, newName);
                         namePerson.setText(newName);
+                        Log.v("FacesActivity", "onOptionsItemSelected updatePersonName");
+                        Intent intent = new Intent(PeopleFragment.UPDATE_PEOPLE);
+                        boolean result = broadcastManager.sendBroadcast(intent);
+                        Log.v("FacesActivity", "onOptionsItemSelected updatePersonName///" + result);
                     }
                 }).setNegativeButton("Нет", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {

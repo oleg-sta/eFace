@@ -71,6 +71,7 @@ android {
         ndk {
             moduleName 'Computations'
             cFlags '-DCUSTOM_DEFINE'
+            cFlags += "-I" + file("F:\\OpenCV-android-sdk\\sdk\\native\\jni\\include").absolutePath
             ldLibs 'log'
            stl 'stlport_static'
         }

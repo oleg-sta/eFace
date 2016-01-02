@@ -12,8 +12,6 @@ import ru.trolleg.faces.activities.FacesActivity;
 import ru.trolleg.faces.activities.PeopleFragment;
 import ru.trolleg.faces.data.Face;
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -22,11 +20,10 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -38,7 +35,6 @@ import android.widget.ImageView;
  */
 public class FacesGridShow extends ArrayAdapter<Integer> {
     
-    private Intent intent;
     private LocalBroadcastManager broadcastManager;
     
     private final FacesActivity context;

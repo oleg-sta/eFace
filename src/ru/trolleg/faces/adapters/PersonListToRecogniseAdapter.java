@@ -7,15 +7,18 @@ import java.util.Set;
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
+import ru.trolleg.faces.activities.PeopleFragment;
 import ru.trolleg.faces.activities.RecognizeFragment;
 import ru.trolleg.faces.data.Face;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -32,6 +35,7 @@ import android.widget.TextView;
 
 public class PersonListToRecogniseAdapter extends PagerAdapter {
 
+    private LocalBroadcastManager broadcastManager;
     private final Activity context;
     public final List<Integer> men; // �������������� ������
     public final Set<Integer> checked = new HashSet<Integer>();
@@ -41,6 +45,7 @@ public class PersonListToRecogniseAdapter extends PagerAdapter {
         this.men = men;
         this.context = context;
         this.act = act;
+        broadcastManager = LocalBroadcastManager.getInstance(context);
     }
     
     @Override
@@ -90,6 +95,9 @@ public class PersonListToRecogniseAdapter extends PagerAdapter {
                     builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             moveFaces(act, manId, dbHelper);
+                            Intent intent = new Intent(PeopleFragment.UPDATE_PEOPLE);
+                            boolean result = broadcastManager.sendBroadcast(intent);
+                            Log.v("PersonListToRecogniseAdapter", "обавление выделено лиц///" + result);
                         }
                     }).setNegativeButton("Нет", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {

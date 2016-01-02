@@ -70,11 +70,11 @@
         </activity>
         <activity
             android:label="поиск по галерее"
-            android:name="ru.trolleg.faces.activities.Fragment2">
+            android:name="ru.trolleg.faces.activities.SearchPhotoActivity">
         </activity>
         <activity
             android:label="поиск по галерее"
-            android:name="ru.trolleg.faces.activities.Fragment3">
+            android:name="ru.trolleg.faces.activities.ShowSearchResultActivity">
         </activity>
         </application>
 

@@ -70,6 +70,7 @@ public class RecognizeFragment extends Fragment {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                Log.i("RecognizeFragment", "broadcastReceiver onReceive");
                 adapterMans.notifyDataSetChanged();
             }
         };
@@ -80,17 +81,17 @@ public class RecognizeFragment extends Fragment {
                 onReceiveResult2(context, intent);
             }
         };
-    }
-    @Override
-    public void onStart() {
-        Log.v("RecognizeFragment", "onStart");
-        super.onStart();
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver((broadcastReceiver),
                 new IntentFilter(PeopleFragment.UPDATE_PEOPLE)
         );
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver((broadcastReceiver2),
                 new IntentFilter(PeopleFragment.UPDATE_FACES)
         );
+    }
+    @Override
+    public void onStart() {
+        Log.v("RecognizeFragment", "onStart");
+        super.onStart();
         if (!FaceFinderService.buttonStart) {
             Log.i("RecognizeFragment", "!FaceFinderService.buttonStart");
             Intent intent = new Intent(context, FaceFinderService.class);
@@ -103,9 +104,15 @@ public class RecognizeFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+    }
+    
+    @Override
+    public void onDestroy() {
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver2);
+        super.onDestroy();
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.recognition_fragment, container, false);

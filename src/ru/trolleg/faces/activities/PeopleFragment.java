@@ -25,8 +25,8 @@ import android.widget.ListView;
 
 public class PeopleFragment extends Fragment implements OnQueryTextListener, OnCloseListener   {
     
-    public final static String UPDATE_PEOPLE = "update_people";
-    public final static String UPDATE_FACES = "update_faces";
+    public final static String UPDATE_PEOPLE = "ru.trolleg.update_people";
+    public final static String UPDATE_FACES = "ru.trolleg.update_faces";
     
     
     FirstFacesOnPersonActivity adapterMans;
@@ -57,25 +57,39 @@ public class PeopleFragment extends Fragment implements OnQueryTextListener, OnC
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                Log.i("PeopleFragment", "broadcastReceiver broadcastReceiver");
                 researchPeople();
             }
         };
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(broadcastReceiver,
+                new IntentFilter(UPDATE_PEOPLE)
+        );
 
     }
 
     @Override
     public void onStart() {
+        Log.i("PeopleFragment", "onStart");
         super.onStart();
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver((broadcastReceiver),
-                new IntentFilter(UPDATE_PEOPLE)
-        );
+//        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(broadcastReceiver,
+//                new IntentFilter(UPDATE_PEOPLE)
+//        );
     }
     
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onDestroy() {
+        // TODO Auto-generated method stub
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver);
+        super.onDestroy();
+    }
+
+
+    @Override
+    public void onStop() {
+        Log.i("PeopleFragment", "onStop");
+        super.onStop();
+//        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver);
     }
     
     @Override

@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 public class FragmentAlbumManager extends Fragment {
     private AlbumGridFragment fragment1;
     private Fragment fragment2;
-    public Fragment3 fragment3;
+    public ShowSearchResultActivity fragment3;
     private FragmentTransaction transaction;
     
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -24,7 +24,7 @@ public class FragmentAlbumManager extends Fragment {
         
         fragment1 = new AlbumGridFragment();
         fragment2 = new AlbumGridFragment();
-        fragment3 = new Fragment3();
+        fragment3 = new ShowSearchResultActivity();
         transaction = getFragmentManager().beginTransaction();
         
         // transaction.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_right);

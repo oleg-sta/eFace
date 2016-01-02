@@ -98,9 +98,9 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         int i = 0;
         SQLiteDatabase s = getWritableDatabase();
         for (Photo photo : photos) {
-            Cursor c = s.rawQuery("select path from photos where path = '" + photo.path.replaceAll("'", "''") + "'", null);
+            Cursor c = s.rawQuery("select path from photos where path = '" + encapsulateSql(photo.path) + "'", null);
             if (!c.moveToNext()) {
-                s.execSQL("insert into photos (path, time_photo) values ('" + photo.path.replaceAll("'", "''") + "'," + photo.dateTaken.getTime() + ")");
+                s.execSQL("insert into photos (path, time_photo) values ('" + encapsulateSql(photo.path) + "'," + photo.dateTaken.getTime() + ")");
                 i++;
             } else {
             }
@@ -110,6 +110,9 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         return i;
     }
 
+    private static String encapsulateSql(String str) {
+        return str == null? null : str.replaceAll("'", "''");     
+    }
     public void updatePhoto(String photo, long time) {
         SQLiteDatabase s = getWritableDatabase();
         s.execSQL("update photos set time_processed = "+time+" where path = '" + photo + "'");
@@ -157,7 +160,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
 
     public int addPerson(String name) {
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("insert into "+TABLE_PERSON+" (name, "+COL_NAME_UPPER+") values ('"+name.replaceAll("'", "''")+"', '"+name.toUpperCase().replaceAll("'", "''")+"')");
+        s.execSQL("insert into "+TABLE_PERSON+" (name, "+COL_NAME_UPPER+") values ('"+encapsulateSql(name)+"', '"+encapsulateSql(name.toUpperCase())+"')");
         int id = getLastId(s);
         s.close();
         return id;
@@ -181,7 +184,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         InfoPhoto info = new InfoPhoto();
         info.path = path;
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select id, time_processed from photos where path = '" + path.replaceAll("'", "''") + "'", null);
+        Cursor c = s.rawQuery("select id, time_processed from photos where path = '" + encapsulateSql(path) + "'", null);
         if (c.moveToNext()) {
             info.id = c.getInt(0);
             info.timeProccessed = c.getLong(1);
@@ -249,7 +252,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public List<Integer> getIdsFacesForPhoto(String photo) {
     	List<Integer> faces = new ArrayList<Integer>();
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select f.id from faces f inner join photos p on p.id = f.photo_id where p.path = '"+photo.replaceAll("'", "''")+"'", null);
+        Cursor c = s.rawQuery("select f.id from faces f inner join photos p on p.id = f.photo_id where p.path = '"+encapsulateSql(photo)+"'", null);
         while (c.moveToNext()) {
             faces.add(c.getInt(0));
         }
@@ -270,7 +273,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public List<Integer> getAllIdsPerson(int sortMode, boolean sortAsc, String textNew) {
         String addWhere = "";
         if (textNew != null) {
-            addWhere = " and p." + COL_NAME_UPPER + " like '%" + textNew.toUpperCase().replaceAll("'", "''") + "%' ";
+            addWhere = " and p." + COL_NAME_UPPER + " like '%" + encapsulateSql(textNew.toUpperCase()) + "%' ";
         }
         String sortOrder = " order by p.name " + (sortAsc? "" : "DESC") + ", p.id";
         List<Integer> faces = new ArrayList<Integer>();
@@ -430,7 +433,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public int getPhotoIdByPath(String photo) {
         int res = 0;
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select id from photos where path = '" + photo.replaceAll("'", "''") + "'", null);
+        Cursor c = s.rawQuery("select id from photos where path = '" + encapsulateSql(photo) + "'", null);
         if (c.moveToNext()) {
             res = c.getInt(0);
         }

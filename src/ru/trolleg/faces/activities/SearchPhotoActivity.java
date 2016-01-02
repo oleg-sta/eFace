@@ -29,7 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class Fragment2 extends AppCompatActivity {
+public class SearchPhotoActivity extends AppCompatActivity {
     
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy MMM dd");
     private static final SimpleDateFormat DATE_FORMAT_S = new SimpleDateFormat("dd.MM.yyyy");
@@ -62,7 +62,7 @@ public class Fragment2 extends AppCompatActivity {
             }
         });
         
-        final Fragment2 fragment2 = this;
+        final SearchPhotoActivity fragment2 = this;
         
         DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
         final ListView listView2 = (ListView) findViewById(R.id.list_search_people);
@@ -90,7 +90,7 @@ public class Fragment2 extends AppCompatActivity {
                     personIds.add(adap.men.get(ch));
                 }
 
-                Intent searchIntent = new Intent(fragment2, Fragment3.class);
+                Intent searchIntent = new Intent(fragment2, ShowSearchResultActivity.class);
                 if (startDates != null) {
                     searchIntent.putExtra("startDate", startDates.getTime());
                 }

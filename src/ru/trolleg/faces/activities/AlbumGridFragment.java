@@ -45,7 +45,7 @@ public class AlbumGridFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.action_search2:
-            Intent searchIntent = new Intent(getActivity(), Fragment2.class);
+            Intent searchIntent = new Intent(getActivity(), SearchPhotoActivity.class);
             getActivity().startActivity(searchIntent);
             return true;
         default:
