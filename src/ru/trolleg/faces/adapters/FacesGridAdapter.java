@@ -13,6 +13,8 @@ import ru.trolleg.faces.data.Face;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -132,9 +134,16 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
                 switch(event.getAction())  {
                 case MotionEvent.ACTION_DOWN: {
                     ImageView view = (ImageView) v;
-                    view.setBackgroundColor(Color.WHITE);
-                    view.setPadding(5, 5, 5, 5);
-                    view.invalidate();
+                    Drawable drawable = view.getDrawable();
+                    boolean hasImage = (drawable != null);
+                    if (hasImage && (drawable instanceof BitmapDrawable)) {
+                        hasImage = ((BitmapDrawable)drawable).getBitmap() != null;
+                    }
+                    if (hasImage) {
+                        view.setBackgroundColor(Color.WHITE);
+                        view.setPadding(5, 5, 5, 5);
+                        view.invalidate();
+                    }
                     break;
                 }
                 case MotionEvent.ACTION_UP:

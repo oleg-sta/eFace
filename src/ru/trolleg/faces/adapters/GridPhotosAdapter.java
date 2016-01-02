@@ -71,15 +71,9 @@ public class GridPhotosAdapter extends ArrayAdapter<String> {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        //ProgressBar bar = (ProgressBar) convertView.findViewById(R.id.progressBar);
-        //holder.bar.setVisibility(ProgressBar.VISIBLE);
-        //final ImageView view2 = (ImageView)convertView.findViewById(R.id.checked);
-        //ImageView view = (ImageView)convertView.findViewById(R.id.one_face1);
         final String photo = photos.get(position);
         holder.position = position;
         BitmapWorkerCropPhotoTask.loadImage(photo, context, holder, position);
-//        final BitmapWorkerCropPhotoTask task = new BitmapWorkerCropPhotoTask(holder, context, position);
-//        task.execute(photo);
         
         return convertView;
     }

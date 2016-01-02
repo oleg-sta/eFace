@@ -64,6 +64,7 @@ public class RecognizeFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.v("RecognizeFragment", "onCreate");
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         broadcastManager = LocalBroadcastManager.getInstance(getActivity());
@@ -103,11 +104,13 @@ public class RecognizeFragment extends Fragment {
 
     @Override
     public void onStop() {
+        Log.v("RecognizeFragment", "onStop");
         super.onStop();
     }
     
     @Override
     public void onDestroy() {
+        Log.v("RecognizeFragment", "onDestroy");
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver2);
         super.onDestroy();
@@ -115,8 +118,8 @@ public class RecognizeFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.v("RecognizeFragment", "onCreateView");
         View rootView = inflater.inflate(R.layout.recognition_fragment, container, false);
-        Log.v("RecognizeFragment", "onCreate");
         dbHelper = new DictionaryOpenHelper(getActivity());
 
         DisplayMetrics metrics = new DisplayMetrics();
@@ -242,7 +245,6 @@ public class RecognizeFragment extends Fragment {
         if (ended && stMenu != null) {
             stMenu.setIcon(R.drawable.start);
         }
-        Log.i("RecognizeFragment", "stats22 " + DataHolder.photoCount + " "+ DataHolder.photoProcessedCount + " " + DataHolder.facesCount);
         phoCOuntTw.setText("" + DataHolder.photoCount);
         phoProCOuntTw.setText("" + DataHolder.photoProcessedCount);
         facesCountTw.setText("" + DataHolder.facesCount);
@@ -270,12 +272,29 @@ public class RecognizeFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Log.i("PeopleFragment", "onCreateOptionsMenu");
+        Log.i("RecognizeFragment", "onCreateOptionsMenu");
         inflater.inflate(R.menu.recognition, menu);
         stMenu = menu.findItem(R.id.miCompose);
+        if (!FaceFinderService.buttonStart) {
+            stMenu.setIcon(R.drawable.start);
+        } else {
+            stMenu.setIcon(R.drawable.pause);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
     
+    @Override
+    public void onPause() {
+        Log.i("RecognizeFragment", "onPause");
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        Log.i("RecognizeFragment", "onResume");
+        super.onResume();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
