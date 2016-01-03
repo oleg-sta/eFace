@@ -9,6 +9,7 @@ import android.graphics.*;
 import android.graphics.Bitmap.Config;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.InputStream;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.List;
 public class SkiaImageRegionDecoder implements ImageRegionDecoder {
 
     private BitmapRegionDecoder decoder;
+    private String file;
     private final Object decoderLock = new Object();
 
     private static final String FILE_PREFIX = "file://";
@@ -59,6 +61,7 @@ public class SkiaImageRegionDecoder implements ImageRegionDecoder {
             String assetName = uriString.substring(ASSET_PREFIX.length());
             decoder = BitmapRegionDecoder.newInstance(context.getAssets().open(assetName, AssetManager.ACCESS_RANDOM), false);
         } else if (uriString.startsWith(FILE_PREFIX)) {
+            file = uriString.substring(FILE_PREFIX.length());
             decoder = BitmapRegionDecoder.newInstance(uriString.substring(FILE_PREFIX.length()), false);
         } else {
             InputStream inputStream = null;
@@ -79,8 +82,15 @@ public class SkiaImageRegionDecoder implements ImageRegionDecoder {
     public Bitmap decodeRegion(Rect sRect, int sampleSize) {
         synchronized (decoderLock) {
             BitmapFactory.Options options = new BitmapFactory.Options();
+            // TODO уточнить про окно
+            if ((sRect.right - sRect.left) > 2000 || (sRect.bottom-sRect.top) > 2000) {
+                Log.i("SkiaImageRegionDecoder", "sampleSize = sampleSize * 2");
+                sampleSize = sampleSize * 2;
+            }
+            //sampleSize = 4;
             options.inSampleSize = sampleSize;
             options.inPreferredConfig = Config.RGB_565;
+            Log.i("SkiaImageRegionDecoder", "sampleSize " + file + " " + sampleSize + " " + (sRect.right - sRect.left) + " " + (sRect.bottom-sRect.top) + " " + sRect.left + " " + sRect.top);
             Bitmap bitmap = decoder.decodeRegion(sRect, options);
             if (bitmap == null) {
                 throw new RuntimeException("Skia image decoder returned null bitmap - image format may not be supported");

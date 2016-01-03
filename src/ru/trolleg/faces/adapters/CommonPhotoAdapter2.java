@@ -17,6 +17,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,16 +32,14 @@ import android.widget.TextView;
  */
 public class CommonPhotoAdapter2 extends PagerAdapter {
 
-    private List<String> photos;
+    public List<String> photos;
     private LayoutInflater inflater;
     private Activity _activity;
-    TextView textView;
     DeactivableViewPager mPager;
 
-    public CommonPhotoAdapter2(Activity activity, List<String> photos, TextView textView, DeactivableViewPager mPager) {
+    public CommonPhotoAdapter2(Activity activity, List<String> photos, DeactivableViewPager mPager) {
         this._activity = activity;
         this.photos = photos;
-        this.textView = textView;
         this.mPager = mPager;
     }
 
@@ -57,11 +56,11 @@ public class CommonPhotoAdapter2 extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         //TouchImageView imgDisplay;
 
+        Log.i("Skia", "" + position);
         inflater = (LayoutInflater) _activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View viewLayout = inflater.inflate(R.layout.show_common_photo, container, false);
         DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(_activity);
         String path = photos.get(position);
-        String fileName = new File(path).getName();
         InfoPhoto infoPh = dbHelper.getInfoPhotoFull(path);
         
         SubsamplingScaleImageView imageView = (SubsamplingScaleImageView) viewLayout.findViewById(R.id.imageView);
@@ -85,7 +84,6 @@ public class CommonPhotoAdapter2 extends PagerAdapter {
 //        });
         ProgressBar bar = (ProgressBar) viewLayout.findViewById(R.id.progressBar);
 
-        textView.setText(fileName);
 //        final BitmapWorkerTask task = new BitmapWorkerTask(imgDisplay, bar, infoPh);
 //        task.execute(path);
         

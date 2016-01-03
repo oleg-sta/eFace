@@ -14,9 +14,13 @@
         android:id="@+id/reset_people"
         android:showAsAction="never"
         android:title="Сбросить людей(для разработки)"/>
-
-        <item
+    <item
         android:id="@+id/copy_db"
         android:showAsAction="never"
-        android:title="Скопровать БД(для разработки)"/>
+        android:title="Скопировать БД(для разработки)"/>
+    <item
+        android:id="@+id/reser_cache"
+        android:showAsAction="never"
+        android:title="Сбросить кэш диска и памяти(для разработки)"/>
+
 </menu>

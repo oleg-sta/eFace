@@ -146,6 +146,9 @@ public class DataHolder {
                 BitmapFactory.decodeFile(path, tmpOptions);
                 int width = tmpOptions.outWidth;
                 int height = tmpOptions.outHeight;
+                int width1 = width;
+                int height1 = height;
+                Log.i("DataHolder", path + " width " + width + " height " + height);
                 
                 BitmapFactory.Options options2 = new BitmapFactory.Options();
                 options2.inPreferredConfig = Bitmap.Config.RGB_565;
@@ -159,31 +162,41 @@ public class DataHolder {
                 int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
                 int orient = FaceFinderService.getOrient(orientation);
                 if (orient % 2 == 1) {
-                    int w1 = height;
-                    height = width;
-                    width = w1;
+                    int w1 = height1;
+                    height1 = width1;
+                    width1 = w1;
                 }
                 //Bitmap background_image = FaceFinderService.decodeSampledBitmapFromResource(path, SIZE_PHOTO_TO_FIND_FACES, SIZE_PHOTO_TO_FIND_FACES, options, true);
                 if (width == 0) {
                     Log.i("DataHolder", "null path " + path + " " + faceId + " " + faceCur.photoId);
                     return null;
                 }
+                double faceWidth = faceCur.width * width1 / 100;
+                double faceHeight = faceCur.height * height1 / 100;
                 
-                if (faceCur.width * width > 800 || faceCur.height * height > 800) {
+                Log.i("DataHolder", "cut " + path+ " "+ faceWidth + " " + faceHeight);
+                if (faceWidth > 15800 || faceHeight > 15800) {
+                    Log.i("DataHolder", "old way");
                     bm = getLittleFaceoldWay(path, faceCur);
                 } else {
+                    Log.i("DataHolder", "new way");
                     RectF f = new RectF((float) (faceCur.centerX - faceCur.width / 2),
                             (float) (faceCur.centerY - faceCur.height / 2),
                             (float) (faceCur.centerX + faceCur.width / 2),
                             (float) (faceCur.centerY + faceCur.height / 2));
+                    
+                    Log.i("DataHolder", "rect before " + f.left + " " + f.right + " " + f.top + " " + f.bottom + " " + orient);
                     Matrix m = new Matrix();
                     // point is the point about which to rotate.
+                    //m.setRotate(-orient * 90, 50, 50);
                     m.setRotate(-orient * 90, 50, 50);
                     m.mapRect(f);
-                    float centerX = (f.left + f.right) / 2;
-                    float centerY = (f.top + f.bottom) / 2;
-                    float fWidth = f.right - f.left;
-                    float fHeight = f.bottom - f.top;
+                    
+                    Log.i("DataHolder", "rect after " + f.left + " " + f.right + " " + f.top + " " + f.bottom);
+                    float centerX = Math.abs(f.left + f.right) / 2;
+                    float centerY = Math.abs(f.top + f.bottom) / 2;
+                    float fWidth = Math.abs(f.right - f.left);
+                    float fHeight = Math.abs(f.bottom - f.top);
 
                     double k1 = Math.min(2 * centerX / fWidth, 2 * (100 - centerX) / fWidth);
                     double k2 = Math.min(2 * centerY / fHeight, 2 * (100 - centerY) / fHeight);
@@ -205,17 +218,21 @@ public class DataHolder {
 
                     Rect rect = new Rect(x1, y1, x2, y2);
 
+                    options2.inSampleSize = FaceFinderService.calculateInSampleSize(rect.right - rect.left, rect.bottom - rect.top, FACES_SIZE, FACES_SIZE);
+                    Log.i("DataHolder", "sampleSize " + options2.inSampleSize + " " + (rect.right - rect.left));
+                    // TODO если размер лица больше 800, то добавить sample size
                     Bitmap bmTmp = bitmapRegionDecoder.decodeRegion(rect, options2);
-
+                    Log.i("DataHolder", "size " + bmTmp.getWidth() + " " + bmTmp.getHeight());
                     // Bitmap bmTmp = Bitmap.createBitmap(background_image, x1,
                     // y1,
                     // x2 - x1, y2 - y1);
-                    bm = getResizedBitmap(bmTmp, FACES_SIZE, FACES_SIZE, true, orient);
+                    //bm = getResizedBitmap(bmTmp, bmTmp.getWidth(), bmTmp.getHeight(), true, orient);
 
                     // Matrix matrix = new Matrix();
                     // matrix.postRotate(orient * 90);
-                    // bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(),
-                    // bm.getHeight(), matrix, true);
+                    //bm = bmTmp;
+                    bm = getResizedBitmap(bmTmp, bmTmp.getWidth(), bmTmp.getHeight(), true, orient);
+                    //bm = Bitmap.createBitmap(bm, 0, 0, bmTmp.getWidth(), bmTmp.getHeight(), matrix, true);
                 }
                 
                 Log.v("DataHolder", "file dir " + context.getFilesDir());
@@ -339,7 +356,9 @@ public class DataHolder {
         // "RECREATE" THE NEW BITMAP
         Bitmap resizedBitmap = Bitmap.createBitmap(
             bm, 0, 0, width, height, matrix, filter);
-        bm.recycle();
+        if (bm != resizedBitmap) {
+            bm.recycle();
+        }
         return resizedBitmap;
     }
     
@@ -356,7 +375,9 @@ public class DataHolder {
         // "RECREATE" THE NEW BITMAP
         Bitmap resizedBitmap = Bitmap.createBitmap(
             bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
+        if (bm != resizedBitmap) {
+            bm.recycle();
+        }
         return resizedBitmap;
     }
     

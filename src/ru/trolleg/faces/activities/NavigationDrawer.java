@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
 
+import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.materialtabs.MaterialTab;
@@ -128,9 +129,23 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
         case R.id.copy_db:
             copyDb();
             return true;
+        case R.id.reser_cache:
+            resetCache();
+            return true;
         default:
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void resetCache() {
+        DataHolder.mMemoryCache.evictAll();
+        File file = getApplication().getFilesDir();
+        String[] children = file.list();
+        for (int i = 0; i < children.length; i++)
+        {
+           new File(file, children[i]).delete();
+        }
+        
     }
 
     /**

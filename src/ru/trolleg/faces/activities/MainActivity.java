@@ -104,7 +104,6 @@ public class MainActivity {
                 final String data = cursor.getString(dataColumn);
                 final String album = cursor.getString(imageBucket);
                 long di = cursor.getLong(cursor.getColumnIndex(Images.Media._ID));
-                Log.i("MainActivity", "images " + data + " "  + album + " "  + di);
                 result.add(data);
                 i++;
             } while (cursor.moveToNext());

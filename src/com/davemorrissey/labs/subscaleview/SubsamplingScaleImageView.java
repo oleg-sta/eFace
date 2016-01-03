@@ -63,6 +63,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
+import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.R.styleable;
 
 /**
@@ -1772,6 +1773,7 @@ public class SubsamplingScaleImageView extends View {
             }
         }
         return new Point(2048, 2048);
+        //return new Point(DataHolder.SIZE_PHOTO_TO_FIND_FACES, DataHolder.SIZE_PHOTO_TO_FIND_FACES);
     }
 
     /**

@@ -511,7 +511,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         cal.add(Calendar.DAY_OF_MONTH, 1);
         endDate = cal.getTime();
         List<String> photos = new ArrayList<String>();
-        String where = " where 1 = 1 ";
+        String where = " where 1 = 1 and p.name <> '"+MainActivity.NO_FACES+"' ";
         if (!filterMan.isEmpty()) {
             String inds = "(-666";
             for (Integer idMan : filterMan) {

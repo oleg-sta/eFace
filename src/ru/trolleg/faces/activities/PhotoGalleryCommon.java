@@ -1,5 +1,6 @@
 package ru.trolleg.faces.activities;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -34,16 +36,38 @@ public class PhotoGalleryCommon extends Activity {
 
         setContentView(R.layout.comon_photo_pager);
 
-        TextView nameView = (TextView) findViewById(R.id.name_man);
+        final TextView nameView = (TextView) findViewById(R.id.name_man);
         final DeactivableViewPager mPager = (DeactivableViewPager) findViewById(R.id.pager);
         if (photos == null) {
             photos = MainActivity.getCameraImages(this, albumId);
         }
-        final PagerAdapter mPagerAdapter = new CommonPhotoAdapter2(this, photos, nameView, mPager);
+        final CommonPhotoAdapter2 mPagerAdapter = new CommonPhotoAdapter2(this, photos, mPager);
         mPager.setAdapter(mPagerAdapter);
         mPager.setCurrentItem(position);
+        String fileName = new File(mPagerAdapter.photos.get(position)).getName();
+        nameView.setText(fileName);
+        mPager.addOnPageChangeListener(new OnPageChangeListener() {
+            
+            @Override
+            public void onPageSelected(int position) {
+                String fileName = new File(mPagerAdapter.photos.get(position)).getName();
+                nameView.setText(fileName);
+                
+            }
+            
+            @Override
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+                // TODO Auto-generated method stub
+                
+            }
+            
+            @Override
+            public void onPageScrollStateChanged(int arg0) {
+                // TODO Auto-generated method stub
+                
+            }
+        });
         HorizontalListView horizontal = (HorizontalListView) findViewById(R.id.gallery1);
         horizontal.setVisibility(View.GONE);
-
     }
 }
