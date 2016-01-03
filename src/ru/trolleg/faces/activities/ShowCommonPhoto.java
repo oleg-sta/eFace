@@ -1,5 +1,8 @@
 package ru.trolleg.faces.activities;
 
+import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+
 import ru.trolleg.faces.BitmapWorkerTask;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.TouchImageView;
@@ -24,12 +27,11 @@ public class ShowCommonPhoto extends Activity {
         
         String infoPh = getIntent().getStringExtra("photo");
         
-        TouchImageView img = (TouchImageView) findViewById(R.id.img);
-        ProgressBar bar = (ProgressBar) findViewById(R.id.progressBar);
+        SubsamplingScaleImageView imageView = (SubsamplingScaleImageView) findViewById(R.id.imageView);
+        imageView.setMaxScale(5);
+        imageView.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
         
-        
-        final BitmapWorkerTask task = new BitmapWorkerTask(img,  bar);
-        task.execute(infoPh);
+        imageView.setImage(ImageSource.uri(infoPh));
     }
 
 }

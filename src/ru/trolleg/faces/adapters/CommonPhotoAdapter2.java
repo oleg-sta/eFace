@@ -66,27 +66,6 @@ public class CommonPhotoAdapter2 extends PagerAdapter {
         SubsamplingScaleImageView imageView = (SubsamplingScaleImageView) viewLayout.findViewById(R.id.imageView);
         imageView.setMaxScale(5);
         imageView.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
-//        imgDisplay = (TouchImageView) viewLayout.findViewById(R.id.img);
-//        imgDisplay.setOnScaleListener(new OnPageScaleListener() {
-//            @Override
-//            public void onScaleBegin() {
-//                mPager.deactivate();
-//            }
-//
-//            @Override
-//            public void onScaleEnd(float scale) {
-//                if (scale > 1.0) {
-//                    mPager.deactivate();
-//                } else {
-//                    mPager.activate();
-//                }
-//            }
-//        });
-        ProgressBar bar = (ProgressBar) viewLayout.findViewById(R.id.progressBar);
-
-//        final BitmapWorkerTask task = new BitmapWorkerTask(imgDisplay, bar, infoPh);
-//        task.execute(path);
-        
         imageView.setImage(ImageSource.uri(infoPh.path));
 
         ((ViewPager) container).addView(viewLayout);

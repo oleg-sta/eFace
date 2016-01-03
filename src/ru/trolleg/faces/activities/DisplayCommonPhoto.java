@@ -40,6 +40,7 @@ public class DisplayCommonPhoto extends Activity {
     
     int lastPosition;
     View  imLast;
+    public TextView nameView;
     public HorizontalListView horizontal;
     
     @Override
@@ -52,7 +53,7 @@ public class DisplayCommonPhoto extends Activity {
         Log.i("DisplayCommonPhoto", "onCreate");
         setContentView(R.layout.comon_photo_pager);
         Integer faceId = getIntent().getIntExtra(DataHolder.FACE_ID, 0);
-        TextView nameView = (TextView) findViewById(R.id.name_man);
+        nameView = (TextView) findViewById(R.id.name_man);
         final DeactivableViewPager mPager = (DeactivableViewPager) findViewById(R.id.pager);
         DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
         Integer personId = dbHelper.getPersonIdByFaceId(faceId);
@@ -63,7 +64,7 @@ public class DisplayCommonPhoto extends Activity {
         final PagerAdapter mPagerAdapter = new CommonPhotoAdapter(this, faces, mPager);
         mPager.setAdapter(mPagerAdapter);
         mPager.setCurrentItem(position);
-        mPager.setOnPageChangeListener(new OnPageChangeListener() {
+        mPager.addOnPageChangeListener(new OnPageChangeListener() {
             
             @Override
             public void onPageSelected(int arg0) {

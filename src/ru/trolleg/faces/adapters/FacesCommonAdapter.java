@@ -34,7 +34,7 @@ public class FacesCommonAdapter extends ArrayAdapter<Integer> {
     public View  imLast;
 
     public FacesCommonAdapter(Activity context, List<Integer> faces) {
-        super(context, R.layout.one_face, faces);
+        super(context, R.layout.one_face2, faces);
         this.faces = faces;
         this.context = context;
     }
@@ -43,7 +43,7 @@ public class FacesCommonAdapter extends ArrayAdapter<Integer> {
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.one_face, null, true);
+            convertView = inflater.inflate(R.layout.one_face2, null, true);
         }
         // TODO images get in background
         ImageView view = (ImageView)convertView.findViewById(R.id.one_face1);

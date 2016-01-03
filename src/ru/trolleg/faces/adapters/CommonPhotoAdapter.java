@@ -69,12 +69,6 @@ public class CommonPhotoAdapter extends PagerAdapter {
                 false);
   
         SubsamplingScaleImageView imageView = (SubsamplingScaleImageView) viewLayout.findViewById(R.id.imageView);
-        
-        
-//        imgDisplay = (TouchImageView) viewLayout.findViewById(R.id.img);
-//         Matrix matrix = new Matrix();
-//         matrix.setScale(2, 2);
-//         imgDisplay.setImageMatrix(matrix);
          
         ProgressBar bar = (ProgressBar) viewLayout.findViewById(R.id.progressBar);
         
@@ -82,52 +76,18 @@ public class CommonPhotoAdapter extends PagerAdapter {
         String photoPath = dbHelper.getPhotoPathByFaceId(faces.get(position));
         imageView.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
         imageView.setMaxScale(5);
-        //imageView.setOrientation(1);
         imageView.setImage(ImageSource.uri(photoPath));
-//        final BitmapWorkerTask task = new BitmapWorkerTask(imgDisplay, bar);
-//        task.execute(photoPath);
-//        imgDisplay.setOnScaleListener(new OnPageScaleListener() {
-//            @Override
-//            public void onScaleBegin() {
-//                mPager.deactivate();
-//            }
-//
-//            @Override
-//            public void onScaleEnd(float scale) {
-//                if (scale > 1.0) {
-//                    mPager.deactivate();
-//                } else {
-//                    mPager.activate();
-//                }
-//            }
-//        });
-//        imgDisplay.setOnDragListener(new OnDragListener() {
-//            
-//            @Override
-//            public boolean onDrag(View v, DragEvent event) {
-//                Log.i("s", "s");
-//                return false;
-//            }
-//        });
-//        imgDisplay.setOnClickListener(new OnClickListener() {
-//            
-//            @Override
-//            public void onClick(View v) {
-//                View v2 = ((DisplayCommonPhoto) _activity).horizontal;
-//                v2.setVisibility(v2.getVisibility() == View.VISIBLE? View.INVISIBLE : View.VISIBLE);
-//                
-//            }
-//        });
-//        final ScaleGestureDetector SGD = new ScaleGestureDetector(_activity,new ScaleListener());
-//        imgDisplay.setOnTouchListener(new OnTouchListener() {
-//
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                SGD.onTouchEvent(event);
-//                return true;
-//            }
-//            
-//        });
+        imageView.setOnClickListener(new OnClickListener() {
+           
+            @Override
+            public void onClick(View v) {
+                View v2 = ((DisplayCommonPhoto) _activity).horizontal;
+                v2.setVisibility(v2.getVisibility() == View.VISIBLE? View.INVISIBLE : View.VISIBLE);
+                v2 = ((DisplayCommonPhoto) _activity).nameView;
+                v2.setVisibility(v2.getVisibility() == View.VISIBLE? View.INVISIBLE : View.VISIBLE);
+                
+            }
+        });
         ((ViewPager) container).addView(viewLayout);
         return viewLayout;
     }

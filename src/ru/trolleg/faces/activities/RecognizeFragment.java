@@ -4,10 +4,8 @@ import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.FaceFinderService;
 import ru.trolleg.faces.FaceFinderService.Operation;
-import ru.trolleg.faces.NotificationReceiver;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.FacesGridAdapter;
-import ru.trolleg.faces.adapters.GalleryAdapter;
 import ru.trolleg.faces.adapters.PersonListToRecogniseAdapter;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -17,7 +15,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.InputType;
@@ -140,7 +137,6 @@ public class RecognizeFragment extends Fragment {
         adapterFaces.notifyDataSetChanged();
         Log.i("MainActivity", "size persons " + adapterFaces.faces.size());
         
-        GalleryAdapter j = new GalleryAdapter(getActivity(), dbHelper.getAllIdsFaces());
         adapterMans = new PersonListToRecogniseAdapter(getActivity(), dbHelper.getAllIdsPerson(0, true), this);
 
         android.support.v4.view.ViewPager gal = (android.support.v4.view.ViewPager) rootView.findViewById(R.id.aaa);

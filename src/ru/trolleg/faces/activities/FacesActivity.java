@@ -5,7 +5,6 @@ import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.FacesGridAdapter;
 import ru.trolleg.faces.adapters.FacesGridShow;
-import ru.trolleg.faces.adapters.PersonListToRecogniseAdapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -68,20 +67,12 @@ public class FacesActivity extends AppCompatActivity {
 
         LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = getLayoutInflater().inflate(R.layout.custom_action, null);
-        //LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        //layoutParams.gravity = Gravity.RIGHT;
-        //layoutParams.gravity = Gravity.RIGHT;
-        //v.getLayoutParams().height = actionBar.getHeight();
         final ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,
                 Gravity.RIGHT | Gravity.CENTER_VERTICAL);
         layoutParams.gravity = Gravity.RIGHT;
-        //v.setLayoutParams(layoutParams);
-        //getSupportActionBar().setCustomView(v);
         getSupportActionBar().setCustomView(v, layoutParams);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
-        //toolbar.setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setCustomView(arg0)
         
         personId = getIntent().getIntExtra(DataHolder.PERSON_ID, 0);
         dbHelper = new DictionaryOpenHelper(this);
