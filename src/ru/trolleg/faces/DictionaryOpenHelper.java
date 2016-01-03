@@ -115,7 +115,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     }
     public void updatePhoto(String photo, long time) {
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("update photos set time_processed = "+time+" where path = '" + photo + "'");
+        s.execSQL("update photos set time_processed = "+time+" where path = '" + encapsulateSql(photo) + "'");
         s.close();
     }
     public void updatePersonName(Integer id, String newName) {
