@@ -37,7 +37,7 @@ public class DataHolder {
     public static final String PERSON_ID = "personId";
     public static LruCache<String, Bitmap> mMemoryCache;
     
-    public static int photoCount;
+    public static int photoCount = -1;
     public static int photoProcessedCount;
     public static int facesCount;
 
@@ -169,7 +169,7 @@ public class DataHolder {
                     return null;
                 }
                 
-                if (faceCur.width * width > 800 || faceCur.height * height > 800 || true) {
+                if (faceCur.width * width > 800 || faceCur.height * height > 800) {
                     bm = getLittleFaceoldWay(path, faceCur);
                 } else {
                     RectF f = new RectF((float) (faceCur.centerX - faceCur.width / 2),
@@ -270,8 +270,12 @@ public class DataHolder {
 
     
     public Bitmap getLittleCropedPhoto(String photo, Context context) {
-        Bitmap bm = mMemoryCache.get(photo);
-        String toSave = new File(photo).getName() + photo.hashCode();
+        return getLittleCropedPhoto(photo, context, FACES_SIZE);
+    }
+    public Bitmap getLittleCropedPhoto(String photo, Context context, int size) {
+        String key = photo + "_" + size;
+        Bitmap bm = mMemoryCache.get(key);
+        String toSave = new File(key).getName() + key.hashCode();
         if (bm == null) {
             File file = new File(context.getFilesDir(), toSave);
             if (file.exists()) {
@@ -285,24 +289,24 @@ public class DataHolder {
                 }
             } else {
                 final BitmapFactory.Options options = new BitmapFactory.Options();
-                bm = FaceFinderService.decodeSampledBitmapFromResource(photo, 150, 150, options, true);
+                bm = FaceFinderService.decodeSampledBitmapFromResource(photo, size, size, options, true);
                 if (bm == null) {
                     return null;
                 }
-                // обрезаем по квадратику
-                int height = bm.getHeight();
-                int width = bm.getWidth();
-                int x = 0;
-                int y = 0;
-                if (width > height) {
-                    x = (width - height) / 2;
-                    width = height;
-                } else {
-                    y = (height - width) / 2;
-                    height = width;
-                }
-                bm = Bitmap.createBitmap(bm, x, y, width, height);
-                bm = getResizedBitmap(bm, FACES_SIZE, FACES_SIZE);
+                // обрезаем по квадратику (делаем через android:scaleType="centerCrop")
+//                int height = bm.getHeight();
+//                int width = bm.getWidth();
+//                int x = 0;
+//                int y = 0;
+//                if (width > height) {
+//                    x = (width - height) / 2;
+//                    width = height;
+//                } else {
+//                    y = (height - width) / 2;
+//                    height = width;
+//                }
+//                bm = Bitmap.createBitmap(bm, x, y, width, height);
+//                bm = getResizedBitmap(bm, FACES_SIZE, FACES_SIZE);
                 file = new File(context.getFilesDir(), toSave);
                 try {
                     if (file.createNewFile()) {
@@ -316,7 +320,7 @@ public class DataHolder {
                     e.printStackTrace();
                 }
             }
-            mMemoryCache.put(photo, bm);
+            mMemoryCache.put(key, bm);
         }
         return bm;
     }

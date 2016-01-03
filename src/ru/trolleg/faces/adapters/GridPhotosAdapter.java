@@ -21,7 +21,7 @@ public class GridPhotosAdapter extends ArrayAdapter<String> {
     public final List<String> photos;
     
     public GridPhotosAdapter(Activity context, List<String> photos) {
-        super(context, R.layout.one_face, photos);
+        super(context, R.layout.one_squared_image, photos);
         this.photos = photos;
         this.context = context;
     }
@@ -63,10 +63,9 @@ public class GridPhotosAdapter extends ArrayAdapter<String> {
         ViewHolder holder;
         LayoutInflater inflater = context.getLayoutInflater();
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.one_face, null, true);
+            convertView = inflater.inflate(R.layout.one_squared_image, null, true);
             holder = new ViewHolder();
-            holder.image = (ImageView)convertView.findViewById(R.id.one_face1);
-
+            holder.image = (ImageView)convertView.findViewById(R.id.image);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();

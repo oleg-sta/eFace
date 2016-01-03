@@ -39,6 +39,9 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         
+        Log.i("NavigationDrawer", "width " + getResources().getDisplayMetrics().widthPixels);
+        Log.i("NavigationDrawer", "height " + getResources().getDisplayMetrics().heightPixels);
+        
         final Toolbar toolbar = (android.support.v7.widget.Toolbar) this.findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
         dbHelper = new DictionaryOpenHelper(this);

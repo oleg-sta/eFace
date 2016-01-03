@@ -11,6 +11,7 @@
         android:paddingTop="0dp"
         android:paddingBottom="0dp"
         android:layout_gravity="top"
+        android:scaleType="centerCrop"
         android:paddingLeft="4dp"
         android:paddingRight="4dp" />
 

@@ -35,6 +35,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +56,7 @@ public class RecognizeFragment extends Fragment {
     //protected ImageView startMenu;
     
     TextView phoCOuntTw;
+    ProgressBar phoCOuntTwPr;
     TextView phoProCOuntTw;
     TextView facesCountTw;
     
@@ -146,9 +148,14 @@ public class RecognizeFragment extends Fragment {
         gal.setAdapter(adapterMans);
 
         phoCOuntTw = (TextView) rootView.findViewById(R.id.all_photos);
+        phoCOuntTwPr = (ProgressBar) rootView.findViewById(R.id.all_photos_progress);
         phoProCOuntTw = (TextView) rootView.findViewById(R.id.photos_processed);
         facesCountTw = (TextView) rootView.findViewById(R.id.face_count);
-        phoCOuntTw.setText("" + DataHolder.photoCount);
+        if (DataHolder.photoCount > 0) {
+            phoCOuntTw.setText("" + DataHolder.photoCount);
+            phoCOuntTw.setVisibility(View.VISIBLE);
+            phoCOuntTwPr.setVisibility(View.INVISIBLE);
+        }
         phoProCOuntTw.setText("" + DataHolder.photoProcessedCount);
         facesCountTw.setText("" + DataHolder.facesCount);
         Log.i("RecognizeFragment", "stats " + DataHolder.photoCount + " "+ DataHolder.photoProcessedCount + " " + DataHolder.facesCount);
@@ -245,7 +252,9 @@ public class RecognizeFragment extends Fragment {
         if (ended && stMenu != null) {
             stMenu.setIcon(R.drawable.start);
         }
+        phoCOuntTwPr.setVisibility(View.INVISIBLE);
         phoCOuntTw.setText("" + DataHolder.photoCount);
+        phoCOuntTw.setVisibility(View.VISIBLE);
         phoProCOuntTw.setText("" + DataHolder.photoProcessedCount);
         facesCountTw.setText("" + DataHolder.facesCount);
         if (photo != null && currentMan == null) {
