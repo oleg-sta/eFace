@@ -3,6 +3,9 @@ package ru.trolleg.faces.adapters;
 import java.io.File;
 import java.util.List;
 
+import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+
 import ru.trolleg.faces.BitmapWorkerTask;
 import ru.trolleg.faces.DeactivableViewPager;
 import ru.trolleg.faces.DictionaryOpenHelper;
@@ -52,7 +55,7 @@ public class CommonPhotoAdapter2 extends PagerAdapter {
     }
 
     public Object instantiateItem(ViewGroup container, int position) {
-        TouchImageView imgDisplay;
+        //TouchImageView imgDisplay;
 
         inflater = (LayoutInflater) _activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View viewLayout = inflater.inflate(R.layout.show_common_photo, container, false);
@@ -61,27 +64,32 @@ public class CommonPhotoAdapter2 extends PagerAdapter {
         String fileName = new File(path).getName();
         InfoPhoto infoPh = dbHelper.getInfoPhotoFull(path);
         
-        imgDisplay = (TouchImageView) viewLayout.findViewById(R.id.img);
-        imgDisplay.setOnScaleListener(new OnPageScaleListener() {
-            @Override
-            public void onScaleBegin() {
-                mPager.deactivate();
-            }
-
-            @Override
-            public void onScaleEnd(float scale) {
-                if (scale > 1.0) {
-                    mPager.deactivate();
-                } else {
-                    mPager.activate();
-                }
-            }
-        });
+        SubsamplingScaleImageView imageView = (SubsamplingScaleImageView) viewLayout.findViewById(R.id.imageView);
+        imageView.setMaxScale(5);
+        imageView.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
+//        imgDisplay = (TouchImageView) viewLayout.findViewById(R.id.img);
+//        imgDisplay.setOnScaleListener(new OnPageScaleListener() {
+//            @Override
+//            public void onScaleBegin() {
+//                mPager.deactivate();
+//            }
+//
+//            @Override
+//            public void onScaleEnd(float scale) {
+//                if (scale > 1.0) {
+//                    mPager.deactivate();
+//                } else {
+//                    mPager.activate();
+//                }
+//            }
+//        });
         ProgressBar bar = (ProgressBar) viewLayout.findViewById(R.id.progressBar);
 
         textView.setText(fileName);
-        final BitmapWorkerTask task = new BitmapWorkerTask(imgDisplay, bar, infoPh);
-        task.execute(path);
+//        final BitmapWorkerTask task = new BitmapWorkerTask(imgDisplay, bar, infoPh);
+//        task.execute(path);
+        
+        imageView.setImage(ImageSource.uri(infoPh.path));
 
         ((ViewPager) container).addView(viewLayout);
         return viewLayout;
