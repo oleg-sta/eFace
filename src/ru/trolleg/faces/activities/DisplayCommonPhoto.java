@@ -10,17 +10,14 @@ import ru.trolleg.faces.adapters.CommonPhotoAdapter;
 import ru.trolleg.faces.adapters.FacesCommonAdapter;
 import ru.trolleg.faces.adapters.HorizontalListView;
 import android.app.Activity;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -38,8 +35,6 @@ public class DisplayCommonPhoto extends Activity {
     private ScaleGestureDetector mScaleDetector;
     private Matrix matrix = new Matrix();
     
-    int lastPosition;
-    View  imLast;
     public TextView nameView;
     public HorizontalListView horizontal;
     
@@ -68,7 +63,7 @@ public class DisplayCommonPhoto extends Activity {
             
             @Override
             public void onPageSelected(int arg0) {
-                setCurrentFromBig(arg0);
+                setCurrentFromBig(arg0, true);
                 
             }
             
@@ -90,50 +85,43 @@ public class DisplayCommonPhoto extends Activity {
         final FacesCommonAdapter facesAdapter = new FacesCommonAdapter(this, faces);
         facesAdapter.selected = position;
         horizontal.setAdapter(facesAdapter);
-        
-        
         horizontal.scrollTo(position * DataHolder.dp2Px(80, getApplicationContext()));
-        //horizontal.setSelection(position);
-        //facesAdapter.get
         horizontal.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("dsds", "po " + position);
-                if (imLast != null) {
-                    imLast.setPadding(0, 0, 0, 0);
-                    imLast.setBackgroundColor(Color.TRANSPARENT);
-                    imLast.invalidate();
-                } else if (facesAdapter.imLast != null) {
-                    facesAdapter.imLast.setPadding(0, 0, 0, 0);
-                    facesAdapter.imLast.setBackgroundColor(Color.TRANSPARENT);
-                    facesAdapter.imLast.invalidate();
-                }
                 mPager.setCurrentItem(position);
-                //ImageView  im = (ImageView)view.findViewById(R.id.one_face1);
-                view.setPadding(2, 2, 2, 2);
-                view.setBackgroundColor(Color.YELLOW);
-                view.invalidate();
-                facesAdapter.selected = position;
-                lastPosition =position;
-                imLast = view;
-                
-                facesAdapter.notifyDataSetChanged();
+                setCurrentFromBig(position, false);
             }
         });
         mScaleDetector = new ScaleGestureDetector(this, new ScaleListener());
         
     }
     
-    public void setCurrentFromBig(int position) {
+    public void setCurrentFromBig(int position, boolean fromBig) {
+        Log.i("DisplayCommonPhoto", "setCurrentFromBig " + position + " " + fromBig);
+        int lastPos = ((FacesCommonAdapter)horizontal.getAdapter()).selected;
+        
         ((FacesCommonAdapter)horizontal.getAdapter()).selected = position;
-        ((FacesCommonAdapter)horizontal.getAdapter()).notifyDataSetChanged();
-        Log.i("w", "" + horizontal.mNextX);
+        FacesCommonAdapter.ViewHolder lstViewHolder = ((FacesCommonAdapter)horizontal.getAdapter()).forUpdate.get(lastPos);
+        FacesCommonAdapter.ViewHolder viewHolder = ((FacesCommonAdapter)horizontal.getAdapter()).forUpdate.get(position);
+        
+        if (lastPos >= 0 && lstViewHolder != null && lastPos == lstViewHolder.position) {
+            Log.i("DisplayCommonPhoto", "old");
+            lstViewHolder.view2.setVisibility(View.INVISIBLE);
+        }
+        if (viewHolder != null && position == viewHolder.position) {
+            Log.i("DisplayCommonPhoto", "new");
+            viewHolder.view2.setVisibility(View.VISIBLE);
+        }
+        Log.i("DisplayCommonPhoto", "" + lastPos + " " + position);
         //horizontal.get
+        if (fromBig) {
         if (horizontal.mNextX > position * DataHolder.dp2Px(80, getApplicationContext())) {
             horizontal.scrollTo(position * DataHolder.dp2Px(80, getApplicationContext()));
         } else if (position * DataHolder.dp2Px(80, getApplicationContext()) - horizontal.mNextX >  getApplicationContext().getResources().getDisplayMetrics().widthPixels) {
             horizontal.scrollTo(position * DataHolder.dp2Px(80, getApplicationContext()));
+        }
         }
     }
 

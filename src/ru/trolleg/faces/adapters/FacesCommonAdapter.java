@@ -1,8 +1,8 @@
 package ru.trolleg.faces.adapters;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
@@ -11,27 +11,19 @@ import ru.trolleg.faces.data.Face;
 import android.app.Activity;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 public class FacesCommonAdapter extends ArrayAdapter<Integer> {
 
     private final Activity context;
     public final List<Integer> faces; // �������������� ������
-    public int selected = 0;
+    public int selected = -1;
     
-    int lastPosition;
-    public View  imLast;
+    public Map<Integer, ViewHolder> forUpdate = new HashMap<Integer, ViewHolder>();
 
     public FacesCommonAdapter(Activity context, List<Integer> faces) {
         super(context, R.layout.one_face2, faces);
@@ -41,27 +33,38 @@ public class FacesCommonAdapter extends ArrayAdapter<Integer> {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
         LayoutInflater inflater = context.getLayoutInflater();
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.one_face2, null, true);
+            holder = new ViewHolder();
+            holder.view = (ImageView)convertView.findViewById(R.id.one_face1);
+            holder.view2 = (ImageView)convertView.findViewById(R.id.one_face2);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
+        holder.position = position;
+        forUpdate.put(position, holder);
         // TODO images get in background
-        ImageView view = (ImageView)convertView.findViewById(R.id.one_face1);
-        ImageView view2 = (ImageView)convertView.findViewById(R.id.one_face2);
         final int faceId = faces.get(position);
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
         Face face = dbHelper.getFaceForId(faceId);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Bitmap bm = DataHolder.getInstance().getLittleFace(db, face.guid, getContext());
         db.close();
-        view.setImageBitmap(bm);
+        holder.view.setImageBitmap(bm);
         if (position != selected) {
-            view2.setVisibility(View.GONE);
+            holder.view2.setVisibility(View.INVISIBLE);
         } else {
-            view2.setVisibility(View.VISIBLE);
-            imLast = convertView;
+            holder.view2.setVisibility(View.VISIBLE);
         }
         return convertView;
     }
     
+    public static class ViewHolder {
+        public ImageView view;
+        public ImageView view2;
+        public int position;
+    }
 }
