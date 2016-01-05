@@ -138,9 +138,15 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
     }
 
     private void resetCache() {
-        DataHolder.mMemoryCache.evictAll();
+        DataHolder.getInstance().mMemoryCache.evictAll();
         File file = getApplication().getFilesDir();
         String[] children = file.list();
+        for (int i = 0; i < children.length; i++)
+        {
+           new File(file, children[i]).delete();
+        }
+        file = getApplication().getCacheDir();
+        children = file.list();
         for (int i = 0; i < children.length; i++)
         {
            new File(file, children[i]).delete();

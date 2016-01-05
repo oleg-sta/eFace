@@ -3,23 +3,17 @@ package ru.trolleg.faces;
 import java.lang.ref.WeakReference;
 
 import ru.trolleg.faces.adapters.GridPhotosAdapter.ViewHolder;
-import ru.trolleg.faces.data.Face;
-import ru.trolleg.faces.data.InfoPhoto;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 public class BitmapWorkerCropPhotoTask extends AsyncTask<String, Void, BitmapDrawable> {
     private final WeakReference<ViewHolder> imageViewReference;
@@ -37,10 +31,8 @@ public class BitmapWorkerCropPhotoTask extends AsyncTask<String, Void, BitmapDra
     @Override
     protected BitmapDrawable doInBackground(String... params) {
         data = params[0];
-        //final BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap myBitmap = DataHolder.getInstance().getLittleCropedPhoto(data, context);
         BitmapDrawable drawable = new BitmapDrawable(context.getResources(), myBitmap);
-        //DataHolder.mMemoryCache2.put(data, drawable);
         return drawable;
     }
 
@@ -57,7 +49,7 @@ public class BitmapWorkerCropPhotoTask extends AsyncTask<String, Void, BitmapDra
     
     public static void loadImage(String photo, Activity context, ViewHolder holder, int position) {
         BitmapDrawable value = null;
-        Bitmap alue = DataHolder.getInstance().mMemoryCache.get(photo);
+        Bitmap alue = DataHolder.getInstance().mMemoryCache.get(photo + "_" + DataHolder.FACES_SIZE);
         if (alue != null) {
             value = new BitmapDrawable(context.getResources(), alue);
         }
@@ -83,14 +75,12 @@ public class BitmapWorkerCropPhotoTask extends AsyncTask<String, Void, BitmapDra
             final String bitmapData = bitmapWorkerTask.data;
             if (bitmapData == null || !bitmapData.equals(photo)) {
                 bitmapWorkerTask.cancel(true);
-                Log.i("BitmapWorkerFaceCrop", "cancelPotentialWork - cancelled work for " + photo);
             } else {
                 // The same work is already in progress.
                 return false;
             }
         }
         return true;
-        //END_INCLUDE(cancel_potential_work)
     }
 
     private static BitmapWorkerCropPhotoTask getBitmapWorkerTask(ImageView imageView) {

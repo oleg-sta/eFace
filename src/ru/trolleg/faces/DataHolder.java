@@ -285,7 +285,6 @@ public class DataHolder {
         return bm;
     }
 
-    
     public Bitmap getLittleCropedPhoto(String photo, Context context) {
         return getLittleCropedPhoto(photo, context, FACES_SIZE);
     }
@@ -294,7 +293,7 @@ public class DataHolder {
         Bitmap bm = mMemoryCache.get(key);
         String toSave = new File(key).getName() + key.hashCode();
         if (bm == null) {
-            File file = new File(context.getFilesDir(), toSave);
+            File file = new File(context.getCacheDir(), toSave);
             if (file.exists()) {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inPreferredConfig = Bitmap.Config.RGB_565;
@@ -310,21 +309,7 @@ public class DataHolder {
                 if (bm == null) {
                     return null;
                 }
-                // обрезаем по квадратику (делаем через android:scaleType="centerCrop")
-//                int height = bm.getHeight();
-//                int width = bm.getWidth();
-//                int x = 0;
-//                int y = 0;
-//                if (width > height) {
-//                    x = (width - height) / 2;
-//                    width = height;
-//                } else {
-//                    y = (height - width) / 2;
-//                    height = width;
-//                }
-//                bm = Bitmap.createBitmap(bm, x, y, width, height);
-//                bm = getResizedBitmap(bm, FACES_SIZE, FACES_SIZE);
-                file = new File(context.getFilesDir(), toSave);
+                file = new File(context.getCacheDir(), toSave);
                 try {
                     if (file.createNewFile()) {
                         FileOutputStream os = new FileOutputStream(file);
@@ -340,6 +325,13 @@ public class DataHolder {
             mMemoryCache.put(key, bm);
         }
         return bm;
+    }
+    
+    public static File getDiskCacheDir(Context context, String uniqueName) {
+        // Check if media is mounted or storage is built-in, if so, try and use external cache dir
+        // otherwise use internal cache dir
+        final String cachePath = context.getCacheDir().getPath();
+        return new File(cachePath + File.separator + uniqueName);
     }
     
     public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight, boolean filter, int orient) {
