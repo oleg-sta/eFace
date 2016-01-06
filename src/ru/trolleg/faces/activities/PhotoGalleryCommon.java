@@ -46,13 +46,15 @@ public class PhotoGalleryCommon extends Activity {
         mPager.setCurrentItem(position);
         String fileName = new File(mPagerAdapter.photos.get(position)).getName();
         nameView.setText(fileName);
+        mPagerAdapter.currentPosition = position;
         mPager.addOnPageChangeListener(new OnPageChangeListener() {
             
             @Override
             public void onPageSelected(int position) {
                 String fileName = new File(mPagerAdapter.photos.get(position)).getName();
                 nameView.setText(fileName);
-                
+                mPagerAdapter.currentPosition = position;
+                mPagerAdapter.redrawView();
             }
             
             @Override

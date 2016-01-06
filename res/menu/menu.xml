@@ -23,4 +23,8 @@
         android:showAsAction="never"
         android:title="Сбросить кэш диска и памяти(для разработки)"/>
 
+    <item
+        android:id="@+id/debug_mode"
+        android:showAsAction="never"
+        android:title="Деаг режим(для разработки)"/>
 </menu>

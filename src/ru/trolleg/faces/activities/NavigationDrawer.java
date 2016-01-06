@@ -132,6 +132,9 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
         case R.id.reser_cache:
             resetCache();
             return true;
+        case R.id.debug_mode:
+            DataHolder.debugMode = !DataHolder.debugMode;
+            return true;
         default:
             return super.onOptionsItemSelected(item);
         }

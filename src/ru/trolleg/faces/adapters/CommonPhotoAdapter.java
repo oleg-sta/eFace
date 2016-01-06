@@ -1,11 +1,15 @@
 package ru.trolleg.faces.adapters;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.OnImageEventListener;
 
 import ru.trolleg.faces.BitmapWorkerTask;
+import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DeactivableViewPager;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
@@ -14,6 +18,7 @@ import ru.trolleg.faces.TouchImageView.OnPageScaleListener;
 import ru.trolleg.faces.activities.DisplayCommonPhoto;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -39,11 +44,13 @@ import android.widget.RelativeLayout;
  */
 public class CommonPhotoAdapter extends PagerAdapter {
 
+    public int currentPosition;
     private List<Integer> faces;
     private LayoutInflater inflater;
     private Activity _activity;
     //TouchImageView imgDisplay;
     DeactivableViewPager mPager;
+    Map<Integer, SubsamplingScaleImageView> cc = new HashMap<Integer, SubsamplingScaleImageView>();
     
     public CommonPhotoAdapter(Activity activity, List<Integer> faces, DeactivableViewPager mPager) {
         this._activity = activity;
@@ -69,14 +76,25 @@ public class CommonPhotoAdapter extends PagerAdapter {
                 false);
   
         SubsamplingScaleImageView imageView = (SubsamplingScaleImageView) viewLayout.findViewById(R.id.imageView);
-         
-        ProgressBar bar = (ProgressBar) viewLayout.findViewById(R.id.progressBar);
+        if (position != currentPosition) {
+            imageView.preview = true;
+        } else {
+            imageView.preview = false;
+        }
+        cc.put(position, imageView);
+        final ProgressBar bar = (ProgressBar) viewLayout.findViewById(R.id.progressBar);
         
         DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(_activity);
         String photoPath = dbHelper.getPhotoPathByFaceId(faces.get(position));
         imageView.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
         imageView.setMaxScale(5);
-        imageView.setImage(ImageSource.uri(photoPath));
+        imageView.setDebug(DataHolder.debugMode);
+        
+        final BitmapFactory.Options options2 = new BitmapFactory.Options();
+        options2.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(photoPath, options2);
+        //imageView.setImage(ImageSource.uri(photoPath));
+        imageView.setImage(ImageSource.uri(photoPath).dimensions(options2.outWidth, options2.outHeight), ImageSource.uri(photoPath));
         imageView.setOnClickListener(new OnClickListener() {
            
             @Override
@@ -88,15 +106,55 @@ public class CommonPhotoAdapter extends PagerAdapter {
                 
             }
         });
+        imageView.setOnImageEventListener(new OnImageEventListener() {
+            
+            @Override
+            public void onTileLoadError(Exception e) {
+                // TODO Auto-generated method stub
+                
+            }
+            
+            @Override
+            public void onReady() {
+                bar.setVisibility(View.GONE);
+            }
+            
+            @Override
+            public void onPreviewLoadError(Exception e) {
+                // TODO Auto-generated method stub
+                
+            }
+            
+            @Override
+            public void onImageLoaded() {
+                bar.setVisibility(View.GONE);
+            }
+            
+            @Override
+            public void onImageLoadError(Exception e) {
+                // TODO Auto-generated method stub
+                
+            }
+        });
         ((ViewPager) container).addView(viewLayout);
         return viewLayout;
     }
     
     public void destroyItem(ViewGroup container, int position, Object object) {
+        ((SubsamplingScaleImageView)cc.get(position)).recycle();
+        cc.remove(position);
         ((ViewPager) container).removeView((FrameLayout) object);
   
     }
         
-    
+    public void redrawView() {
+        Log.i("CommonPhotoAdapter2", "redrawView");
+        SubsamplingScaleImageView imageView = cc.get(currentPosition);
+        if (imageView != null) {
+            Log.i("CommonPhotoAdapter2", "redrawView2 " + imageView.uri);
+            imageView.preview = false;
+            imageView.invalidate();
+        }
+    }
      
 }

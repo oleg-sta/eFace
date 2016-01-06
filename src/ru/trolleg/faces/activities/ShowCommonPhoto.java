@@ -4,6 +4,7 @@ import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 
 import ru.trolleg.faces.BitmapWorkerTask;
+import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.TouchImageView;
 import android.app.Activity;
@@ -30,6 +31,7 @@ public class ShowCommonPhoto extends Activity {
         SubsamplingScaleImageView imageView = (SubsamplingScaleImageView) findViewById(R.id.imageView);
         imageView.setMaxScale(5);
         imageView.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
+        imageView.setDebug(DataHolder.debugMode);
         
         imageView.setImage(ImageSource.uri(infoPh));
     }

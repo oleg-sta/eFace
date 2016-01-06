@@ -36,6 +36,7 @@ public class DataHolder {
 	public static final String ALBUM_ID = "albumId";
     public static final String PERSON_ID = "personId";
     public static LruCache<String, Bitmap> mMemoryCache;
+    public static boolean debugMode = true;
     
     public static int photoCount = -1;
     public static int photoProcessedCount;
@@ -129,6 +130,7 @@ public class DataHolder {
                 } catch (FileNotFoundException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
+                    return null;
                 }
             } else {
                 //final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -138,6 +140,7 @@ public class DataHolder {
                 } catch (IOException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
+                    return null;
                 }
                 
                 

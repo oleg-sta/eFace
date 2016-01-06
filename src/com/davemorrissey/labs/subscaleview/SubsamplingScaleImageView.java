@@ -75,10 +75,15 @@ import ru.trolleg.faces.R.styleable;
  *
  * v prefixes - coordinates, translations and distances measured in screen (view) pixels
  * s prefixes - coordinates, translations and distances measured in source image pixels (scaled)
+ * 
+ * Доработал так, чтобы preview использовал то же самое изображение, но с высоким sampleSize = 16(сделать автоматически вычисляемым)
  */
 @SuppressWarnings("unused")
 public class SubsamplingScaleImageView extends View {
 
+    /** Данный флаг регулирует необходимость загрузить высококачественное изображение. */
+    public boolean preview = false;
+    
     private static final String TAG = SubsamplingScaleImageView.class.getSimpleName();
 
     /** Attempt to use EXIF information on the image to rotate it. Works for external files only. */
@@ -138,7 +143,7 @@ public class SubsamplingScaleImageView extends View {
     private boolean bitmapIsCached;
 
     // Uri of full size image
-    private Uri uri;
+    public Uri uri;
 
     // Sample size used to display the whole image when fully zoomed out
     private int fullImageSampleSize;
@@ -391,7 +396,7 @@ public class SubsamplingScaleImageView extends View {
             this.pRegion = previewSource.getSRegion();
             if (previewSource.getBitmap() != null) {
                 this.bitmapIsCached = previewSource.isCached();
-                onPreviewLoaded(previewSource.getBitmap());
+                onPreviewLoaded(previewSource.getBitmap(), null);
             } else {
                 Uri uri = previewSource.getUri();
                 if (uri == null && previewSource.getResource() != null) {
@@ -910,10 +915,9 @@ public class SubsamplingScaleImageView extends View {
         }
 
         if (tileMap != null && isBaseLayerReady()) {
-
+            Log.i("SubsamplingScaleImageView", "onDraw fullImageSampleSize " + fullImageSampleSize + " " + calculateInSampleSize(scale));
             // Optimum sample size for current scale
             int sampleSize = Math.min(fullImageSampleSize, calculateInSampleSize(scale));
-
             // First check for missing tiles - if there are any we need the base layer underneath to avoid gaps
             boolean hasMissingTiles = false;
             for (Map.Entry<Integer, List<Tile>> tileMapEntry : tileMap.entrySet()) {
@@ -980,7 +984,6 @@ public class SubsamplingScaleImageView extends View {
             }
 
         } else if (bitmap != null) {
-
             float xScale = scale, yScale = scale;
             if (bitmapIsPreview) {
                 xScale = scale * ((float)sWidth/bitmap.getWidth());
@@ -1113,9 +1116,10 @@ public class SubsamplingScaleImageView extends View {
         // Load double resolution - next level will be split into four tiles and at the center all four are required,
         // so don't bother with tiling until the next level 16 tiles are needed.
         fullImageSampleSize = calculateInSampleSize(satTemp.scale);
-        if (fullImageSampleSize > 1) {
-            fullImageSampleSize /= 2;
-        }
+        // TODO убрал на всякий случай, качество от этого не страдает, но ресурсов потребляет меньше
+//        if (fullImageSampleSize > 1) {
+//            fullImageSampleSize /= 2;
+//        }
 
         if (fullImageSampleSize == 1 && sRegion == null && sWidth() < maxTileDimensions.x && sHeight() < maxTileDimensions.y) {
 
@@ -1128,14 +1132,16 @@ public class SubsamplingScaleImageView extends View {
 
         } else {
 
-            initialiseTileMap(maxTileDimensions);
-
-            List<Tile> baseGrid = tileMap.get(fullImageSampleSize);
-            for (Tile baseTile : baseGrid) {
-                TileLoadTask task = new TileLoadTask(this, decoder, baseTile);
-                execute(task);
+            if (!preview) {
+                initialiseTileMap(maxTileDimensions);
+                List<Tile> baseGrid = tileMap.get(fullImageSampleSize);
+                for (Tile baseTile : baseGrid) {
+                    Log.i("SubsamplingScaleImageView", "initialiseBaseLayer " + fullImageSampleSize);
+                    TileLoadTask task = new TileLoadTask(this, decoder, baseTile);
+                    execute(task);
+                }
+                refreshRequiredTiles(true);
             }
-            refreshRequiredTiles(true);
 
         }
 
@@ -1570,7 +1576,7 @@ public class SubsamplingScaleImageView extends View {
                 DecoderFactory<? extends ImageDecoder> decoderFactory = decoderFactoryRef.get();
                 SubsamplingScaleImageView subsamplingScaleImageView = viewRef.get();
                 if (context != null && decoderFactory != null && subsamplingScaleImageView != null) {
-                    bitmap = decoderFactory.make().decode(context, source);
+                    bitmap = decoderFactory.make().decode(context, source, preview);
                     return subsamplingScaleImageView.getExifOrientation(sourceUri);
                 }
             } catch (Exception e) {
@@ -1586,7 +1592,7 @@ public class SubsamplingScaleImageView extends View {
             if (subsamplingScaleImageView != null) {
                 if (bitmap != null && orientation != null) {
                     if (preview) {
-                        subsamplingScaleImageView.onPreviewLoaded(bitmap);
+                        subsamplingScaleImageView.onPreviewLoaded(bitmap, orientation);
                     } else {
                         subsamplingScaleImageView.onImageLoaded(bitmap, orientation, false);
                     }
@@ -1604,7 +1610,10 @@ public class SubsamplingScaleImageView extends View {
     /**
      * Called by worker task when preview image is loaded.
      */
-    private synchronized void onPreviewLoaded(Bitmap previewBitmap) {
+    private synchronized void onPreviewLoaded(Bitmap previewBitmap, Integer i) {
+        if (i != null) {
+            sOrientation = i;
+        }
         if (bitmap != null || imageLoadedSent) {
             previewBitmap.recycle();
             return;
@@ -1759,6 +1768,7 @@ public class SubsamplingScaleImageView extends View {
         }
     }
 
+    // TODO подсчитать как сделать верным
     /**
      * In SDK 14 and above, use canvas max bitmap width and height instead of the default 2048, to avoid redundant tiling.
      */
@@ -1767,13 +1777,14 @@ public class SubsamplingScaleImageView extends View {
             try {
                 int maxWidth = (Integer)Canvas.class.getMethod("getMaximumBitmapWidth").invoke(canvas);
                 int maxHeight = (Integer)Canvas.class.getMethod("getMaximumBitmapHeight").invoke(canvas);
-                return new Point(maxWidth, maxHeight);
+                Log.i("SubsamplingScaleImageView", "getMaxBitmapDimensions " + maxWidth + " " + maxHeight);
+                //return new Point(maxWidth, maxHeight);
+                return new Point(1000, 1000);
             } catch (Exception e) {
                 // Return default
             }
         }
         return new Point(2048, 2048);
-        //return new Point(DataHolder.SIZE_PHOTO_TO_FIND_FACES, DataHolder.SIZE_PHOTO_TO_FIND_FACES);
     }
 
     /**

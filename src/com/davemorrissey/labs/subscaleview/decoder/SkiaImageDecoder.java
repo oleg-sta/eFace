@@ -8,9 +8,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.InputStream;
 import java.util.List;
+
+import ru.trolleg.faces.FaceFinderService;
 
 /**
  * Default implementation of {@link com.davemorrissey.labs.subscaleview.decoder.ImageDecoder}
@@ -25,11 +28,21 @@ public class SkiaImageDecoder implements ImageDecoder {
     private static final String RESOURCE_PREFIX = ContentResolver.SCHEME_ANDROID_RESOURCE + "://";
 
     @Override
-    public Bitmap decode(Context context, Uri uri) throws Exception {
+    public Bitmap decode(Context context, Uri uri, boolean preview) throws Exception {
         String uriString = uri.toString();
         BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap bitmap;
         options.inPreferredConfig = Bitmap.Config.RGB_565;
+        if (preview) {
+            // TODO вычислять размер
+            final BitmapFactory.Options options2 = new BitmapFactory.Options();
+            options2.inJustDecodeBounds = true;
+            String photo = uriString.substring(FILE_PREFIX.length());
+            BitmapFactory.decodeFile(photo, options2);
+
+            options.inSampleSize = FaceFinderService.calculateInSampleSize(options2, 200, 200);
+            Log.i("SkiaImageDecoder", "decode "  + options.inSampleSize  + " " + photo + " " + options2.outWidth + " " + options2.outHeight);
+        }
         if (uriString.startsWith(RESOURCE_PREFIX)) {
             Resources res;
             String packageName = uri.getAuthority();

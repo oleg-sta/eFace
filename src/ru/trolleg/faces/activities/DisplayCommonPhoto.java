@@ -38,6 +38,8 @@ public class DisplayCommonPhoto extends Activity {
     public TextView nameView;
     public HorizontalListView horizontal;
     
+    CommonPhotoAdapter mPagerAdapter;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +58,8 @@ public class DisplayCommonPhoto extends Activity {
         List<Integer> faces = dbHelper.getAllIdsFacesForPerson(personId);
         int position = faces.indexOf(faceId);
         Log.i("DisplayCommonPhoto", "pos " + position);
-        final PagerAdapter mPagerAdapter = new CommonPhotoAdapter(this, faces, mPager);
+        mPagerAdapter = new CommonPhotoAdapter(this, faces, mPager);
+        mPagerAdapter.currentPosition = position;
         mPager.setAdapter(mPagerAdapter);
         mPager.setCurrentItem(position);
         mPager.addOnPageChangeListener(new OnPageChangeListener() {
@@ -64,7 +67,7 @@ public class DisplayCommonPhoto extends Activity {
             @Override
             public void onPageSelected(int arg0) {
                 setCurrentFromBig(arg0, true);
-                
+                //mPagerAdapter.redrawView();
             }
             
             @Override
@@ -99,6 +102,7 @@ public class DisplayCommonPhoto extends Activity {
     }
     
     public void setCurrentFromBig(int position, boolean fromBig) {
+        mPagerAdapter.currentPosition = position;
         Log.i("DisplayCommonPhoto", "setCurrentFromBig " + position + " " + fromBig);
         int lastPos = ((FacesCommonAdapter)horizontal.getAdapter()).selected;
         
@@ -123,6 +127,7 @@ public class DisplayCommonPhoto extends Activity {
             horizontal.scrollTo(position * DataHolder.dp2Px(80, getApplicationContext()));
         }
         }
+        mPagerAdapter.redrawView();
     }
 
     @Override
