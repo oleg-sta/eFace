@@ -8,5 +8,6 @@ public class Face {
     public int photoId;
     public String guid;
     public Bitmap littleFace;
+    public float probability;
     // public String name;
 }

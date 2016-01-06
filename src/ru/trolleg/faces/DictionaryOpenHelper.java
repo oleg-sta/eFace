@@ -34,7 +34,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE photos (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, path TEXT, time_processed real, time_photo integer);");
-        db.execSQL("create table faces (guid text, photo_id integer, person_id integer, height real, width real, centerX real, centerY real, id integer PRIMARY KEY AUTOINCREMENT NOT NULL);");
+        db.execSQL("create table faces (guid text, photo_id integer, person_id integer, height real, width real, centerX real, centerY real, id integer PRIMARY KEY AUTOINCREMENT NOT NULL, probability real);");
         db.execSQL("create table "+TABLE_PERSON+" (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, name text, name_upper text,deleted INTEGER, ava_id integer);");
     }
     
@@ -130,15 +130,15 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
 
     public void addFace(Face faceCur, int photoId) {
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("insert into faces (guid, photo_id, height, width, centerX, centerY) values ('" + faceCur.guid + "', " + photoId
-                + ", " + faceCur.height + ", " + faceCur.width + ", " + faceCur.centerX + ", " + faceCur.centerY + ")");
+        s.execSQL("insert into faces (guid, photo_id, height, width, centerX, centerY, probability) values ('" + faceCur.guid + "', " + photoId
+                + ", " + faceCur.height + ", " + faceCur.width + ", " + faceCur.centerX + ", " + faceCur.centerY + "," + faceCur.probability + ")");
         s.close();
     }
 
     public List<Face> getAllFaces() {
         List<Face> faces = new ArrayList<Face>();
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select guid, photo_id, person_id, height, width, centerX, centerY from faces", null);
+        Cursor c = s.rawQuery("select guid, photo_id, person_id, height, width, centerX, centerY, probability from faces", null);
         while (c.moveToNext()) {
             Face face = new Face();
             face.guid = c.getString(0);
@@ -147,6 +147,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
             face.width = c.getDouble(4);
             face.centerX = c.getDouble(5);
             face.centerY = c.getDouble(6);
+            face.probability = c.getFloat(7);
             faces.add(face);
         }
         c.close();
@@ -215,7 +216,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public Face getFaceForId(Integer id) {
         Face face = null;
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select guid, photo_id, person_id, height, width, centerX, centerY from faces where id = " + id, null);
+        Cursor c = s.rawQuery("select guid, photo_id, person_id, height, width, centerX, centerY, probability from faces where id = " + id, null);
         if (c.moveToNext()) {
         	face = new Face();
             face.guid = c.getString(0);
@@ -224,6 +225,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
             face.width = c.getDouble(4);
             face.centerX = c.getDouble(5);
             face.centerY = c.getDouble(6);
+            face.probability = c.getFloat(7);
         }
         c.close();
         s.close();
@@ -233,7 +235,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public List<Face> getFacesForPhoto(int id) {
         List<Face> faces = new ArrayList<Face>();
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select f.guid, f.photo_id, f.person_id, f.height, f.width, f.centerX, f.centerY from faces f where f.photo_id = "+id + " and (f.person_id not in (select id from "+TABLE_PERSON+" where name = '"+MainActivity.NO_FACES+"') or f.person_id is null)", null);
+        Cursor c = s.rawQuery("select f.guid, f.photo_id, f.person_id, f.height, f.width, f.centerX, f.centerY, f.probability from faces f where f.photo_id = "+id + " and (f.person_id not in (select id from "+TABLE_PERSON+" where name = '"+MainActivity.NO_FACES+"') or f.person_id is null)", null);
         while (c.moveToNext()) {
             Face face = new Face();
             face.guid = c.getString(0);
@@ -242,6 +244,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
             face.width = c.getDouble(4);
             face.centerX = c.getDouble(5);
             face.centerY = c.getDouble(6);
+            face.probability = c.getFloat(7);
             faces.add(face);
         }
         c.close();

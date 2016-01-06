@@ -114,6 +114,7 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
         Face face = dbHelper.getFaceForId(faceId);
      
+        view.setAlpha(face.probability);
         view.setImageBitmap(null);
         BitmapWorkerFaceCrop.loadImage(face, context, holder, position);
         

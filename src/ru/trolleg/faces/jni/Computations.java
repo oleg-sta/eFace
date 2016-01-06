@@ -19,6 +19,6 @@ public class Computations {
      * @param rotate поворт (0 - 0%,1 - 90%,2 - 180%,3 - 270%)
      * @return
      */
-    public native Rectangle[] findFaces2(String photo, String modelName, double koef, int rotate);
+    public native Rectangle[] findFaces2(String modelName, String modelName2, String photo, double koef, int rotate);
 
 }

@@ -80,6 +80,7 @@ public class CommonPhotoAdapter2 extends PagerAdapter {
             imageView.preview = false;
         }
         cc.put(position, imageView);
+        imageView.faces = infoPh.faces;
         imageView.setMaxScale(5);
         imageView.setMaximumDpi(5);
         imageView.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);

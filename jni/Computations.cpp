@@ -36,14 +36,17 @@ void rot90(cv::Mat &matImage, int rotflag){
   }
 }
 
-JNIEXPORT jobjectArray JNICALL Java_ru_trolleg_faces_jni_Computations_findFaces2(JNIEnv* env, jobject thiz, jstring xml, jstring photo, jdouble koef, jint rotflat) {
-	__android_log_print(ANDROID_LOG_INFO, "Computations", "we are in");
+JNIEXPORT jobjectArray JNICALL Java_ru_trolleg_faces_jni_Computations_findFaces2(JNIEnv* env, jobject thiz, jstring detectorXml1, jstring detectorXml2, jstring photoPath, jdouble koef, jint rotflat) {
 	cv::CascadeClassifier face_cascade;
-	//std::string s = xml;
-	//std::string s2 = photo;
-	const char *s = env->GetStringUTFChars(xml, NULL);
-	const char *s2 = env->GetStringUTFChars(photo, NULL);
+	const char *s = env->GetStringUTFChars(detectorXml1, NULL);
+	const char *s2 = env->GetStringUTFChars(photoPath, NULL);
+	__android_log_print(ANDROID_LOG_INFO, "Computations", "processing photo %s", s2);
 	face_cascade.load(s);
+
+	cv::CascadeClassifier face_cascade2;
+	const char *s3 = env->GetStringUTFChars(detectorXml2, NULL);
+	face_cascade2.load(s3);
+
 	cv::Mat img = cv::imread(s2, 1);
 	cv::resize(img, img, cv::Size(), koef, koef);
 	rot90(img, rotflat);
@@ -51,19 +54,36 @@ JNIEXPORT jobjectArray JNICALL Java_ru_trolleg_faces_jni_Computations_findFaces2
 	__android_log_print(ANDROID_LOG_INFO, "Computations", "size %d %d", gray_image.rows, gray_image.cols);
 	cv::cvtColor( img, gray_image, CV_BGR2GRAY );
 	std::vector<cv::Rect> faces;
+	std::vector<float> floats;
 	face_cascade.detectMultiScale( gray_image, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(32, 32) );
-	int sd =faces.size();
+	int sd = faces.size();
 	__android_log_print(ANDROID_LOG_INFO, "Computations", "faces %d", sd);
+	// применяем второй алгоритм
+	for (int i = 0; i < sd; i++) {
+		cv::Rect myROI(faces[i].x, faces[i].y, faces[i].width, faces[i].height);
+		cv::Mat croppedImage = gray_image(myROI);
+		std::vector<cv::Rect> faces2;
+		face_cascade2.detectMultiScale( croppedImage, faces2, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(faces[i].width / 1.2f, faces[i].height / 1.2f) );
+		if (faces2.size() > 0) {
+			int sd2 = faces2.size();
+			__android_log_print(ANDROID_LOG_INFO, "Computations", "face true %d", sd2);
+			floats.insert(floats.begin()+i, 1.0f);
+		} else {
+			__android_log_print(ANDROID_LOG_INFO, "Computations", "face false");
+			floats.insert(floats.begin()+i, 0.5f);
+		}
+	}
+
 	jclass cls = env->FindClass("detection/Rectangle");
-	jmethodID constructor = env->GetMethodID(cls, "<init>", "(IIII)V");
+	jmethodID constructor = env->GetMethodID(cls, "<init>", "(IIIIF)V");
 	jobjectArray jobAr =env->NewObjectArray(faces.size(), cls, NULL);
 	for( size_t i = 0; i < faces.size(); i++ )
 	{
-		jobject object = env->NewObject(cls, constructor, faces[i].x, faces[i].y, faces[i].width, faces[i].height);
+		jobject object = env->NewObject(cls, constructor, faces[i].x, faces[i].y, faces[i].width, faces[i].height, floats[i]);
 		env->SetObjectArrayElement(jobAr, i, object);
 	}
 
-	__android_log_print(ANDROID_LOG_INFO, "Computations", "we are out");
+	__android_log_print(ANDROID_LOG_INFO, "Computations", "photo processed");
 	return jobAr;
 }
 

@@ -65,6 +65,7 @@ import java.util.concurrent.Executor;
 
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.R.styleable;
+import ru.trolleg.faces.data.Face;
 
 /**
  * Displays an image subsampled as necessary to avoid loading too much image data into memory. After a pinch to zoom in,
@@ -81,6 +82,8 @@ import ru.trolleg.faces.R.styleable;
 @SuppressWarnings("unused")
 public class SubsamplingScaleImageView extends View {
 
+    /** для отладки обведение лиц в рамки*/
+    public Face[] faces;
     /** Данный флаг регулирует необходимость загрузить высококачественное изображение. */
     public boolean preview = false;
     
@@ -981,6 +984,7 @@ public class SubsamplingScaleImageView extends View {
                     canvas.drawCircle(vCenterEnd.x, vCenterEnd.y, 25, debugPaint);
                     canvas.drawCircle(getWidth() / 2, getHeight() / 2, 30, debugPaint);
                 }
+                
             }
 
         } else if (bitmap != null) {
@@ -1013,6 +1017,36 @@ public class SubsamplingScaleImageView extends View {
             canvas.drawBitmap(bitmap, matrix, bitmapPaint);
 
         }
+        
+        if (faces != null && debug) {
+            Paint pa = new Paint();
+            pa.setColor(Color.YELLOW);
+            pa.setStrokeWidth(5);
+            pa.setStyle(Style.STROKE);
+            if (matrix == null) { matrix = new Matrix(); }
+            matrix.reset();
+            matrix.postScale(scale, scale);
+            matrix.postRotate(getRequiredRotation());
+            matrix.postTranslate(vTranslate.x, vTranslate.y);
+
+            if (getRequiredRotation() == ORIENTATION_180) {
+                matrix.postTranslate(scale * sWidth, scale * sHeight);
+            } else if (getRequiredRotation() == ORIENTATION_90) {
+                matrix.postTranslate(scale * sHeight, 0);
+            } else if (getRequiredRotation() == ORIENTATION_270) {
+                matrix.postTranslate(0, scale * sWidth);
+            }
+            for (Face face : faces) {
+                if (sRect == null) { sRect = new RectF(); }
+                sRect.set((float)((face.centerX - face.width / 2) * sWidth / 100), (float)((face.centerY - face.height / 2) * sHeight / 100), 
+                        (float)((face.centerX + face.width / 2) * sWidth / 100), (float)((face.centerY + face.height / 2) * sHeight / 100));
+                matrix.mapRect(sRect);
+                Log.i("Subs", "face "  + sRect.left +  " " + sRect.top);
+                pa.setAlpha((int)(face.probability * 255));
+                canvas.drawRect(sRect, pa);
+            }
+        }
+        
     }
 
     /**

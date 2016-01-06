@@ -1,6 +1,7 @@
 package ru.trolleg.faces;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -77,7 +78,7 @@ public class FaceFinderService extends IntentService {
                 .setSmallIcon(R.drawable.stat_notify_chat).setContentIntent(contentIntent).getNotification();
     }
     
-    private void copy(InputStream input, OutputStream output) throws IOException {
+    private static void copy(InputStream input, OutputStream output) throws IOException {
         byte [] buffer = new byte[256];
         int bytesRead = 0;
         while((bytesRead = input.read(buffer)) != -1) {
@@ -163,16 +164,15 @@ public class FaceFinderService extends IntentService {
             //Detector detector = Detector.create(inputHaas);
             Log.i("FaceFinderService", getFilesDir().getAbsolutePath());
             String detecrtorName = getFilesDir() + File.separator + "detector.xml";
-            InputStream inputHaas = getResources().openRawResource(R.raw.my_detector);
-            OutputStream out = new FileOutputStream(detecrtorName);
-            copy(inputHaas, out);
-            out.close();
-            inputHaas.close();
+            rawResourceToFile(R.raw.my_detector, detecrtorName);
             
-            
+            String secondDetectorName = getFilesDir() + File.separator + "detector_second.xml";
+            rawResourceToFile(R.raw.my_detector_pr_2, secondDetectorName);
+            // just test
+            //detecrtorName = secondDetectorName; 
+ 
             Log.d("FaceFinderService", "casade loaded");
             Logger1.log("casade loaded");
-            inputHaas.close();
             int iPh = 0;
             for (String photo : photos) {
                 try {
@@ -232,7 +232,7 @@ public class FaceFinderService extends IntentService {
                     long time = System.currentTimeMillis();
                     Computations comp = new Computations();
                     //long koe = height / background_image.getHeight();
-                    List<Rectangle> res = Arrays.asList(comp.findFaces2(detecrtorName,  photo, 1 / koef, orient));
+                    List<Rectangle> res = Arrays.asList(comp.findFaces2(detecrtorName, secondDetectorName, photo, 1 / koef, orient));
                     for(Rectangle r : res) {
                         r.x = r.x * background_image.getWidth() / width;
                         r.width = r.width * background_image.getWidth() / width;
@@ -264,6 +264,7 @@ public class FaceFinderService extends IntentService {
                         faceCur.centerY = 100 * (face.y + face.height / 2) / (double) background_image.getHeight();
                         faceCur.centerX = 100 * (face.x + face.width / 2) / (double) background_image.getWidth();
                         faceCur.guid = UUID.randomUUID().toString();
+                        faceCur.probability = face.probability;
                         dbHelper.addFace(faceCur, photoId);
 //                        SQLiteDatabase db = dbHelper.getReadableDatabase();
 //                        dataHolder.getLittleFace(db, faceCur.guid, getApplicationContext());
@@ -308,6 +309,13 @@ public class FaceFinderService extends IntentService {
         }
     }
 
+    private void rawResourceToFile(int idResource, String fileName) throws IOException {
+        InputStream inputHaas = getResources().openRawResource(idResource);
+        OutputStream out = new FileOutputStream(fileName);
+        copy(inputHaas, out);
+        out.close();
+        inputHaas.close();
+    }
     public static Bitmap decodeSampledBitmapFromResource(String photo, int reqWidth, int reqHeight, Options options, boolean orientFlag) {
 
         // First decode with inJustDecodeBounds=true to check dimensions
