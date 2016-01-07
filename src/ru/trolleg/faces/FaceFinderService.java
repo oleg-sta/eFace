@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +27,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Matrix;
+import android.graphics.PointF;
 import android.media.ExifInterface;
+import android.media.FaceDetector;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -55,7 +58,7 @@ public class FaceFinderService extends IntentService {
 
     static FaceFinderService instance;
     public final static int PHOTOS_LIMIT = 3000;
-    public final static int PHOTOS_SIZE_TO_BE_PROCESSED = 600;
+    public final static int PHOTOS_SIZE_TO_BE_PROCESSED = 800;
 	public final static int PHOTOS_SIZE_TO_BE_CUT = 600;
 	
     public FaceFinderService() {
@@ -222,25 +225,10 @@ public class FaceFinderService extends IntentService {
                     width = (int)(width / koef);
                     Log.i("FaceFinderService", "koef " + koef + " " + width + " " + height);
                     
-                    
-                    final BitmapFactory.Options options = new BitmapFactory.Options();
-                    Bitmap background_image = decodeSampledBitmapFromResource(photo, PHOTOS_SIZE_TO_BE_CUT,
-                            PHOTOS_SIZE_TO_BE_CUT, options, true);
-
-                    Log.i("FaceFinderService",
-                            "size " + background_image.getWidth() + " " + background_image.getHeight());
                     long time = System.currentTimeMillis();
                     Computations comp = new Computations();
-                    //long koe = height / background_image.getHeight();
+                    
                     List<Rectangle> res = Arrays.asList(comp.findFaces2(detecrtorName, secondDetectorName, photo, 1 / koef, orient));
-                    for(Rectangle r : res) {
-                        r.x = r.x * background_image.getWidth() / width;
-                        r.width = r.width * background_image.getWidth() / width;
-                        r.y = r.y * background_image.getHeight() / height;
-                        r.height = r.height * background_image.getHeight() / height;
-                    }
-//                            detector.getFaces(background_image, 1.2f, 1.1f, .05f, 2, true, true,
-//                            threadsNum);
                     time = (System.currentTimeMillis() - time) / 1000;
                     Logger1.log("find in " + time);
                     Log.i("FaceFinderService", "foune " + res.size() + " faces");
@@ -259,16 +247,13 @@ public class FaceFinderService extends IntentService {
                         // FaceppResult position = face.get("position");
                         Face faceCur = new Face();
                         faces[i] = faceCur;
-                        faceCur.height = 100 * face.height / (double) background_image.getHeight();
-                        faceCur.width = 100 * face.width / (double) background_image.getWidth();
-                        faceCur.centerY = 100 * (face.y + face.height / 2) / (double) background_image.getHeight();
-                        faceCur.centerX = 100 * (face.x + face.width / 2) / (double) background_image.getWidth();
+                        faceCur.height = 100 * face.height / (double) height;
+                        faceCur.width = 100 * face.width / (double) width;
+                        faceCur.centerY = 100 * (face.y + face.height / 2) / (double) height;
+                        faceCur.centerX = 100 * (face.x + face.width / 2) / (double) width;
                         faceCur.guid = UUID.randomUUID().toString();
                         faceCur.probability = face.probability;
                         dbHelper.addFace(faceCur, photoId);
-//                        SQLiteDatabase db = dbHelper.getReadableDatabase();
-//                        dataHolder.getLittleFace(db, faceCur.guid, getApplicationContext());
-//                        db.close();
                     }
                     Log.d("FaceFinderService", "send processed photo " + photo);
                     Intent intent22 = new Intent(PeopleFragment.UPDATE_FACES);
@@ -280,8 +265,6 @@ public class FaceFinderService extends IntentService {
                     Log.d("FaceFinderService", "error" + e.getMessage());
                     Logger1.log("error" + e.getMessage());
                     e.printStackTrace();
-                    // �������� ����� ��� ������������
-                    // TODO ������ ���� � ������ ������
                     dbHelper.updatePhoto(photo, -1);
                 }
             }
@@ -308,6 +291,17 @@ public class FaceFinderService extends IntentService {
             }
         }
     }
+    
+    private Rectangle rectFromFace(android.media.FaceDetector.Face face, int i, int j)
+    {
+        PointF pointf = new PointF();
+        face.getMidPoint(pointf);
+        int k = Math.max(0, (int)(pointf.x - face.eyesDistance() * 2.0F - 0.5F));
+        i = Math.min(i, (int)(pointf.x + face.eyesDistance() * 2.0F + 0.5F));
+        float f = face.eyesDistance() * 2.0F * 3F;
+        return new Rectangle(k, Math.max(0, (int)(pointf.y - f / 2.0F - 0.5F)), i, Math.min(j, (int)(pointf.y + f / 2.0F + 0.5F)), 1);
+    }
+
 
     private void rawResourceToFile(int idResource, String fileName) throws IOException {
         InputStream inputHaas = getResources().openRawResource(idResource);

@@ -51,8 +51,8 @@ JNIEXPORT jobjectArray JNICALL Java_ru_trolleg_faces_jni_Computations_findFaces2
 	cv::resize(img, img, cv::Size(), koef, koef);
 	rot90(img, rotflat);
 	cv::Mat gray_image;
-	__android_log_print(ANDROID_LOG_INFO, "Computations", "size %d %d", gray_image.rows, gray_image.cols);
 	cv::cvtColor( img, gray_image, CV_BGR2GRAY );
+	__android_log_print(ANDROID_LOG_INFO, "Computations", "size %d %d", gray_image.rows, gray_image.cols);
 	std::vector<cv::Rect> faces;
 	std::vector<float> floats;
 	face_cascade.detectMultiScale( gray_image, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(32, 32) );
@@ -60,10 +60,26 @@ JNIEXPORT jobjectArray JNICALL Java_ru_trolleg_faces_jni_Computations_findFaces2
 	__android_log_print(ANDROID_LOG_INFO, "Computations", "faces %d", sd);
 	// применяем второй алгоритм
 	for (int i = 0; i < sd; i++) {
-		cv::Rect myROI(faces[i].x, faces[i].y, faces[i].width, faces[i].height);
+		float faceMore = 0.2;
+		int x1 = faces[i].x - faces[i].width * faceMore / 2;
+		int y1 = faces[i].y - faces[i].height * faceMore / 2;
+		int x2 = faces[i].x + faces[i].width * (1 + faceMore / 2);
+		int y2 = faces[i].y + faces[i].height * (1 + faceMore / 2);
+		x1 = std::max(x1, 0);
+		y1 = std::max(y1, 0);
+		x2 = std::min(x2, gray_image.cols);
+		y2 = std::min(y2, gray_image.rows);
+		__android_log_print(ANDROID_LOG_INFO, "Computations", "faces %d %d %d %d", x1, y1, x2, y2);
+		__android_log_print(ANDROID_LOG_INFO, "Computations", "faces %d %d", gray_image.rows, gray_image.cols);
+
+		cv::Rect myROI(x1, y1, x2 - x1, y2  - y1);
 		cv::Mat croppedImage = gray_image(myROI);
+
+		//cv::resize(croppedImage, croppedImage, cv::Size(32, 32));
+
 		std::vector<cv::Rect> faces2;
-		face_cascade2.detectMultiScale( croppedImage, faces2, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(faces[i].width / 1.2f, faces[i].height / 1.2f) );
+		//face_cascade2.detectMultiScale( croppedImage, faces2, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size());
+		face_cascade2.detectMultiScale( croppedImage, faces2, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(faces[i].width, faces[i].height));
 		if (faces2.size() > 0) {
 			int sd2 = faces2.size();
 			__android_log_print(ANDROID_LOG_INFO, "Computations", "face true %d", sd2);

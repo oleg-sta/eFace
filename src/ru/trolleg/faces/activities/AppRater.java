@@ -1,6 +1,7 @@
 package ru.trolleg.faces.activities;
 
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -18,8 +19,12 @@ public class AppRater {
     private final static int LAUNCHES_UNTIL_PROMPT = 7;
 
     public static void appLaunched(Context mContext) {
+        appLaunched(mContext, false);
+    }
+
+    public static void appLaunched(Context mContext, boolean forcible) {
         SharedPreferences prefs = mContext.getSharedPreferences("apprater", Context.MODE_PRIVATE);
-        if (prefs.getBoolean(DONT_SHOW_AGAIN, false)) {
+        if (prefs.getBoolean(DONT_SHOW_AGAIN, false) && !forcible) {
             return;
         }
 
@@ -33,8 +38,8 @@ public class AppRater {
             editor.putLong(DATE_FIRST_LAUNCH, dateFirstLaunch);
         }
 
-        if (launch_count >= LAUNCHES_UNTIL_PROMPT) {
-            if (System.currentTimeMillis() >= dateFirstLaunch + (DAYS_UNTIL_PROMPT * 24 * 60 * 60 * 1000)) {
+        if (launch_count >= LAUNCHES_UNTIL_PROMPT || forcible) {
+            if (System.currentTimeMillis() >= dateFirstLaunch + (DAYS_UNTIL_PROMPT * 24 * 60 * 60 * 1000) || forcible) {
                 showRateDialog(mContext, editor);
             }
         }
@@ -85,4 +90,5 @@ public class AppRater {
         editor.remove(DATE_FIRST_LAUNCH);
         editor.commit();
     }
+
 }

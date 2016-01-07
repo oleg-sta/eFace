@@ -135,6 +135,8 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
         case R.id.debug_mode:
             DataHolder.debugMode = !DataHolder.debugMode;
             return true;
+        case R.id.rate_dialog:
+            AppRater.appLaunched(this, true);
         default:
             return super.onOptionsItemSelected(item);
         }
