@@ -1026,20 +1026,14 @@ public class SubsamplingScaleImageView extends View {
             if (matrix == null) { matrix = new Matrix(); }
             matrix.reset();
             matrix.postScale(scale, scale);
-            matrix.postRotate(getRequiredRotation());
             matrix.postTranslate(vTranslate.x, vTranslate.y);
-
-            if (getRequiredRotation() == ORIENTATION_180) {
-                matrix.postTranslate(scale * sWidth, scale * sHeight);
-            } else if (getRequiredRotation() == ORIENTATION_90) {
-                matrix.postTranslate(scale * sHeight, 0);
-            } else if (getRequiredRotation() == ORIENTATION_270) {
-                matrix.postTranslate(0, scale * sWidth);
-            }
             for (Face face : faces) {
                 if (sRect == null) { sRect = new RectF(); }
-                sRect.set((float)((face.centerX - face.width / 2) * sWidth / 100), (float)((face.centerY - face.height / 2) * sHeight / 100), 
-                        (float)((face.centerX + face.width / 2) * sWidth / 100), (float)((face.centerY + face.height / 2) * sHeight / 100));
+                RectF sRect2 = new RectF();
+                sRect2.set((float)((face.centerX - face.width / 2)), (float)((face.centerY - face.height / 2)), 
+                        (float)((face.centerX + face.width / 2) ), (float)((face.centerY + face.height / 2) ));
+                sRect.set((float)(sRect2.left * sWidth() / 100), (float)(sRect2.top * sHeight() / 100), 
+                      (float)(sRect2.right * sWidth() / 100), (float)(sRect2.bottom * sHeight() / 100));
                 matrix.mapRect(sRect);
                 Log.i("Subs", "face "  + sRect.left +  " " + sRect.top);
                 pa.setAlpha((int)(face.probability * 255));
