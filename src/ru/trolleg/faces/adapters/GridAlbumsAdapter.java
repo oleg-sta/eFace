@@ -2,9 +2,11 @@ package ru.trolleg.faces.adapters;
 
 import java.util.List;
 
+import ru.trolleg.faces.BitmapWorkerCropPhotoTask;
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.activities.PhotoGridFragment;
+import ru.trolleg.faces.adapters.GridPhotosAdapter.ViewHolder;
 import ru.trolleg.faces.data.Album;
 import android.app.Activity;
 import android.content.Intent;
@@ -28,16 +30,21 @@ public class GridAlbumsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
+        ViewHolder holder;
         LayoutInflater inflater = context.getLayoutInflater();
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.album_name, null, true);
+            holder = new ViewHolder();
+            holder.image = (ImageView)convertView.findViewById(R.id.one_face1);
+            holder.textView = (TextView) convertView.findViewById(R.id.name_face);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
+        holder.position = position;
         final Album album = albums.get(position);
-        ImageView im = (ImageView) convertView.findViewById(R.id.one_face1);
-        im.setImageBitmap(DataHolder.getInstance().getLittleCropedPhoto(album.firstImage, context));
-        TextView s = (TextView) convertView.findViewById(R.id.name_face);
-        s.setText(album.name + "(" + album.count + ")");
+        holder.textView.setText(album.name + "(" + album.count + ")");
+        BitmapWorkerCropPhotoTask.loadImage(album.firstImage, context, holder, position);
         convertView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,6 +72,7 @@ public class GridAlbumsAdapter extends BaseAdapter {
         return position;
     }
     
-
+    public static class ViewHolder extends ru.trolleg.faces.adapters.GridPhotosAdapter.ViewHolder {
+        TextView textView;
+    }
 }
-
