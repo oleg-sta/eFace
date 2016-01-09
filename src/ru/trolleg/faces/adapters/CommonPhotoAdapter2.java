@@ -103,7 +103,9 @@ public class CommonPhotoAdapter2 extends PagerAdapter {
             
             @Override
             public void onClick(View v) {
-                View v2 = ((PhotoGalleryCommon) _activity).nameView;
+                View v2 = ((PhotoGalleryCommon) _activity).horizontal;
+                v2.setVisibility(v2.getVisibility() == View.VISIBLE? View.INVISIBLE : View.VISIBLE);
+                v2 = ((PhotoGalleryCommon) _activity).nameView;
                 v2.setVisibility(v2.getVisibility() == View.VISIBLE? View.INVISIBLE : View.VISIBLE);
                 
             }

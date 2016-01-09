@@ -47,8 +47,11 @@ JNIEXPORT jobjectArray JNICALL Java_ru_trolleg_faces_jni_Computations_findFaces2
 	const char *s3 = env->GetStringUTFChars(detectorXml2, NULL);
 	face_cascade2.load(s3);
 
+	__android_log_print(ANDROID_LOG_INFO, "Computations", "imread start");
 	cv::Mat img = cv::imread(s2, 1);
+	__android_log_print(ANDROID_LOG_INFO, "Computations", "imread end %d", img.total() * img.elemSize());
 	cv::resize(img, img, cv::Size(), koef, koef);
+	__android_log_print(ANDROID_LOG_INFO, "Computations", "resize");
 	rot90(img, rotflat);
 	cv::Mat gray_image;
 	cv::cvtColor( img, gray_image, CV_BGR2GRAY );
@@ -79,7 +82,7 @@ JNIEXPORT jobjectArray JNICALL Java_ru_trolleg_faces_jni_Computations_findFaces2
 
 		std::vector<cv::Rect> faces2;
 		//face_cascade2.detectMultiScale( croppedImage, faces2, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size());
-		face_cascade2.detectMultiScale( croppedImage, faces2, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(faces[i].width, faces[i].height));
+		face_cascade2.detectMultiScale( croppedImage, faces2, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(faces[i].width / (1+faceMore), faces[i].height / (1 + faceMore)));
 		if (faces2.size() > 0) {
 			int sd2 = faces2.size();
 			__android_log_print(ANDROID_LOG_INFO, "Computations", "face true %d", sd2);

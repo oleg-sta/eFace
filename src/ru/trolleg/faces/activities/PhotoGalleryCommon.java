@@ -9,7 +9,9 @@ import ru.trolleg.faces.DeactivableViewPager;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.CommonPhotoAdapter2;
+import ru.trolleg.faces.adapters.FacesCommonAdapter;
 import ru.trolleg.faces.adapters.HorizontalListView;
+import ru.trolleg.faces.adapters.HorizontalPhotoAdapter;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -19,11 +21,15 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class PhotoGalleryCommon extends Activity {
     public static String PHOTO_ID = "photoId";
     public TextView nameView;
+    public HorizontalListView horizontal;
+    CommonPhotoAdapter2 mPagerAdapter;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -42,7 +48,7 @@ public class PhotoGalleryCommon extends Activity {
         if (photos == null) {
             photos = MainActivity.getCameraImages(this, albumId);
         }
-        final CommonPhotoAdapter2 mPagerAdapter = new CommonPhotoAdapter2(this, photos, mPager);
+        mPagerAdapter = new CommonPhotoAdapter2(this, photos, mPager);
         mPager.setAdapter(mPagerAdapter);
         mPager.setCurrentItem(position);
         String fileName = new File(mPagerAdapter.photos.get(position)).getName();
@@ -56,6 +62,7 @@ public class PhotoGalleryCommon extends Activity {
                 nameView.setText(fileName);
                 mPagerAdapter.currentPosition = position;
                 mPagerAdapter.redrawView();
+                setCurrentFromBig(position, true);
             }
             
             @Override
@@ -70,7 +77,47 @@ public class PhotoGalleryCommon extends Activity {
                 
             }
         });
-        HorizontalListView horizontal = (HorizontalListView) findViewById(R.id.gallery1);
-        horizontal.setVisibility(View.GONE);
+        horizontal = (HorizontalListView) findViewById(R.id.gallery1);
+        HorizontalPhotoAdapter adapter = new HorizontalPhotoAdapter(this, photos);
+        horizontal.setAdapter(adapter);
+        adapter.selected = position;
+        horizontal.scrollTo(position * DataHolder.dp2Px(80, getApplicationContext()));
+        horizontal.setOnItemClickListener(new OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mPager.setCurrentItem(position);
+                setCurrentFromBig(position, false);
+            }
+        });
+    }
+    
+    public void setCurrentFromBig(int position, boolean fromBig) {
+        mPagerAdapter.currentPosition = position;
+        Log.i("DisplayCommonPhoto", "setCurrentFromBig " + position + " " + fromBig);
+        int lastPos = ((HorizontalPhotoAdapter)horizontal.getAdapter()).selected;
+        
+        ((HorizontalPhotoAdapter)horizontal.getAdapter()).selected = position;
+        HorizontalPhotoAdapter.ViewHolder lstViewHolder = ((HorizontalPhotoAdapter)horizontal.getAdapter()).forUpdate.get(lastPos);
+        HorizontalPhotoAdapter.ViewHolder viewHolder = ((HorizontalPhotoAdapter)horizontal.getAdapter()).forUpdate.get(position);
+        
+        if (lastPos >= 0 && lstViewHolder != null && lastPos == lstViewHolder.position) {
+            Log.i("DisplayCommonPhoto", "old");
+            lstViewHolder.view2.setVisibility(View.INVISIBLE);
+        }
+        if (viewHolder != null && position == viewHolder.position) {
+            Log.i("DisplayCommonPhoto", "new");
+            viewHolder.view2.setVisibility(View.VISIBLE);
+        }
+        Log.i("DisplayCommonPhoto", "" + lastPos + " " + position);
+        //horizontal.get
+        if (fromBig) {
+        if (horizontal.mNextX > position * DataHolder.dp2Px(80, getApplicationContext())) {
+            horizontal.scrollTo(position * DataHolder.dp2Px(80, getApplicationContext()));
+        } else if (position * DataHolder.dp2Px(80, getApplicationContext()) - horizontal.mNextX >  getApplicationContext().getResources().getDisplayMetrics().widthPixels) {
+            horizontal.scrollTo(position * DataHolder.dp2Px(80, getApplicationContext()));
+        }
+        }
+        mPagerAdapter.redrawView();
     }
 }

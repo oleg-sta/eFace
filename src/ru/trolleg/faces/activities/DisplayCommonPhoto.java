@@ -32,8 +32,8 @@ import android.widget.TextView;
 public class DisplayCommonPhoto extends Activity {
 
     private float scale = 1f;
-    private ScaleGestureDetector mScaleDetector;
-    private Matrix matrix = new Matrix();
+    //private ScaleGestureDetector mScaleDetector;
+    //private Matrix matrix = new Matrix();
     
     public TextView nameView;
     public HorizontalListView horizontal;
@@ -97,8 +97,6 @@ public class DisplayCommonPhoto extends Activity {
                 setCurrentFromBig(position, false);
             }
         });
-        mScaleDetector = new ScaleGestureDetector(this, new ScaleListener());
-        
     }
     
     public void setCurrentFromBig(int position, boolean fromBig) {
@@ -128,26 +126,5 @@ public class DisplayCommonPhoto extends Activity {
         }
         }
         mPagerAdapter.redrawView();
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        mScaleDetector.onTouchEvent(event);
-        return true;
-    }
-
-private class ScaleListener extends ScaleGestureDetector.
-    
-    SimpleOnScaleGestureListener {
-       @Override
-       public boolean onScale(ScaleGestureDetector detector) {
-           Log.i("d", "d");
-          scale *= detector.getScaleFactor();
-          scale = Math.max(0.1f, Math.min(scale, 5.0f));
-          
-          matrix.setScale(scale, scale);
-          //imgDisplay.setImageMatrix(matrix);
-          return true;
-       }
     }
 }

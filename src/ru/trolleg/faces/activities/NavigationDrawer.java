@@ -13,6 +13,7 @@ import ru.trolleg.materialtabs.MaterialTabHost;
 import ru.trolleg.materialtabs.MaterialTabListener;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -31,8 +32,13 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
     ViewPager mViewPager;
     DictionaryOpenHelper dbHelper;
     MaterialTabHost tabHost;
+    public static final boolean DEVELOPER_MODE = true;
     
     public void onCreate(Bundle savedInstanceState) {
+        if (DEVELOPER_MODE && false) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites()
+                    .detectNetwork().penaltyLog().build());
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.navigation_drawer);
 
