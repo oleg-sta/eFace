@@ -4,13 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ru.trolleg.faces.DataHolder;
+import ru.trolleg.faces.BitmapWorkerFaceCrop;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
+import ru.trolleg.faces.adapters.FacesGridAdapter.ViewHolder2;
 import ru.trolleg.faces.data.Face;
 import android.app.Activity;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,14 +45,10 @@ public class FacesCommonAdapter extends ArrayAdapter<Integer> {
         }
         holder.position = position;
         forUpdate.put(position, holder);
-        // TODO images get in background
         final int faceId = faces.get(position);
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
         Face face = dbHelper.getFaceForId(faceId);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Bitmap bm = DataHolder.getInstance().getLittleFace(db, face.guid, getContext());
-        db.close();
-        holder.view.setImageBitmap(bm);
+        BitmapWorkerFaceCrop.loadImage(face, context, holder, position);
         if (position != selected) {
             holder.view2.setVisibility(View.INVISIBLE);
         } else {
@@ -62,9 +57,6 @@ public class FacesCommonAdapter extends ArrayAdapter<Integer> {
         return convertView;
     }
     
-    public static class ViewHolder {
-        public ImageView view;
-        public ImageView view2;
-        public int position;
+    public static class ViewHolder extends ViewHolder2 {
     }
 }

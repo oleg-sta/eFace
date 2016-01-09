@@ -176,7 +176,7 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
     
     public static class ViewHolder2 {
         public ImageView view;
-        ImageView view2;
+        public ImageView view2;
         public int position;
     }
 
