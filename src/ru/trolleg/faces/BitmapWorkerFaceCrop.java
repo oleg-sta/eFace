@@ -78,7 +78,7 @@ public class BitmapWorkerFaceCrop  extends AsyncTask<String, Void, BitmapDrawabl
         BitmapDrawable value = null;
         String key = face.guid;
         if (inCircle) {
-            key = face + "_circle";
+            key = face.guid + "_circle";
         }
         Bitmap alue = DataHolder.getInstance().mMemoryCache.get(key);
         if (alue != null) {
