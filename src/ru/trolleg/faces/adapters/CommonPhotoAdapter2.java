@@ -16,6 +16,8 @@ import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.TouchImageView;
 import ru.trolleg.faces.TouchImageView.OnPageScaleListener;
+import ru.trolleg.faces.activities.DisplayCommonPhoto;
+import ru.trolleg.faces.activities.PhotoGalleryCommon;
 import ru.trolleg.faces.data.InfoPhoto;
 import android.app.Activity;
 import android.content.Context;
@@ -25,6 +27,7 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
@@ -96,6 +99,15 @@ public class CommonPhotoAdapter2 extends PagerAdapter {
         } else {
             imageView.setImage(ImageSource.uri(infoPh.path));
         }
+        imageView.setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                View v2 = ((PhotoGalleryCommon) _activity).nameView;
+                v2.setVisibility(v2.getVisibility() == View.VISIBLE? View.INVISIBLE : View.VISIBLE);
+                
+            }
+        });
         imageView.setOnImageEventListener(new OnImageEventListener() {
             
             @Override

@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 public class PhotoGalleryCommon extends Activity {
     public static String PHOTO_ID = "photoId";
+    public TextView nameView;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -36,7 +37,7 @@ public class PhotoGalleryCommon extends Activity {
 
         setContentView(R.layout.comon_photo_pager);
 
-        final TextView nameView = (TextView) findViewById(R.id.name_man);
+        nameView = (TextView) findViewById(R.id.name_man);
         final DeactivableViewPager mPager = (DeactivableViewPager) findViewById(R.id.pager);
         if (photos == null) {
             photos = MainActivity.getCameraImages(this, albumId);
