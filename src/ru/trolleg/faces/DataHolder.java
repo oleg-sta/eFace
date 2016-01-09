@@ -134,14 +134,6 @@ public class DataHolder {
                 }
             } else {
                 //final BitmapFactory.Options options = new BitmapFactory.Options();
-                BitmapRegionDecoder bitmapRegionDecoder  = null;
-                try {
-                    bitmapRegionDecoder = BitmapRegionDecoder.newInstance(path, false);
-                } catch (IOException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                    return null;
-                }
                 
                 
                 BitmapFactory.Options tmpOptions = new BitmapFactory.Options();
@@ -178,10 +170,18 @@ public class DataHolder {
                 double faceHeight = faceCur.height * height1 / 100;
                 
                 Log.i("DataHolder", "cut " + path+ " "+ faceWidth + " " + faceHeight);
-                if (faceWidth > 15800 || faceHeight > 15800) {
+                if (faceWidth > 15800 || faceHeight > 15800 || path.toUpperCase().endsWith(".BMP")) {
                     Log.i("DataHolder", "old way");
                     bm = getLittleFaceoldWay(path, faceCur);
                 } else {
+                    BitmapRegionDecoder bitmapRegionDecoder  = null;
+                    try {
+                        bitmapRegionDecoder = BitmapRegionDecoder.newInstance(path, false);
+                    } catch (IOException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                        return null;
+                    }
                     Log.i("DataHolder", "new way");
                     RectF f = new RectF((float) (faceCur.centerX - faceCur.width / 2),
                             (float) (faceCur.centerY - faceCur.height / 2),
