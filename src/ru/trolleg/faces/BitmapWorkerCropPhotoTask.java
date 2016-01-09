@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.ImageView;
 
 public class BitmapWorkerCropPhotoTask extends AsyncTask<String, Void, BitmapDrawable> {
@@ -73,6 +74,7 @@ public class BitmapWorkerCropPhotoTask extends AsyncTask<String, Void, BitmapDra
         if (bitmapWorkerTask != null) {
             final String bitmapData = bitmapWorkerTask.data;
             if (bitmapData == null || !bitmapData.equals(photo)) {
+                Log.i("BitmapWorkerCropPhotoTask", "cancel for photo " + bitmapData + " new " + photo);
                 bitmapWorkerTask.cancel(true);
             } else {
                 // The same work is already in progress.
