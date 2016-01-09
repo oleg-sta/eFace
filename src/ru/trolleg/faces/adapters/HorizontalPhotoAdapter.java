@@ -5,14 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import ru.trolleg.faces.BitmapWorkerCropPhotoTask;
-import ru.trolleg.faces.DataHolder;
-import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
-import ru.trolleg.faces.adapters.FacesCommonAdapter.ViewHolder;
-import ru.trolleg.faces.data.Face;
 import android.app.Activity;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,11 +41,8 @@ public class HorizontalPhotoAdapter extends ArrayAdapter<String> {
         }
         holder.position = position;
         forUpdate.put(position, holder);
-        // TODO images get in background
         final String faceId = photos.get(position);
         BitmapWorkerCropPhotoTask.loadImage(faceId, context, holder, position);
-        //Bitmap bm = DataHolder.getInstance().getLittleCropedPhoto(faceId, getContext());
-        //holder.image.setImageBitmap(bm);
         if (position != selected) {
             holder.view2.setVisibility(View.INVISIBLE);
         } else {

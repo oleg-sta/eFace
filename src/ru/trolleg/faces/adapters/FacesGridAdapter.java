@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -115,7 +116,6 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
         Face face = dbHelper.getFaceForId(faceId);
      
         view.setAlpha(face.probability);
-        view.setImageBitmap(null);
         BitmapWorkerFaceCrop.loadImage(face, context, holder, position);
         
         view.setOnLongClickListener(new OnLongClickListener() {
