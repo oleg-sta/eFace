@@ -49,18 +49,20 @@ public class PhotoGridFragment extends AppCompatActivity {
         //List<String> photosId = dbHelper.convertByNameToIds(photosNames);
         GridView photos = (GridView) findViewById(R.id.gallery_photos);
         photos.setNumColumns(FacesGridAdapter.WIDTH_NUM_PICS);
-        photos.setAdapter(new GridPhotosAdapter(this, photosId));
-        photos.setOnItemClickListener(new OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent in = new Intent(d, PhotoGalleryCommon.class);
-                in.putExtra(DataHolder.ALBUM_ID, albumId);
-                in.putExtra(PhotoGalleryCommon.PHOTO_ID, position - FacesGridAdapter.WIDTH_NUM_PICS);
-                startActivity(in);
-                
-            }
-        });
+        GridPhotosAdapter as = new GridPhotosAdapter(this, photosId);
+        as.albumId = albumId;
+        photos.setAdapter(as);
+//        photos.setOnItemClickListener(new OnItemClickListener() {
+//
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Intent in = new Intent(d, PhotoGalleryCommon.class);
+//                in.putExtra(DataHolder.ALBUM_ID, albumId);
+//                in.putExtra(PhotoGalleryCommon.PHOTO_ID, position - FacesGridAdapter.WIDTH_NUM_PICS);
+//                startActivity(in);
+//                
+//            }
+//        });
 //        TextView nameView = (TextView) rootView.findViewById(R.id.name_man);
 //        final ViewPager mPager = (ViewPager) rootView.findViewById(R.id.pager);
 //        DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(getActivity());

@@ -8,6 +8,6 @@
         android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop" />
+        android:background="@color/background_color_little_photos" />
 
 </ru.trolleg.faces.views.SquaredLinearLayout>

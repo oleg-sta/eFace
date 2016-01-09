@@ -5,10 +5,19 @@ import java.util.List;
 import ru.trolleg.faces.BitmapWorkerCropPhotoTask;
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.R;
+import ru.trolleg.faces.activities.PhotoGalleryCommon;
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
@@ -19,6 +28,7 @@ public class GridPhotosAdapter extends ArrayAdapter<String> {
 
     private final Activity context;
     public final List<String> photos;
+    public String albumId;
     
     public GridPhotosAdapter(Activity context, List<String> photos) {
         super(context, R.layout.one_squared_image, photos);
@@ -72,6 +82,48 @@ public class GridPhotosAdapter extends ArrayAdapter<String> {
         }
         final String photo = photos.get(position);
         holder.position = position;
+        holder.image.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN: {
+                    Log.i("Data", "down");
+                    ImageView view = (ImageView) v;
+                    Drawable drawable = view.getDrawable();
+                    boolean hasImage = (drawable != null);
+                    if (hasImage && (drawable instanceof BitmapDrawable)) {
+                        hasImage = ((BitmapDrawable) drawable).getBitmap() != null;
+                    }
+                    if (hasImage) {
+                        view.setBackgroundColor(Color.WHITE);
+                        view.setPadding(5, 5, 5, 5);
+                        view.invalidate();
+                    }
+                    break;
+                }
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL: {
+                    Log.i("Data", "up");
+                    ImageView view = (ImageView) v;
+                    view.setPadding(0, 0, 0, 0);
+                    view.invalidate();
+                    break;
+                }
+                }
+                return false;
+            }
+
+        });
+        holder.image.setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(context, PhotoGalleryCommon.class);
+                in.putExtra(DataHolder.ALBUM_ID, albumId);
+                in.putExtra(PhotoGalleryCommon.PHOTO_ID, position);
+                context.startActivity(in);
+            }
+        });
         BitmapWorkerCropPhotoTask.loadImage(photo, context, holder, position);
         
         return convertView;

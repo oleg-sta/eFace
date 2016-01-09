@@ -10,9 +10,15 @@ import ru.trolleg.faces.adapters.GridPhotosAdapter.ViewHolder;
 import ru.trolleg.faces.data.Album;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -45,7 +51,7 @@ public class GridAlbumsAdapter extends BaseAdapter {
         final Album album = albums.get(position);
         holder.textView.setText(album.name + "(" + album.count + ")");
         BitmapWorkerCropPhotoTask.loadImage(album.firstImage, context, holder, position);
-        convertView.setOnClickListener(new OnClickListener() {
+        holder.image.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent personIntent = new Intent(context, PhotoGridFragment.class);
@@ -53,6 +59,38 @@ public class GridAlbumsAdapter extends BaseAdapter {
                 context.startActivity(personIntent);
                 
             }
+        });
+        holder.image.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction())  {
+                case MotionEvent.ACTION_DOWN: {
+                    Log.i("Data", "down");
+                    ImageView view = (ImageView) v;
+                    Drawable drawable = view.getDrawable();
+                    boolean hasImage = (drawable != null);
+                    if (hasImage && (drawable instanceof BitmapDrawable)) {
+                        hasImage = ((BitmapDrawable)drawable).getBitmap() != null;
+                    }
+                    if (hasImage) {
+                        view.setBackgroundColor(Color.WHITE);
+                        view.setPadding(5, 5, 5, 5);
+                        view.invalidate();
+                    }
+                    break;
+                }
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL: {
+                    Log.i("Data", "up");
+                    ImageView view = (ImageView) v;
+                    view.setPadding(0, 0, 0, 0);
+                    view.invalidate();
+                    break;
+                }
+            }
+            return false;
+            }
+
         });
         return convertView;
     }

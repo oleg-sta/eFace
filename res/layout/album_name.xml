@@ -2,18 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    android:background="@color/background_color_little_photos">
 
     <ru.trolleg.faces.views.SquaredImageView
         android:id="@+id/one_face1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="0dp"
-        android:paddingBottom="0dp"
-        android:layout_gravity="top"
-        android:scaleType="centerCrop"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp" />
+        android:layout_height="match_parent"
+        android:background="@color/background_color_little_photos"/>
 
     <TextView
         android:id="@+id/name_face"
