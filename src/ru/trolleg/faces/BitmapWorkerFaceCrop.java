@@ -25,12 +25,17 @@ public class BitmapWorkerFaceCrop  extends AsyncTask<String, Void, BitmapDrawabl
     private final int position;
     Face face;
     Context context;
+    boolean inCircle;
 
     public BitmapWorkerFaceCrop(ViewHolder2 holder, Context context, Face face, int position) {
+        this(holder, context, face, position, false);
+    }
+    public BitmapWorkerFaceCrop(ViewHolder2 holder, Context context, Face face, int position, boolean inCircle) {
         imageViewReference = new WeakReference<ViewHolder2>(holder);
         this.face = face;
         this.context = context;
         this.position = position;
+        this.inCircle = inCircle;
     }
 
     // Decode image in background.
@@ -40,10 +45,14 @@ public class BitmapWorkerFaceCrop  extends AsyncTask<String, Void, BitmapDrawabl
         
         DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Bitmap myBitmap = DataHolder.getInstance().getLittleFace(db, face.guid, context);
+        Bitmap myBitmap;
+        if (!inCircle) {
+            myBitmap = DataHolder.getInstance().getLittleFace(db, face.guid, context);
+        } else {
+            myBitmap = DataHolder.getInstance().getLittleFaceInCirle(db, face.guid, context);
+        }
         db.close();
         BitmapDrawable drawable = new BitmapDrawable(context.getResources(), myBitmap);
-        //DataHolder.mMemoryCache2.put(face.guid, drawable);
         return drawable;
     }
 
@@ -63,8 +72,15 @@ public class BitmapWorkerFaceCrop  extends AsyncTask<String, Void, BitmapDrawabl
     }
 
     public static void loadImage(Face face, Context context, ViewHolder2 holder, int position2) {
+        loadImage(face, context, holder, position2, false);
+    }
+    public static void loadImage(Face face, Context context, ViewHolder2 holder, int position2, boolean inCircle) {
         BitmapDrawable value = null;
-        Bitmap alue = DataHolder.getInstance().mMemoryCache.get(face.guid);
+        String key = face.guid;
+        if (inCircle) {
+            key = face + "_circle";
+        }
+        Bitmap alue = DataHolder.getInstance().mMemoryCache.get(key);
         if (alue != null) {
             value = new BitmapDrawable(context.getResources(), alue);
         }
@@ -73,8 +89,10 @@ public class BitmapWorkerFaceCrop  extends AsyncTask<String, Void, BitmapDrawabl
             holder.view.setImageDrawable(value);
         } else if (cancelPotentialWork(face, holder)) {
             holder.view.setImageBitmap(null);
-            holder.view.setBackgroundColor(Color.GRAY);
-            final BitmapWorkerFaceCrop task = new BitmapWorkerFaceCrop(holder, context, face, position2);
+            if (!inCircle) {
+                holder.view.setBackgroundColor(Color.GRAY);
+            }
+            final BitmapWorkerFaceCrop task = new BitmapWorkerFaceCrop(holder, context, face, position2, inCircle);
             final AsyncDrawable asyncDrawable =
                     new AsyncDrawable(context.getResources(), null, task);
             holder.view.setImageDrawable(asyncDrawable);

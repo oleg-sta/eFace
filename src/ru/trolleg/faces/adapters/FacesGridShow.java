@@ -4,18 +4,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import ru.trolleg.faces.BitmapWorkerFaceCrop;
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.activities.DisplayCommonPhoto;
 import ru.trolleg.faces.activities.FacesActivity;
 import ru.trolleg.faces.activities.PeopleFragment;
+import ru.trolleg.faces.adapters.FacesGridAdapter.ViewHolder2;
 import ru.trolleg.faces.data.Face;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -80,20 +80,22 @@ public class FacesGridShow extends ArrayAdapter<Integer> {
             convertView.setLayoutParams(new AbsListView.LayoutParams(LayoutParams.MATCH_PARENT, 0));
             return convertView;
         }
-        
+        ViewHolder2 holder;
         LayoutInflater inflater = context.getLayoutInflater();
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.one_face, null, true);
+            holder = new ViewHolder2();
+            holder.view = (ImageView)convertView.findViewById(R.id.one_face1);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder2) convertView.getTag();
         }
-        ImageView view = (ImageView)convertView.findViewById(R.id.one_face1);
+        holder.position = position;
         final int faceId = faces.get(position);
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
         Face face = dbHelper.getFaceForId(faceId);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Bitmap bm = DataHolder.getInstance().getLittleFace(db, face.guid, getContext());
-        db.close();
-        view.setImageBitmap(bm);
-        view.setOnClickListener(new OnClickListener() {
+        BitmapWorkerFaceCrop.loadImage(face, context, holder, position);
+        holder.view.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent personIntent = new Intent(context, DisplayCommonPhoto.class);
@@ -102,7 +104,7 @@ public class FacesGridShow extends ArrayAdapter<Integer> {
 
             }
         });
-        view.setOnLongClickListener(new OnLongClickListener() {
+        holder.view.setOnLongClickListener(new OnLongClickListener() {
             
             @Override
             public boolean onLongClick(View v) {
@@ -131,5 +133,6 @@ public class FacesGridShow extends ArrayAdapter<Integer> {
        
         return convertView;
     }
+    
 
 }
