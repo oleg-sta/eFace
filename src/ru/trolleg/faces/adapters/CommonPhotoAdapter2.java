@@ -1,22 +1,13 @@
 package ru.trolleg.faces.adapters;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.davemorrissey.labs.subscaleview.ImageSource;
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.OnImageEventListener;
-
-import ru.trolleg.faces.BitmapWorkerTask;
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DeactivableViewPager;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
-import ru.trolleg.faces.TouchImageView;
-import ru.trolleg.faces.TouchImageView.OnPageScaleListener;
-import ru.trolleg.faces.activities.DisplayCommonPhoto;
 import ru.trolleg.faces.activities.PhotoGalleryCommon;
 import ru.trolleg.faces.data.InfoPhoto;
 import android.app.Activity;
@@ -28,13 +19,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.view.ViewTreeObserver.OnScrollChangedListener;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+
+import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.OnImageEventListener;
 
 /**
  * Адаптер для просмотра фото в галерее

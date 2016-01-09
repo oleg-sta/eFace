@@ -112,11 +112,13 @@ public class PhotoGalleryCommon extends Activity {
         Log.i("DisplayCommonPhoto", "" + lastPos + " " + position);
         //horizontal.get
         if (fromBig) {
-        if (horizontal.mNextX > position * DataHolder.dp2Px(80, getApplicationContext())) {
-            horizontal.scrollTo(position * DataHolder.dp2Px(80, getApplicationContext()));
-        } else if (position * DataHolder.dp2Px(80, getApplicationContext()) - horizontal.mNextX >  getApplicationContext().getResources().getDisplayMetrics().widthPixels) {
-            horizontal.scrollTo(position * DataHolder.dp2Px(80, getApplicationContext()));
-        }
+            if (horizontal.mNextX > position * DataHolder.dp2Px(80, getApplicationContext())) {
+                horizontal.scrollTo(position * DataHolder.dp2Px(80, getApplicationContext()));
+            } else if ((position + 1) * DataHolder.dp2Px(80, getApplicationContext()) - horizontal.mNextX > getApplicationContext()
+                    .getResources().getDisplayMetrics().widthPixels) {
+                horizontal.scrollTo((position + 1) * DataHolder.dp2Px(80, getApplicationContext()) - getApplicationContext()
+                        .getResources().getDisplayMetrics().widthPixels);
+            }
         }
         mPagerAdapter.redrawView();
     }

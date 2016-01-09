@@ -311,12 +311,15 @@ public class DataHolder {
             } else {
                 final BitmapFactory.Options options = new BitmapFactory.Options();
                 bm = FaceFinderService.decodeSampledBitmapFromResource(photo, size, size, options, true);
-                Log.i(TAG, "photo " + photo + " size " + (1.0f * bm.getWidth() * bm.getHeight()) / (size * size));
-                bm = ThumbnailUtils.extractThumbnail(bm, size, size);
-                Log.i(TAG, "photo " + photo + " size " + bm.getWidth() + " " + bm.getHeight() + " koef " + (1.0f * bm.getWidth() * bm.getHeight()) / (size * size));
                 if (bm == null) {
                     return null;
                 }
+                Log.i(TAG, "photo " + photo + " size " + (1.0f * bm.getWidth() * bm.getHeight()) / (size * size));
+                bm = ThumbnailUtils.extractThumbnail(bm, size, size);
+                if (bm == null) {
+                    return null;
+                }
+                Log.i(TAG, "photo " + photo + " size " + bm.getWidth() + " " + bm.getHeight() + " koef " + (1.0f * bm.getWidth() * bm.getHeight()) / (size * size));
                 file = new File(context.getCacheDir(), toSave);
                 try {
                     if (file.createNewFile()) {

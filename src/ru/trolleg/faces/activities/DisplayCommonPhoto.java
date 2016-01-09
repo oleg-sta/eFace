@@ -10,13 +10,9 @@ import ru.trolleg.faces.adapters.CommonPhotoAdapter;
 import ru.trolleg.faces.adapters.FacesCommonAdapter;
 import ru.trolleg.faces.adapters.HorizontalListView;
 import android.app.Activity;
-import android.graphics.Matrix;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -117,13 +113,14 @@ public class DisplayCommonPhoto extends Activity {
             viewHolder.view2.setVisibility(View.VISIBLE);
         }
         Log.i("DisplayCommonPhoto", "" + lastPos + " " + position);
-        //horizontal.get
         if (fromBig) {
-        if (horizontal.mNextX > position * DataHolder.dp2Px(80, getApplicationContext())) {
-            horizontal.scrollTo(position * DataHolder.dp2Px(80, getApplicationContext()));
-        } else if (position * DataHolder.dp2Px(80, getApplicationContext()) - horizontal.mNextX >  getApplicationContext().getResources().getDisplayMetrics().widthPixels) {
-            horizontal.scrollTo(position * DataHolder.dp2Px(80, getApplicationContext()));
-        }
+            if (horizontal.mNextX > position * DataHolder.dp2Px(80, getApplicationContext())) {
+                horizontal.scrollTo(position * DataHolder.dp2Px(80, getApplicationContext()));
+            } else if ((position + 1) * DataHolder.dp2Px(80, getApplicationContext()) - horizontal.mNextX > getApplicationContext()
+                    .getResources().getDisplayMetrics().widthPixels) {
+                horizontal.scrollTo((position + 1) * DataHolder.dp2Px(80, getApplicationContext())
+                        - getApplicationContext().getResources().getDisplayMetrics().widthPixels);
+            }
         }
         mPagerAdapter.redrawView();
     }
