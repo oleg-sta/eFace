@@ -225,9 +225,18 @@ public class MaterialTabHost extends RelativeLayout implements View.OnClickListe
         if (!scrollable) { // not scrollable tabs
             int tabWidth = this.getWidth() / tabs.size();
 
+            // костыль
             // set params for resizing tabs width
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(tabWidth, HorizontalScrollView.LayoutParams.MATCH_PARENT);
+            //LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(tabWidth, HorizontalScrollView.LayoutParams.MATCH_PARENT);
+            int i = 0;
             for (MaterialTab t : tabs) {
+                i++;
+                if (i == 2) {
+                    tabWidth = (int) (this.getWidth() * 0.4f);
+                } else {
+                    tabWidth = (int) (this.getWidth() * 0.3f);
+                }
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(tabWidth, HorizontalScrollView.LayoutParams.MATCH_PARENT);
                 layout.addView(t.getView(), params);
             }
 
