@@ -1,2 +1,3 @@
 Приложение под платформу андроид. Поиск лиц.
-Для сборки требуются android-sdk, android-nkd, OpenCV
+Для сборки требуются android-sdk, android-nkd, OpenCV andrdoid sdk, gradle(автосборка пока не работает)
+Исходники заточены пока под среду eclipse.
