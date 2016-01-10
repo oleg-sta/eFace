@@ -32,7 +32,7 @@
 								<option id="com.android.gcc.option.includePath.1052600941" superClass="com.android.gcc.option.includePath" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;C:\android-ndk-r10e\platforms\android-8\arch-arm\usr\include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\android-ndk-r10e\sources\cxx-stl\stlport\stlport&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;F:\OpenCV-android-sdk\sdk\native\jni\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${OPEN-CV-SDK}\sdk\native\jni\include&quot;"/>
 								</option>
 								<inputType id="com.android.gcc.inputType.2026641399" superClass="com.android.gcc.inputType"/>
 							</tool>
@@ -61,4 +61,5 @@
 			<resource resourceType="PROJECT" workspacePath="/TestFacePlus"/>
 		</configuration>
 	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>
