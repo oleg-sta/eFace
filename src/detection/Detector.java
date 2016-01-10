@@ -204,7 +204,7 @@ public class Detector {
 			int width=image.getWidth();
 			int height=image.getHeight();
 			if (useC) {
-			    int[][] origImg = new int[width][height]; // оригинальное цветное изображение
+			    int[][] origImg = new int[width][height]; // РѕСЂРёРіРёРЅР°Р»СЊРЅРѕРµ С†РІРµС‚РЅРѕРµ РёР·РѕР±СЂР°Р¶РµРЅРёРµ
 			    for(int i=0;i<width;i++)
 	            {
 	                for(int j=0;j<height;j++)
@@ -225,9 +225,9 @@ public class Detector {
 			float maxScale = (Math.min((width+0.f)/size.x,(height+0.0f)/size.y));
 			
 			/* Compute the grayscale image, the integral image and the squared integral image.*/
-			int[][] grayImage=new int[width][height]; // интенсивность пикселей
-			int[][] img = new int[width][height]; // ч\б изображение
-			int[][] squares=new int[width][height]; // интенсивноть квадратов пикселей
+            int[][] grayImage=new int[width][height]; // РёРЅС‚РµРЅСЃРёРІРЅРѕСЃС‚СЊ РїРёРєСЃРµР»РµР№
+            int[][] img = new int[width][height]; // С‡\Р± РёР·РѕР±СЂР°Р¶РµРЅРёРµ
+            int[][] squares=new int[width][height]; // РёРЅС‚РµРЅСЃРёРІРЅРѕС‚СЊ РєРІР°РґСЂР°С‚РѕРІ РїРёРєСЃРµР»РµР№
 			for(int i=0;i<width;i++)
 			{
 				int col=0;
@@ -255,7 +255,7 @@ public class Detector {
 			Log.i("Detector", "getFaces3");
 			
 			
-			// Используем нативную библиотеку
+			// РСЃРїРѕР»СЊР·СѓРµРј РЅР°С‚РёРІРЅСѓСЋ Р±РёР±Р»РёРѕС‚РµРєСѓ
 			//int i22 = comp.findFaces(img);
 			//Log.i("Detector", i22);
 			/*Heart of the algorithm : detection */
