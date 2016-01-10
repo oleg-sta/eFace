@@ -66,7 +66,7 @@ android {
 				srcDirs = []
 			}
                         jniLibs {
-				srcDirs 'lib'
+				srcDirs 'libs'
 			}
 		}
 	}
@@ -75,7 +75,7 @@ android {
     task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {
         commandLine "c:\\android-ndk-r10e\\ndk-build.cmd",
                 'NDK_PROJECT_PATH=build/intermediates/ndk',
-                'NDK_LIBS_OUT=lib',
+                'NDK_LIBS_OUT=libs',
                 'APP_BUILD_SCRIPT=jni/Android.mk',
                 'NDK_APPLICATION_MK=jni/Application.mk',
                 'OPEN-CV-SDK='+OPEN_CV_SDK
