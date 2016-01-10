@@ -21,9 +21,9 @@ android {
 
 	signingConfigs {
 		release {
-			storeFile file("j:\\androidKey\\promSign")
+			storeFile file(PROM_KEY_PATH)
 			storePassword KEYSTORE_PASSWORD
-			keyAlias "olegkey"
+			keyAlias PROM_KEY_ALIAS
 			keyPassword KEY_PASSWORD
 		}
 		debug {
@@ -73,7 +73,7 @@ android {
 
 
     task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {
-        commandLine "c:\\android-ndk-r10e\\ndk-build.cmd",
+        commandLine ndkDir + "\\ndk-build.cmd",
                 'NDK_PROJECT_PATH=build/intermediates/ndk',
                 'NDK_LIBS_OUT=libs',
                 'APP_BUILD_SCRIPT=jni/Android.mk',
