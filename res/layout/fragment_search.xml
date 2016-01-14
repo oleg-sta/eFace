@@ -78,7 +78,9 @@
             <ListView
                 android:id="@+id/list_search_people"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="2dp" />
 
             <ImageView
                 android:id="@+id/search_button_album"
