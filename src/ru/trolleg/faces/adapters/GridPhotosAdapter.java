@@ -1,5 +1,6 @@
 package ru.trolleg.faces.adapters;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.trolleg.faces.BitmapWorkerCropPhotoTask;
@@ -119,7 +120,8 @@ public class GridPhotosAdapter extends ArrayAdapter<String> {
             @Override
             public void onClick(View v) {
                 Intent in = new Intent(context, PhotoGalleryCommon.class);
-                in.putExtra(DataHolder.ALBUM_ID, albumId);
+                Log.i("PhotoGalleryCommon", "put " + photos);
+                in.putStringArrayListExtra(PhotoGalleryCommon.PHOTOS_ARRAY, new ArrayList(photos));
                 in.putExtra(PhotoGalleryCommon.PHOTO_ID, position);
                 context.startActivity(in);
             }

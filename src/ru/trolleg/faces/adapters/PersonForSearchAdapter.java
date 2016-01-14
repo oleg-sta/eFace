@@ -73,4 +73,14 @@ public class PersonForSearchAdapter extends ArrayAdapter<Integer>{
         }
         return convertView;
     }
+
+    public void checkAll(boolean isChecked) {
+        if (!isChecked) {
+            checked.clear();
+            return;
+        }
+        for (int i = 0; i < men.size(); i++) {
+            checked.add(i);
+        }
+    }
 }

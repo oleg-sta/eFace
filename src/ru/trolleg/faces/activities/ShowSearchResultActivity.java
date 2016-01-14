@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -22,6 +23,9 @@ import android.widget.GridView;
 
 public class ShowSearchResultActivity extends AppCompatActivity {
     
+    public static final String PERSON_IDS = "personIds";
+    public static final String START_DATE = "startDate";
+    public static final String END_DATE = "endDate";
     public Set<Integer> filterMan;
     public Date startDate;
     public Date endDate;
@@ -45,15 +49,15 @@ public class ShowSearchResultActivity extends AppCompatActivity {
             }
         });
 
-        if (getIntent().hasExtra("startDate")) {
-            startDate = new Date(getIntent().getLongExtra("startDate", 0));
+        if (getIntent().hasExtra(START_DATE)) {
+            startDate = new Date(getIntent().getLongExtra(START_DATE, 0));
         }
-        if (getIntent().hasExtra("endDate")) {
-            endDate = new Date(getIntent().getLongExtra("endDate", 0));
+        if (getIntent().hasExtra(END_DATE)) {
+            endDate = new Date(getIntent().getLongExtra(END_DATE, 0));
         }
-        if (getIntent().hasExtra("personIds")) {
+        if (getIntent().hasExtra(PERSON_IDS)) {
             filterMan = new HashSet<Integer>();
-            for (int i : getIntent().getIntArrayExtra("personIds")) {
+            for (int i : getIntent().getIntArrayExtra(PERSON_IDS)) {
                 filterMan.add(i);
             }
         }
@@ -64,17 +68,6 @@ public class ShowSearchResultActivity extends AppCompatActivity {
         GridView photos = (GridView) findViewById(R.id.gallery_photos);
         photos.setNumColumns(FacesGridAdapter.WIDTH_NUM_PICS);
         photos.setAdapter(new GridPhotosAdapter(this, photos2));
-        
-        photos.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent in = new Intent(getApplication(), PhotoGalleryCommon.class);
-                in.putStringArrayListExtra("photos_array", new ArrayList(photos2));
-                in.putExtra(PhotoGalleryCommon.PHOTO_ID, position - FacesGridAdapter.WIDTH_NUM_PICS);
-                startActivity(in);
-                
-            }
-        });
         
     }
 }

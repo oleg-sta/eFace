@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class PhotoGalleryCommon extends Activity {
+    public static final String PHOTOS_ARRAY = "photos_array";
     public static String PHOTO_ID = "photoId";
     public TextView nameView;
     public HorizontalListView horizontal;
@@ -35,7 +36,7 @@ public class PhotoGalleryCommon extends Activity {
 
         final String albumId = getIntent().getStringExtra(DataHolder.ALBUM_ID);
         int position = getIntent().getIntExtra(PHOTO_ID, 0);
-        List<String> photos = getIntent().getExtras().getStringArrayList("photos_array");
+        List<String> photos = getIntent().getExtras().getStringArrayList(PHOTOS_ARRAY);
         Log.i("PhotoGalleryCommon", "photos " + photos);
         
         requestWindowFeature(Window.FEATURE_NO_TITLE);

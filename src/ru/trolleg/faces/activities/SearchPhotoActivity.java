@@ -23,6 +23,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -63,11 +66,19 @@ public class SearchPhotoActivity extends AppCompatActivity {
         });
         
         final SearchPhotoActivity fragment2 = this;
-        
+        CheckBox allCheck = (CheckBox) findViewById(R.id.all_check);
         DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
         final ListView listView2 = (ListView) findViewById(R.id.list_search_people);
         final PersonForSearchAdapter adap = new PersonForSearchAdapter(this, dbHelper.getAllIdsPerson(0, true));
         listView2.setAdapter(adap);
+        allCheck.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                adap.checkAll(isChecked);
+                adap.notifyDataSetChanged();
+            }
+        });
 
         if (startDates == null) {
             startDates = new Date();
@@ -92,10 +103,10 @@ public class SearchPhotoActivity extends AppCompatActivity {
 
                 Intent searchIntent = new Intent(fragment2, ShowSearchResultActivity.class);
                 if (startDates != null) {
-                    searchIntent.putExtra("startDate", startDates.getTime());
+                    searchIntent.putExtra(ShowSearchResultActivity.START_DATE, startDates.getTime());
                 }
                 if (endDateS != null) {
-                    searchIntent.putExtra("endDate", endDateS.getTime());
+                    searchIntent.putExtra(ShowSearchResultActivity.END_DATE, endDateS.getTime());
                 }
                 int[] i = new int[personIds.size()];
                 int k = 0;
@@ -103,7 +114,7 @@ public class SearchPhotoActivity extends AppCompatActivity {
                     i[k] = j;
                     k++;
                 }
-                searchIntent.putExtra("personIds", i);
+                searchIntent.putExtra(ShowSearchResultActivity.PERSON_IDS, i);
                 fragment2.startActivity(searchIntent);
 
             }
