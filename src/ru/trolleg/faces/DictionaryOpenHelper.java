@@ -54,8 +54,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * ��������� ���� �������������� ����������
-     * 
+     *
      * @return
      */
     public List<String> getAllPhotosToBeProcessed() {

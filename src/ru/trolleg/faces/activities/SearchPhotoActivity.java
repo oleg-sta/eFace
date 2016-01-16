@@ -57,7 +57,6 @@ public class SearchPhotoActivity extends AppCompatActivity {
         final Toolbar toolbar = (android.support.v7.widget.Toolbar) this.findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //toolbar.setNavigationIcon(R.drawable.ic_back);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,7 +127,7 @@ public class SearchPhotoActivity extends AppCompatActivity {
                 startDate = startDates;
                 endDate = endDateS;
                 AlertDialog.Builder adb = new AlertDialog.Builder(fragment2);
-                adb.setTitle("Установите период");
+                adb.setTitle(R.string.set_period);
                 LinearLayout view = (LinearLayout) getLayoutInflater()
                         .inflate(R.layout.dialog_picker_dates, null);
                 startDateButton = (Button) view.findViewById(R.id.first_date);
@@ -145,7 +144,7 @@ public class SearchPhotoActivity extends AppCompatActivity {
                     }
                 });
                 endDateButton = (Button) view.findViewById(R.id.last_date);
-                adb.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                adb.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                     }
                 });
@@ -161,7 +160,7 @@ public class SearchPhotoActivity extends AppCompatActivity {
                         tpd.show();
                     }
                 });
-                adb.setPositiveButton("Принять", new DialogInterface.OnClickListener() {
+                adb.setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         startDates = startDate;
                         endDateS = endDate;

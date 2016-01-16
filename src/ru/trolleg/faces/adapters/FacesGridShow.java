@@ -105,21 +105,21 @@ public class FacesGridShow extends ArrayAdapter<Integer> {
             }
         });
         holder.view.setOnLongClickListener(new OnLongClickListener() {
-            
+
             @Override
             public boolean onLongClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setMessage("Сделать фотографию главной?");
-                builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                builder.setMessage(R.string.make_photo_ava);
+                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dbHelper.setAvaId(context.personId, faceId);
                         // TODO так нехорошо делать
                         context.updateAva();
-                        
+
                         Intent intent = new Intent(PeopleFragment.UPDATE_PEOPLE);
                         broadcastManager.sendBroadcast(intent);
                     }
-                }).setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Log.i("DragOverListMen", "No");
                     }

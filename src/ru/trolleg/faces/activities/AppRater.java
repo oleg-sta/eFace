@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
+import ru.trolleg.faces.R;
+
 public class AppRater {
 
     private static final String DONT_SHOW_AGAIN = "dontshowagain";
@@ -47,12 +49,10 @@ public class AppRater {
     }
 
     public static void showRateDialog(final Context context, final SharedPreferences.Editor editor) {
-        String appName = context.getString(context.getApplicationInfo().labelRes);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Оцените приложение");
-        builder.setMessage("Если Вам понравилось приложение " + appName
-                + ", пожалуйста, найдите время, чтобы оценить его. Спасибо за Вашу поддержку!");
-        builder.setPositiveButton("Оценить " + appName, new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.app_rater_name_dialog);
+        builder.setMessage(R.string.app_rater_message);
+        builder.setPositiveButton(R.string.apo_rater_rate_now, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id="
                         + context.getPackageName()));
@@ -63,7 +63,7 @@ public class AppRater {
                 }
             }
         });
-        builder.setNeutralButton("Напомнить позже", new DialogInterface.OnClickListener() {
+        builder.setNeutralButton(R.string.app_rater_remind_later, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 clearSharedPreferences(context, editor);
             }

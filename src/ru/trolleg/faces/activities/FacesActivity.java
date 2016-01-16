@@ -56,7 +56,6 @@ public class FacesActivity extends AppCompatActivity {
         final Toolbar toolbar = (android.support.v7.widget.Toolbar) this.findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //toolbar.setNavigationIcon(R.drawable.ic_back);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,8 +63,6 @@ public class FacesActivity extends AppCompatActivity {
             }
         });
         
-
-        LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = getLayoutInflater().inflate(R.layout.custom_action, null);
         final ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,
@@ -104,11 +101,11 @@ public class FacesActivity extends AppCompatActivity {
             case R.id.change_name:
                 final EditText input = new EditText(this);
                 input.setTextColor(Color.BLACK);
-                input.setHint("Введите имя");
+                input.setHint(R.string.enter_name);
                 input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS | InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
                 input.setText(namePerson.getText());
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setView(input).setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                builder.setView(input).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         String newName =  input.getText().toString();
                         dbHelper.updatePersonName(personId, newName);
@@ -118,7 +115,7 @@ public class FacesActivity extends AppCompatActivity {
                         boolean result = broadcastManager.sendBroadcast(intent);
                         Log.v("FacesActivity", "onOptionsItemSelected updatePersonName///" + result);
                     }
-                }).setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                     }
                 });

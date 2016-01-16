@@ -33,7 +33,6 @@ public class PhotoGridFragment extends AppCompatActivity {
         final Toolbar toolbar = (android.support.v7.widget.Toolbar) this.findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //toolbar.setNavigationIcon(R.drawable.ic_back);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,31 +44,12 @@ public class PhotoGridFragment extends AppCompatActivity {
         setTitle(MainActivity.getAlbumName(getApplication(), albumId));
         List<String> photosId = MainActivity.getCameraImages(this, albumId);
         final PhotoGridFragment d =this;
-        //DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
-        //List<String> photosId = dbHelper.convertByNameToIds(photosNames);
         GridView photos = (GridView) findViewById(R.id.gallery_photos);
         photos.setNumColumns(FacesGridAdapter.WIDTH_NUM_PICS);
         GridPhotosAdapter as = new GridPhotosAdapter(this, photosId);
         as.albumId = albumId;
         photos.setAdapter(as);
-//        photos.setOnItemClickListener(new OnItemClickListener() {
-//
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent in = new Intent(d, PhotoGalleryCommon.class);
-//                in.putExtra(DataHolder.ALBUM_ID, albumId);
-//                in.putExtra(PhotoGalleryCommon.PHOTO_ID, position - FacesGridAdapter.WIDTH_NUM_PICS);
-//                startActivity(in);
-//                
-//            }
-//        });
-//        TextView nameView = (TextView) rootView.findViewById(R.id.name_man);
-//        final ViewPager mPager = (ViewPager) rootView.findViewById(R.id.pager);
-//        DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(getActivity());
-//        List<String> photos = dbHelper.getAllPhotos();
-//        final PagerAdapter mPagerAdapter = new CommonPhotoAdapter2(getActivity(), photos, nameView);
-//        mPager.setAdapter(mPagerAdapter);
-        
+
     }
 
 }

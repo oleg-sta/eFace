@@ -48,10 +48,8 @@ public class RecognizeFragment extends Fragment {
     public PersonListToRecogniseAdapter adapterMans;
     public Integer currentMan = null;
     Context context;
-    //ImageView button;
     MenuItem stMenu;
-    //protected ImageView startMenu;
-    
+
     TextView phoCOuntTw;
     ProgressBar phoCOuntTwPr;
     TextView phoProCOuntTw;
@@ -154,7 +152,7 @@ public class RecognizeFragment extends Fragment {
         }
         phoProCOuntTw.setText("" + DataHolder.photoProcessedCount);
         facesCountTw.setText("" + DataHolder.facesCount);
-        Log.i("RecognizeFragment", "stats " + DataHolder.photoCount + " "+ DataHolder.photoProcessedCount + " " + DataHolder.facesCount);
+        Log.i("RecognizeFragment", "stats " + DataHolder.photoCount + " " + DataHolder.photoProcessedCount + " " + DataHolder.facesCount);
         
            
         LinearLayout men_lay = (LinearLayout) rootView.findViewById(R.id.men_lay);
@@ -168,18 +166,18 @@ public class RecognizeFragment extends Fragment {
                 // TODO add new, если нет выделенных людей, то переходим на неопознанных
                 if (adapterFaces.checked.isEmpty()) {
                     if (this1.currentMan == null) {
-                        Toast.makeText(getActivity(), "Сначала выделите лица.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.first_pick_faces, Toast.LENGTH_SHORT).show();
                     } else {
                         this1.setCurrentMan(null);
                     }
                 } else {
                     final EditText input = new EditText(getActivity());
                     input.setTextColor(Color.BLACK);
-                    input.setHint("Введите имя");
+                    input.setHint(R.string.enter_name);
                     input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS | InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setMessage("Добавление человека, выделено лиц - " + this1.adapterFaces.checked.size());
-                    builder.setView(input).setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    builder.setView(input).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             String newName =  input.getText().toString();
                             if ("".equals(newName)) {
@@ -193,7 +191,7 @@ public class RecognizeFragment extends Fragment {
                             Intent intent = new Intent(PeopleFragment.UPDATE_PEOPLE);
                             broadcastManager.sendBroadcast(intent);
                         }
-                    }).setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                    }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             Log.i("DragOverListMen", "No");
                         }

@@ -19,7 +19,7 @@ import android.widget.ImageView;
 public class FacesCommonAdapter extends ArrayAdapter<Integer> {
 
     private final Activity context;
-    public final List<Integer> faces; // �������������� ������
+    public final List<Integer> faces;
     public int selected = -1;
     
     public Map<Integer, ViewHolder> forUpdate = new HashMap<Integer, ViewHolder>();

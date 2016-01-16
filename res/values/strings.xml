@@ -3,8 +3,6 @@
     <string name="act_people_name">eFace</string>
     <string name="menu_menu">Меню</string>
     <string name="menu_help">Справка</string>
-    <string name="menu_recogntion">Распознавание</string>
-    <string name="menu_people">Люди</string>
     <string name="act_faces_name">Лица</string>
     <string name="act_common_photo_name">Общее фото</string>
     <string name="help">Справка</string>
@@ -28,13 +26,25 @@
 Из страницы просмотра лиц человека можно попасть в оригинальную фотографию. Для этого необходимо нажать на лицо.
     ]]></string>
         	
-        <string-array name="navigation_array">
-        <item>Люди</item>
-        <item>Распознавание</item>
-        <item>Фотографии</item>
+        <string-array name="tab_array">
+        <item>@string/tab_name_people</item>
+        <item>@string/tab_name_recognition</item>
+        <item>@string/tab_name_gallery</item>
     </string-array>
-    <string name="drawer_open">Open navigation drawer</string>
-    <string name="drawer_close">Close navigation drawer</string>
-    <string name="action_websearch">Web search</string>
-    <string name="app_not_available">Sorry, there\'s no web browser available</string> 
+    <string name="app_rater_remind_later">Напомнить позже</string>
+    <string name="app_rater_name_dialog">Оцените приложение</string>
+    <string name="app_rater_message">Если Вам понравилось приложение eFace, пожалуйста, найдите время, чтобы оценить его. Спасибо за Вашу поддержку!</string>
+    <string name="apo_rater_rate_now">Оценить сейчас</string>
+    <string name="enter_name">Введите имя</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="tab_name_people">ЛЮДИ</string>
+    <string name="tab_name_recognition">РАСПОЗНАВАНИЕ</string>
+    <string name="tab_name_gallery">ГАЛЕРЕЯ</string>
+    <string name="query_hint">Поиск...</string>
+    <string name="first_pick_faces">Сначала выделите лица.</string>
+    <string name="set_period">Установите период</string>
+    <string name="cancel">Отмена</string>
+    <string name="accept">Принять</string>
+    <string name="make_photo_ava">Сделать фотографию главной?</string>
 </resources>

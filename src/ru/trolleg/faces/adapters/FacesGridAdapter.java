@@ -38,7 +38,7 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
 
     public static final int WIDTH_NUM_PICS = 4;
     private final Activity context;
-    public final List<Integer> faces; // �������������� ������
+    public final List<Integer> faces;
     public final Set<Integer> checked = new HashSet<Integer>(); // TODO лучше faces id хранить, так независимо будет от единичного убирания
 
     public FacesGridAdapter(Activity context, List<Integer> faces) {

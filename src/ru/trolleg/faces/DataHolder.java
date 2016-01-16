@@ -102,14 +102,11 @@ public class DataHolder {
                 squaredFace.getHeight(), Config.ARGB_8888);
         
         Canvas canvas = new Canvas(output);
-        final int color = 0xff424242;
         final Paint paint = new Paint();
         final Rect rect = new Rect(0, 0, squaredFace.getWidth(),
                 squaredFace.getHeight());
-
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
-        // paint.setColor(color);
         canvas.drawCircle(squaredFace.getWidth() / 2,
                 squaredFace.getHeight() / 2, squaredFace.getWidth() / 2, paint);
         paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));

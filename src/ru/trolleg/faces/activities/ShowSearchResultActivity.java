@@ -41,7 +41,6 @@ public class ShowSearchResultActivity extends AppCompatActivity {
         final Toolbar toolbar = (android.support.v7.widget.Toolbar) this.findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //toolbar.setNavigationIcon(R.drawable.ic_back);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,7 +60,6 @@ public class ShowSearchResultActivity extends AppCompatActivity {
                 filterMan.add(i);
             }
         }
-        
         
         DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
         final List<String> photos2 = dbHelper.getPhotoIds(filterMan, startDate, endDate);

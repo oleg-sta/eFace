@@ -112,7 +112,7 @@ public class PeopleFragment extends Fragment implements OnQueryTextListener, OnC
         
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setQueryHint("Поиск...");
+        searchView.setQueryHint(getActivity().getString(R.string.query_hint));
         searchView.setOnQueryTextListener(this);
         searchView.setOnCloseListener(this);
         super.onCreateOptionsMenu(menu, inflater);

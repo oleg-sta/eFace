@@ -26,9 +26,7 @@ public class FragmentAlbumManager extends Fragment {
         fragment2 = new AlbumGridFragment();
         fragment3 = new ShowSearchResultActivity();
         transaction = getFragmentManager().beginTransaction();
-        
-        // transaction.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_right);
-        
+
         transaction.replace(R.id.fragment, fragment1);
         transaction.addToBackStack(null);
         

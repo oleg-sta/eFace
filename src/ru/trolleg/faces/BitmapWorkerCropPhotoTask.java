@@ -74,7 +74,7 @@ public class BitmapWorkerCropPhotoTask extends AsyncTask<String, Void, BitmapDra
         if (bitmapWorkerTask != null) {
             final String bitmapData = bitmapWorkerTask.data;
             if (bitmapData == null || !bitmapData.equals(photo)) {
-                Log.i("BitmapWorkerCropPhotoTask", "cancel for photo " + bitmapData + " new " + photo);
+                Log.i("BitmapWorkerCr", "cancel for photo " + bitmapData + " new " + photo);
                 bitmapWorkerTask.cancel(true);
             } else {
                 // The same work is already in progress.

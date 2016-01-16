@@ -37,7 +37,7 @@ public class PersonListToRecogniseAdapter extends PagerAdapter {
 
     private LocalBroadcastManager broadcastManager;
     private final Activity context;
-    public final List<Integer> men; // �������������� ������
+    public final List<Integer> men;
     public final Set<Integer> checked = new HashSet<Integer>();
     RecognizeFragment act;
 
@@ -97,7 +97,7 @@ public class PersonListToRecogniseAdapter extends PagerAdapter {
                             moveFaces(act, manId, dbHelper);
                             Intent intent = new Intent(PeopleFragment.UPDATE_PEOPLE);
                             boolean result = broadcastManager.sendBroadcast(intent);
-                            Log.v("PersonListToRecogniseAdapter", "обавление выделено лиц///" + result);
+                            Log.i("PersonListToRecogniseA", "обавление выделено лиц///" + result);
                         }
                     }).setNegativeButton("Нет", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {

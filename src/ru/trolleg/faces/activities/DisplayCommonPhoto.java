@@ -27,10 +27,6 @@ import android.widget.TextView;
  */
 public class DisplayCommonPhoto extends Activity {
 
-    private float scale = 1f;
-    //private ScaleGestureDetector mScaleDetector;
-    //private Matrix matrix = new Matrix();
-    
     public TextView nameView;
     public HorizontalListView horizontal;
     
@@ -63,19 +59,14 @@ public class DisplayCommonPhoto extends Activity {
             @Override
             public void onPageSelected(int arg0) {
                 setCurrentFromBig(arg0, true);
-                //mPagerAdapter.redrawView();
             }
             
             @Override
             public void onPageScrolled(int arg0, float arg1, int arg2) {
-                // TODO Auto-generated method stub
-                
             }
             
             @Override
             public void onPageScrollStateChanged(int arg0) {
-                // TODO Auto-generated method stub
-                
             }
         });
         

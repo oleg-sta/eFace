@@ -53,7 +53,7 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
         final Toolbar toolbar = (android.support.v7.widget.Toolbar) this.findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
         dbHelper = new DictionaryOpenHelper(this);
-        mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager());
+        mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager(), getResources().getStringArray(R.array.tab_array));
         tabHost = (MaterialTabHost) this.findViewById(R.id.tabHost);
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mAppSectionsPagerAdapter);
@@ -74,9 +74,11 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
     }
     
     public static class AppSectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public AppSectionsPagerAdapter(FragmentManager fm) {
+        final String[] tabNames;
+        public AppSectionsPagerAdapter(FragmentManager fm, String[] tabnames)
+        {
             super(fm);
+            tabNames = tabnames;
         }
 
         @Override
@@ -93,32 +95,23 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
 
         @Override
         public int getCount() {
-            return 3;
+            return tabNames.length;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch(position) {
-            case 0:
-                return "ЛЮДИ";
-            case 1:
-                return "РАСПОЗНАВАНИЕ";
-            default:
-                return "ГАЛЕРЕЯ";    
-            }
+            return tabNames[position];
         }
     }
     
     
     @Override
     public void onBackPressed() {
-        Log.i("NavigationDrawer", "onBackPressed()");
         super.onBackPressed();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.i("ND", "w");
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
@@ -170,7 +163,6 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
      * только для разработки
      */
     private void copyDb() {
-        Log.i("NavigationDrawer", "copyDb...");
         try {
             File sd = Environment.getExternalStorageDirectory();
             File data = Environment.getDataDirectory();
