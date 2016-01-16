@@ -61,6 +61,17 @@ public class PersonForSearchAdapter extends ArrayAdapter<Integer>{
                 }
             }
         });
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checked.contains(position)) {
+                    checked.remove(position);
+                } else {
+                    checked.add(position);
+                }
+                checkBox.setChecked(checked.contains(position));
+            }
+        });
         final int manId = men.get(position);
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
         final String name = dbHelper.getPersonName(manId);

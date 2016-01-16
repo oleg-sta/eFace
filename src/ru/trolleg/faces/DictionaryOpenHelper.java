@@ -25,7 +25,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public static final String TABLE_PERSON = "person";
     public static final String COL_NAME_UPPER = "name_upper";
     
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public DictionaryOpenHelper(Context context) {
         super(context, "faces.db", null, DATABASE_VERSION);
@@ -36,6 +36,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE photos (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, path TEXT, time_processed real, time_photo integer);");
         db.execSQL("create table faces (guid text, photo_id integer, person_id integer, height real, width real, centerX real, centerY real, id integer PRIMARY KEY AUTOINCREMENT NOT NULL, probability real);");
         db.execSQL("create table "+TABLE_PERSON+" (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, name text, name_upper text,deleted INTEGER, ava_id integer);");
+        db.execSQL("CREATE INDEX photos_idx ON photos(path)");
     }
     
     public void recreate() {
@@ -51,6 +52,9 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     	Log.i("DictionaryOpenHelper", "onUpgrade from " + oldVersion + " " + newVersion);
+        if (oldVersion < 2) {
+            db.execSQL("CREATE INDEX photos_idx ON photos(path)");
+        }
     }
 
     /**
@@ -513,14 +517,18 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         cal.add(Calendar.DAY_OF_MONTH, 1);
         endDate = cal.getTime();
         List<String> photos = new ArrayList<String>();
-        String where = " where 1 = 1 and p.name <> '"+MainActivity.NO_FACES+"' ";
+        String where = " where 1 = 1 ";
+        String query = "select ph.path, count(*) c from photos ph inner join faces f on f.photo_id = ph.id join person p on p.id = f.person_id ";
         if (!filterMan.isEmpty()) {
+            where += " and p.name <> '"+MainActivity.NO_FACES+"' ";
             String inds = "(-666";
             for (Integer idMan : filterMan) {
                 inds += "," + idMan;
             }
             inds = inds + ")";
             where += " and p.id in " + inds + " ";
+        } else {
+            query = "select ph.path, 1 c from photos ph ";
         }
         if (startDate != null) {
             where += " and time_photo >= " + startDate.getTime(); 
@@ -531,7 +539,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         Log.i("DictionaryOpenHelper", "query " + where);
         SQLiteDatabase s = getReadableDatabase();
         Cursor c = s
-                .rawQuery("select ph.path, count(*) c from photos ph inner join faces f on f.photo_id = ph.id join person p on p.id = f.person_id "
+                .rawQuery(query
                                 + where + " group by ph.path order by c desc", null);
         while (c.moveToNext()) {
             photos.add(c.getString(0));
@@ -542,7 +550,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public void getMaxMin(Date startDate, Date endDate) {
         SQLiteDatabase s = getReadableDatabase();
         Cursor c = s
-                .rawQuery("select max(time_photo), min(time_photo) c from photos ph inner join faces f on f.photo_id = ph.id join person p on p.id = f.person_id", null);
+                .rawQuery("select max(time_photo), min(time_photo) c from photos", null);
         if (c.moveToNext()) {
             startDate.setTime(c.getLong(1));
             endDate.setTime(c.getLong(0));
