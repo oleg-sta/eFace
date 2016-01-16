@@ -25,7 +25,7 @@
         android:id="@+id/checked"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:src="@drawable/checked"
+        android:src="@drawable/checkboxselected"
         android:visibility="invisible" />
 
 </ru.trolleg.faces.views.SquaredLinearLayout>
