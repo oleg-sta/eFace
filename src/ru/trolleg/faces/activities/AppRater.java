@@ -1,7 +1,6 @@
 package ru.trolleg.faces.activities;
 
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -15,7 +14,7 @@ public class AppRater {
     private static final String LAUNCH_COUNTER = "launch_count";
     private static final String DATE_FIRST_LAUNCH = "date_firstlaunch";
 
-    private final static int DAYS_UNTIL_PROMPT = 3;
+    private final static int DAYS_UNTIL_PROMPT = 7;
     private final static int LAUNCHES_UNTIL_PROMPT = 7;
 
     public static void appLaunched(Context mContext) {
@@ -67,14 +66,6 @@ public class AppRater {
         builder.setNeutralButton("Напомнить позже", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 clearSharedPreferences(context, editor);
-            }
-        });
-        builder.setNegativeButton("Нет, спасибо", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                if (editor != null) {
-                    editor.putBoolean(DONT_SHOW_AGAIN, true);
-                    editor.commit();
-                }
             }
         });
         builder.setOnCancelListener(new OnCancelListener() {

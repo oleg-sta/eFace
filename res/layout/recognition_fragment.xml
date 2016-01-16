@@ -134,7 +134,7 @@
         android:background="@color/action_button_color"
         android:orientation="horizontal" >
 
-        <android.support.v4.view.ViewPager
+        <ru.trolleg.faces.adapters.MyViewPagerMans
             android:id="@+id/aaa"
             android:layout_width="0dp"
             android:layout_height="match_parent"
