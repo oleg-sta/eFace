@@ -1,5 +1,14 @@
 package ru.trolleg.faces.adapters;
 
+import android.app.Activity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,16 +18,6 @@ import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.FacesGridAdapter.ViewHolder2;
 import ru.trolleg.faces.data.Face;
-import android.app.Activity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 /**
  * Адаптер людей для поиска фотографий в галерее
@@ -49,13 +48,13 @@ public class PersonForSearchAdapter extends ArrayAdapter<Integer>{
         } else {
             holder = (ViewHolder3) convertView.getTag();
         }
+        final CheckBox checkBox = holder.checkBox;
         holder.position = position;
         holder.checkBox.setChecked(checked.contains(position));
-        holder.checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            
+        holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+            public void onClick(View v) {
+                if(checkBox.isChecked()){
                     checked.add(position);
                 } else {
                     checked.remove(position);

@@ -40,6 +40,7 @@ public class FacesGridShow extends ArrayAdapter<Integer> {
     private final FacesActivity context;
     public final List<Integer> faces; // �������������� ������
     public final Set<Integer> checked = new HashSet<Integer>();
+    public boolean setAva = false;
 
     public FacesGridShow(FacesActivity context, List<Integer> faces) {
         super(context, R.layout.one_face, faces);
@@ -98,6 +99,29 @@ public class FacesGridShow extends ArrayAdapter<Integer> {
         holder.view.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (setAva) {
+                    setAva = false;
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setMessage(R.string.make_photo_ava);
+                    builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dbHelper.setAvaId(context.personId, faceId);
+                            // TODO так нехорошо делать
+                            context.updateAva();
+
+                            Intent intent = new Intent(PeopleFragment.UPDATE_PEOPLE);
+                            broadcastManager.sendBroadcast(intent);
+                        }
+                    }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Log.i("DragOverListMen", "No");
+                        }
+                    });
+                    // Create the AlertDialog object and return it
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                    return;
+                }
                 Intent personIntent = new Intent(context, DisplayCommonPhoto.class);
                 personIntent.putExtra(DataHolder.FACE_ID, faceId);
                 context.startActivity(personIntent);
@@ -130,9 +154,10 @@ public class FacesGridShow extends ArrayAdapter<Integer> {
                 return true;
             }
         });
-       
         return convertView;
     }
+
+
     
 
 }

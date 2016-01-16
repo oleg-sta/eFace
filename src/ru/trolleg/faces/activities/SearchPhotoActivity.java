@@ -198,7 +198,7 @@ public class SearchPhotoActivity extends AppCompatActivity {
         }
     }
     public void updatePeriod() {
-        String text = "Пероид поиска: " + (startDates == null? "..." : DATE_FORMAT_S.format(startDates)) + "-" + (endDateS == null? "..." : DATE_FORMAT_S.format(endDateS));
+        String text = (startDates == null? "..." : DATE_FORMAT_S.format(startDates)) + " - " + (endDateS == null? "..." : DATE_FORMAT_S.format(endDateS));
         periodView.setText(text);
     }
 }

@@ -6,5 +6,9 @@
         android:id="@+id/change_name"
         android:title="Изменить имя"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/set_ava"
+        android:title="Установить аватарку"
+        app:showAsAction="never"/>
 
 </menu>

@@ -30,6 +30,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Просмотр всех фотографий человека.
@@ -44,6 +45,7 @@ public class FacesActivity extends AppCompatActivity {
     DictionaryOpenHelper dbHelper;
     public Integer personId;
     ImageView iv;
+    FacesGridShow facesGrid;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +88,7 @@ public class FacesActivity extends AppCompatActivity {
         iv.setImageBitmap(DataHolder.getInstance().getLittleFaceInCirle(db, photo, this));
         db.close();
         
-        FacesGridShow facesGrid = new FacesGridShow(this, dbHelper.getAllIdsFacesForPerson(personId));
+        facesGrid = new FacesGridShow(this, dbHelper.getAllIdsFacesForPerson(personId));
         namePerson2.setText(getResources().getQuantityString(R.plurals.numberOfPhoto, facesGrid.faces.size(), facesGrid.faces.size()));
         final GridView gridFaces = (GridView) findViewById(R.id.grid_faces);
         gridFaces.setNumColumns(FacesGridAdapter.WIDTH_NUM_PICS);
@@ -107,7 +109,7 @@ public class FacesActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setView(input).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        String newName =  input.getText().toString();
+                        String newName = input.getText().toString();
                         dbHelper.updatePersonName(personId, newName);
                         namePerson.setText(newName);
                         Log.v("FacesActivity", "onOptionsItemSelected updatePersonName");
@@ -122,6 +124,10 @@ public class FacesActivity extends AppCompatActivity {
                 AlertDialog alertDialog = builder.create();
                 alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                 alertDialog.show();
+                return true;
+            case R.id.set_ava:
+                facesGrid.setAva = true;
+                Toast.makeText(this, "Нажмите на фотографию", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

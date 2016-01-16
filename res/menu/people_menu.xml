@@ -6,6 +6,7 @@
         android:id="@+id/action_search"
         android:icon="@android:drawable/ic_menu_search"
         android:title="Search"
+        android:orderInCategory="21"
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="always"/>
     
@@ -15,7 +16,7 @@
         app:showAsAction="ifRoom"
         android:title="сортировка"
         android:icon="@drawable/ic_action_sort_by_size">
-        
+
         <menu>
             <group>
                 

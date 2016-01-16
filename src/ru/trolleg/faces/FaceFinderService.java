@@ -107,12 +107,15 @@ public class FaceFinderService extends IntentService {
             
             if (oper == Operation.FIND_PHOTOS) {
                 List<Photo> allPhotos = MainActivity.getCameraPhotos(getApplicationContext());
+                DataHolder.photoCount = allPhotos.size();
+                Intent intent22 = new Intent(PeopleFragment.UPDATE_FACES);
+                broadcastManager.sendBroadcast(intent22);
                 Log.d(TAG, "onHandleIntent photos " + allPhotos.size());
+                // удаление лиц с удаленными фотографиями
                 dbHelper.addNewPhotos(allPhotos);
                 int newPhotos = dbHelper.getCountNewPhotos();
                 Log.d(TAG, "onHandleIntent newFaces " + newPhotos);
                 buttonStart = false;
-                Intent intent22 = new Intent(PeopleFragment.UPDATE_FACES);
                 DataHolder.photoCount = allPhotos.size();
                 DataHolder.photoProcessedCount = dbHelper.getAllCountPhotosProcessed();
                 DataHolder.facesCount = dbHelper.getFacesCount();

@@ -25,8 +25,7 @@
 <h3>Просмотр оригинальных фотографий</h3>
 Из страницы просмотра лиц человека можно попасть в оригинальную фотографию. Для этого необходимо нажать на лицо.
     ]]></string>
-        	
-        <string-array name="tab_array">
+     <string-array name="tab_array">
         <item>@string/tab_name_people</item>
         <item>@string/tab_name_recognition</item>
         <item>@string/tab_name_gallery</item>
