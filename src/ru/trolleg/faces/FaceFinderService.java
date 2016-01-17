@@ -54,7 +54,7 @@ public class FaceFinderService extends IntentService {
     public static boolean buttonStart = false;
     public String lastMessage = null;
 
-    static FaceFinderService instance;
+    public static boolean instance;
     public final static int PHOTOS_LIMIT = 3000;
     public final static int PHOTOS_SIZE_TO_BE_PROCESSED = 800;
 	public final static int PHOTOS_SIZE_TO_BE_CUT = 600;
@@ -65,6 +65,7 @@ public class FaceFinderService extends IntentService {
 
     public FaceFinderService(String name) {
         super(name);
+        Log.d(TAG, "FaceFinderService");
         Logger1.log("FaceFinderService");
         // TODO Auto-generated constructor stub
     }
@@ -102,7 +103,7 @@ public class FaceFinderService extends IntentService {
             if (intent != null) {
                 oper = (Operation) intent.getSerializableExtra(OPER);
             } else {
-                buttonStart = true;
+                //buttonStart = true;
             }
             
             if (oper == Operation.FIND_PHOTOS) {
@@ -115,12 +116,16 @@ public class FaceFinderService extends IntentService {
                 dbHelper.addNewPhotos(allPhotos);
                 int newPhotos = dbHelper.getCountNewPhotos();
                 Log.d(TAG, "onHandleIntent newFaces " + newPhotos);
-                buttonStart = false;
+                //buttonStart = false;
                 DataHolder.photoCount = allPhotos.size();
                 DataHolder.photoProcessedCount = dbHelper.getAllCountPhotosProcessed();
                 DataHolder.facesCount = dbHelper.getFacesCount();
                 broadcastManager.sendBroadcast(intent22);
-                return;
+                Log.d(TAG, "onHandleIntent is !buttonStart? " + buttonStart);
+                if (!buttonStart) {
+                    Log.d(TAG, "onHandleIntent !buttonStart");
+                    return;
+                }
             }
             
             lastMessage = "";
@@ -381,13 +386,9 @@ public class FaceFinderService extends IntentService {
         Log.i(TAG, "onCreate22");
         Logger1.log("onCreate22");
         super.onCreate();
-        instance = this;
         broadcastManager = LocalBroadcastManager.getInstance(this);
     }
 
-    public static FaceFinderService getInstance() {
-        return instance;
-    }
     @Override
     public void onStart(Intent intent, int startId) {
         Log.i(TAG, "onStart22");
@@ -399,16 +400,13 @@ public class FaceFinderService extends IntentService {
     public void onDestroy() {
         Log.i(TAG, "onDestroy22");
         Logger1.log("onDestroy22");
-        instance = null;
+        // TODO synchronize
         if (!buttonStart) {
             Intent intent22 = new Intent(PeopleFragment.UPDATE_FACES);
             intent22.putExtra("ended", true);
             broadcastManager.sendBroadcast(intent22);
-        }
-        // Запустить сервис снова, если стоит start
-        if (lastMessage!= null) {
-        }
-        if (buttonStart) {
+            instance = false;
+        } else {
             Intent intent = new Intent(getApplicationContext(), FaceFinderService.class);
             getApplicationContext().startService(intent);
         }

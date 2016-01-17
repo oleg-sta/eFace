@@ -91,10 +91,13 @@ public class RecognizeFragment extends Fragment {
         Log.v("RecognizeFragment", "onStart");
         super.onStart();
         if (!FaceFinderService.buttonStart) {
-            Log.i("RecognizeFragment", "!FaceFinderService.buttonStart");
-            Intent intent = new Intent(context, FaceFinderService.class);
-            intent.putExtra(FaceFinderService.OPER, Operation.FIND_PHOTOS);
-            getActivity().startService(intent);
+            if (!FaceFinderService.instance) {
+                FaceFinderService.instance = true;
+                Log.i("RecognizeFragment", "!FaceFinderService.buttonStart");
+                Intent intent = new Intent(context, FaceFinderService.class);
+                intent.putExtra(FaceFinderService.OPER, Operation.FIND_PHOTOS);
+                getActivity().startService(intent);
+            }
         }
     }
     
@@ -136,9 +139,7 @@ public class RecognizeFragment extends Fragment {
         Log.i("MainActivity", "size persons " + adapterFaces.faces.size());
         
         adapterMans = new PersonListToRecogniseAdapter(getActivity(), dbHelper.getAllIdsPerson(0, true), this);
-
         android.support.v4.view.ViewPager gal = (android.support.v4.view.ViewPager) rootView.findViewById(R.id.aaa);
-        
         gal.setAdapter(adapterMans);
 
         phoCOuntTw = (TextView) rootView.findViewById(R.id.all_photos);
@@ -153,8 +154,7 @@ public class RecognizeFragment extends Fragment {
         phoProCOuntTw.setText("" + DataHolder.photoProcessedCount);
         facesCountTw.setText("" + DataHolder.facesCount);
         Log.i("RecognizeFragment", "stats " + DataHolder.photoCount + " " + DataHolder.photoProcessedCount + " " + DataHolder.facesCount);
-        
-           
+
         LinearLayout men_lay = (LinearLayout) rootView.findViewById(R.id.men_lay);
         men_lay.getLayoutParams().height = getResources().getDisplayMetrics().widthPixels / (FacesGridAdapter.WIDTH_NUM_PICS + 1) + DataHolder.dp2Px(16, context);
         
@@ -223,23 +223,6 @@ public class RecognizeFragment extends Fragment {
         return rootView;
     }
 
-    public boolean buttonStart(Context context) {
-        FaceFinderService.buttonStart = !FaceFinderService.buttonStart;
-        if (!FaceFinderService.buttonStart) {
-            //button.setImageResource(R.drawable.start);
-        } else {
-            //button.setImageResource(R.drawable.pause);
-            // TODO нельзя запускать, если работает
-            if (FaceFinderService.getInstance() == null) {
-                Log.i("RecognizeFragment", "" + context);
-                Log.i("RecognizeFragment", "" + this + " " + this.adapterFaces);
-                Intent intent = new Intent(context, FaceFinderService.class);
-                context.startService(intent);
-            }
-        }
-        return FaceFinderService.buttonStart;
-    }
-    
     public void onReceiveResult2(Context context2, Intent intent2) {
         String photo = intent2.getStringExtra("photo");
         boolean ended = intent2.getBooleanExtra("ended", false);
@@ -261,10 +244,6 @@ public class RecognizeFragment extends Fragment {
     
     public void setCurrentMan(Integer manId) {
         currentMan = manId;
-        String name = dbHelper.getPersonName(manId);
-        if (name == null) {
-            name = "Лица";
-        }
         adapterFaces.clear();
         adapterFaces.checked.clear();
         adapterFaces.addAll(dbHelper.getAllIdsFacesForPerson(currentMan));
@@ -310,13 +289,17 @@ public class RecognizeFragment extends Fragment {
     }
     
     private void onClickStart22() {
+        Log.i("FaceFinder", "onClickStart22");
         FaceFinderService.buttonStart = !FaceFinderService.buttonStart;
         if (!FaceFinderService.buttonStart) {
             stMenu.setIcon(R.drawable.start);
         } else {
+            Log.i("FaceFinder", "onClickStart222 " + FaceFinderService.buttonStart);
             stMenu.setIcon(R.drawable.pause);
             // TODO нельзя запускать, если работает
-            if (FaceFinderService.getInstance() == null) {
+            if (!FaceFinderService.instance) {
+                Log.i("FaceFinder", "onClickStart223 " + FaceFinderService.instance);
+                FaceFinderService.instance = true;
                 Intent intent = new Intent(context, FaceFinderService.class);
                 getActivity().startService(intent);
             }
