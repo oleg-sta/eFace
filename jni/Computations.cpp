@@ -37,6 +37,7 @@ void rot90(cv::Mat &matImage, int rotflag){
 }
 
 JNIEXPORT jobjectArray JNICALL Java_ru_trolleg_faces_jni_Computations_findFaces2(JNIEnv* env, jobject thiz, jstring detectorXml1, jstring detectorXml2, jstring photoPath, jdouble koef, jint rotflat) {
+	try {
 	cv::CascadeClassifier face_cascade;
 	const char *s = env->GetStringUTFChars(detectorXml1, NULL);
 	const char *s2 = env->GetStringUTFChars(photoPath, NULL);
@@ -91,6 +92,7 @@ JNIEXPORT jobjectArray JNICALL Java_ru_trolleg_faces_jni_Computations_findFaces2
 			__android_log_print(ANDROID_LOG_INFO, "Computations", "face false");
 			floats.insert(floats.begin()+i, 0.5f);
 		}
+
 	}
 
 	jclass cls = env->FindClass("detection/Rectangle");
@@ -104,6 +106,16 @@ JNIEXPORT jobjectArray JNICALL Java_ru_trolleg_faces_jni_Computations_findFaces2
 
 	__android_log_print(ANDROID_LOG_INFO, "Computations", "photo processed");
 	return jobAr;
+	}
+	    catch (...) {
+	    	__android_log_print(ANDROID_LOG_INFO, "Computations", "some error occured");
+	    	jclass cls = env->FindClass("detection/Rectangle");
+	    		jmethodID constructor = env->GetMethodID(cls, "<init>", "(IIIIF)V");
+	    		jobjectArray jobAr =env->NewObjectArray(0, cls, NULL);
+
+	        return jobAr;
+	    }
+
 }
 
 JNIEXPORT jobjectArray JNICALL Java_ru_trolleg_faces_jni_Computations_findFaces(JNIEnv* env, jobject thiz, jobjectArray image, jfloat baseScale, jfloat increment,
