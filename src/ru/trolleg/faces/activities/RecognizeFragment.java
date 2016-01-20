@@ -61,7 +61,7 @@ public class RecognizeFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.v("RecognizeFragment", "onCreate");
+        Log.v("RecognizeFragment", "onCreate " + this);
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         broadcastManager = LocalBroadcastManager.getInstance(getActivity());
@@ -306,4 +306,13 @@ public class RecognizeFragment extends Fragment {
         }
     }
 
+    public boolean backPress() {
+        Log.i("RecognizeFragment", "backPress " + currentMan + " " + this);
+        if (currentMan != null) {
+            Log.i("RecognizeFragment", "backPress2");
+            setCurrentMan(null);
+            return true;
+        }
+        return false;
+    }
 }

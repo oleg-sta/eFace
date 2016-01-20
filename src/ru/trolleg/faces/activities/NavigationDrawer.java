@@ -33,6 +33,7 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
     ViewPager mViewPager;
     DictionaryOpenHelper dbHelper;
     MaterialTabHost tabHost;
+    static RecognizeFragment fr;
     public static final boolean DEVELOPER_MODE = true;
     
     public void onCreate(Bundle savedInstanceState) {
@@ -87,7 +88,8 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
                 case 0:
                     return new PeopleFragment();
                 case 1:
-                    return new RecognizeFragment();
+                    fr = new RecognizeFragment();
+                    return fr;
                 default:
                     return new AlbumGridFragment();
             }
@@ -107,6 +109,15 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
     
     @Override
     public void onBackPressed() {
+        Log.i("NavigationDrawer", "onBackPressed");
+        // TODO дать делать категорически нельзя
+        Log.i("NavigationDrawer", "onBackPressed " + fr + " " + mViewPager.getCurrentItem());
+        if (mViewPager.getCurrentItem() == 1) {
+            Log.i("NavigationDrawer", "onBackPressed");
+            if (fr.backPress()) {
+                return;
+            }
+        }
         super.onBackPressed();
     }
 
