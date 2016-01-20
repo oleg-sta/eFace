@@ -76,7 +76,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public int getAllCountPhotosProcessed() {
         int count = 0;
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s.rawQuery("select count(*) from photos where time_processed is not null", null);
+        Cursor c = s.rawQuery("select count(*) from photos", null);
         if (c.moveToNext()) {
             count = c.getInt(0);
         }
@@ -113,12 +113,23 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         return i;
     }
 
+    public void addNewPhoto(Photo photo) {
+        SQLiteDatabase s = getWritableDatabase();
+        Cursor c = s.rawQuery("select path from photos where path = '" + encapsulateSql(photo.path) + "'", null);
+        if (!c.moveToNext()) {
+            s.execSQL("insert into photos (path, time_photo) values ('" + encapsulateSql(photo.path) + "'," + photo.dateTaken.getTime() + ")");
+        } else {
+        }
+        c.close();
+        s.close();
+    }
+
     private static String encapsulateSql(String str) {
         return str == null? null : str.replaceAll("'", "''");     
     }
     public void updatePhoto(String photo, long time) {
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("update photos set time_processed = "+time+" where path = '" + encapsulateSql(photo) + "'");
+        s.execSQL("update photos set time_processed = " + time + " where path = '" + encapsulateSql(photo) + "'");
         s.close();
     }
     public void updatePersonName(Integer id, String newName) {
@@ -127,7 +138,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         values.put("name", newName);
         values.put("name_upper", newName.toUpperCase());
         //s.execSQL("update "+TABLE_PERSON+" set name = '"+newName+"', name_upper = '"+newName.toUpperCase()+"' where id = " + id + "");
-        s.update(TABLE_PERSON, values, "id = ?", new String[] { String.valueOf(id)});
+        s.update(TABLE_PERSON, values, "id = ?", new String[]{String.valueOf(id)});
         s.close();
     }
 
@@ -326,7 +337,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public void removeGroups() {
         Log.v("DictionaryOpenHelper", "removeGroups");
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("delete from "+TABLE_PERSON+"");
+        s.execSQL("delete from " + TABLE_PERSON + "");
         s.close();
     }
 
@@ -408,7 +419,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public void facesToNullPeople() {
         SQLiteDatabase s = getWritableDatabase();
         s.execSQL("update faces set person_id = null");
-        s.execSQL("delete from "+TABLE_PERSON);
+        s.execSQL("delete from " + TABLE_PERSON);
         s.close();
     }
 
@@ -494,7 +505,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     
     public void setAvaId(int personId, int faceId) {
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("update person set ava_id = "+faceId+" where id = " + personId);
+        s.execSQL("update person set ava_id = " + faceId + " where id = " + personId);
         s.close();
     }
 
@@ -557,4 +568,20 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         }
     }
 
+    public void removeCascadePhotos(List<String> photoProcessed) {
+        SQLiteDatabase s = getWritableDatabase();
+        for (String photo : photoProcessed) {
+            Integer idPhoto = null;
+            Cursor c = s.rawQuery("select id from photos where path = '" + photo + "'", null);
+            if (c.moveToNext()) {
+                idPhoto = c.getInt(0);
+            }
+            c.close();
+            if (idPhoto != null) {
+                s.execSQL("delete from faces where photo_id = " + idPhoto);
+                s.execSQL("delete from photos where id = " + idPhoto);
+            }
+        }
+        s.close();
+    }
 }

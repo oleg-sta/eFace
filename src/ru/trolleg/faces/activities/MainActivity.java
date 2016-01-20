@@ -27,13 +27,13 @@ public class MainActivity {
     public final static String NO_FACES = "Не лица";
     public final static String INPUT_NAME = "Введите имя";
 
-    public static List<Photo> getCameraPhotos(Context context) {
+    public static Map<String, Photo> getCameraPhotos(Context context) {
         final String[] projection = { MediaStore.Images.Media.DATA, Images.Media.BUCKET_DISPLAY_NAME, Images.Media._ID, Images.Media.DATE_TAKEN};
         String selection = null;
         String[] selectionArgs = null;
         final Cursor cursor = context.getContentResolver().query(Images.Media.EXTERNAL_CONTENT_URI, projection,
                 selection, selectionArgs, Images.Media._ID + " DESC");
-        ArrayList<Photo> result = new ArrayList<Photo>(cursor.getCount());
+        Map<String, Photo> result = new HashMap<String, Photo>();
         int i = 0;
         if (cursor.moveToFirst()) {
             final int dataColumn = cursor.getColumnIndexOrThrow(Images.Media.DATA);
@@ -44,7 +44,7 @@ public class MainActivity {
                 Photo photo = new Photo();
                 photo.path = data;
                 photo.dateTaken = date;
-                result.add(photo);
+                result.put(data, photo);
                 i++;
             } while (cursor.moveToNext());
         }

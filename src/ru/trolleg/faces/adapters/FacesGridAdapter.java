@@ -114,63 +114,68 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
         final int faceId = faces.get(position);
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
         Face face = dbHelper.getFaceForId(faceId);
-     
-        view.setAlpha(face.probability);
-        BitmapWorkerFaceCrop.loadImage(face, context, holder, position);
-        
-        view.setOnLongClickListener(new OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                String photo = dbHelper.getPhotoPathByFaceId(faceId);
-                Intent personIntent = new Intent(context, ShowCommonPhoto.class);
-                personIntent.putExtra("photo", photo);
-                context.startActivity(personIntent);
-                return true;
-            }
-        });
-        view.setOnTouchListener(new OnTouchListener() {
-            
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch(event.getAction())  {
-                case MotionEvent.ACTION_DOWN: {
-                    ImageView view = (ImageView) v;
-                    Drawable drawable = view.getDrawable();
-                    boolean hasImage = (drawable != null);
-                    if (hasImage && (drawable instanceof BitmapDrawable)) {
-                        hasImage = ((BitmapDrawable)drawable).getBitmap() != null;
-                    }
-                    if (hasImage) {
-                        view.setBackgroundColor(Color.WHITE);
-                        view.setPadding(5, 5, 5, 5);
-                        view.invalidate();
-                    }
-                    break;
+        if (face == null) {
+            view.setImageBitmap(null);
+            view.setOnClickListener(null);
+            view.setOnTouchListener(null);
+            view.setOnLongClickListener(null);
+        } else {
+            view.setAlpha(face.probability);
+            BitmapWorkerFaceCrop.loadImage(face, context, holder, position);
+            view.setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    String photo = dbHelper.getPhotoPathByFaceId(faceId);
+                    Intent personIntent = new Intent(context, ShowCommonPhoto.class);
+                    personIntent.putExtra("photo", photo);
+                    context.startActivity(personIntent);
+                    return true;
                 }
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL: {
-                    ImageView view = (ImageView) v;
-                    view.setPadding(0, 0, 0, 0);
-                    view.invalidate();
-                    break;
-                }
-            }
-            return false;
-            }
+            });
+            view.setOnTouchListener(new OnTouchListener() {
 
-        });
-        view.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                view2.setVisibility(view2.getVisibility() == View.VISIBLE? View.INVISIBLE : View.VISIBLE);
-                if (view2.getVisibility() == View.VISIBLE) {
-                    checked.add(position);
-                } else {
-                    checked.remove(position);
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN: {
+                            ImageView view = (ImageView) v;
+                            Drawable drawable = view.getDrawable();
+                            boolean hasImage = (drawable != null);
+                            if (hasImage && (drawable instanceof BitmapDrawable)) {
+                                hasImage = ((BitmapDrawable) drawable).getBitmap() != null;
+                            }
+                            if (hasImage) {
+                                view.setBackgroundColor(Color.WHITE);
+                                view.setPadding(5, 5, 5, 5);
+                                view.invalidate();
+                            }
+                            break;
+                        }
+                        case MotionEvent.ACTION_UP:
+                        case MotionEvent.ACTION_CANCEL: {
+                            ImageView view = (ImageView) v;
+                            view.setPadding(0, 0, 0, 0);
+                            view.invalidate();
+                            break;
+                        }
+                    }
+                    return false;
                 }
-                
-            }
-        });
+
+            });
+            view.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    view2.setVisibility(view2.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+                    if (view2.getVisibility() == View.VISIBLE) {
+                        checked.add(position);
+                    } else {
+                        checked.remove(position);
+                    }
+
+                }
+            });
+        }
         return convertView;
     }
     

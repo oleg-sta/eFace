@@ -5,8 +5,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import ru.trolleg.faces.activities.MainActivity;
@@ -93,41 +97,39 @@ public class FaceFinderService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Logger1.log("onHandleIntent");
         Log.d(TAG, "onHandleIntent " + intent);
-        //Bundle bundle = null;
-        //ResultReceiver rec = null;
         WakeLock wakeLock = null;
         try {
-            
             DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
-            Operation oper = null;
-            if (intent != null) {
-                oper = (Operation) intent.getSerializableExtra(OPER);
-            } else {
-                //buttonStart = true;
+            Map<String, Photo> allPhotos = MainActivity.getCameraPhotos(getApplicationContext());
+            DataHolder.photoCount = allPhotos.size();
+            Intent intent22 = new Intent(PeopleFragment.UPDATE_FACES);
+            broadcastManager.sendBroadcast(intent22);
+            Log.d(TAG, "onHandleIntent photos " + allPhotos.size());
+            List<String> photoProcessed = dbHelper.getAllPhotos();
+            List<String> photoProcessedToDelete = new ArrayList<>(photoProcessed);
+            Log.d(TAG, "onHandleIntent photos processed " + photoProcessed.size());
+
+            Set<String> allPhotosAl = new HashSet<>(allPhotos.keySet());
+            allPhotos.keySet().removeAll(photoProcessed);
+            Log.d(TAG, "onHandleIntent photos to process " + allPhotos.size());
+            photoProcessed.retainAll(allPhotosAl);
+            photoProcessedToDelete.removeAll(allPhotosAl);
+            Log.d(TAG, "onHandleIntent photos to delete " + photoProcessedToDelete.size());
+
+            DataHolder.photoProcessedCount = photoProcessed.size();
+            DataHolder.facesCount = dbHelper.getFacesCount();
+            broadcastManager.sendBroadcast(intent22);
+            // TODO delete all deleted photos
+            dbHelper.removeCascadePhotos(photoProcessedToDelete);
+            // TODO notify of deleted faces
+            Log.d(TAG, "onHandleIntent is !buttonStart? " + buttonStart);
+            if (!buttonStart) {
+                Log.d(TAG, "onHandleIntent !buttonStart");
+                return;
             }
-            
-            if (oper == Operation.FIND_PHOTOS) {
-                List<Photo> allPhotos = MainActivity.getCameraPhotos(getApplicationContext());
-                DataHolder.photoCount = allPhotos.size();
-                Intent intent22 = new Intent(PeopleFragment.UPDATE_FACES);
-                broadcastManager.sendBroadcast(intent22);
-                Log.d(TAG, "onHandleIntent photos " + allPhotos.size());
-                // удаление лиц с удаленными фотографиями
-                dbHelper.addNewPhotos(allPhotos);
-                int newPhotos = dbHelper.getCountNewPhotos();
-                Log.d(TAG, "onHandleIntent newFaces " + newPhotos);
-                //buttonStart = false;
-                DataHolder.photoCount = allPhotos.size();
-                DataHolder.photoProcessedCount = dbHelper.getAllCountPhotosProcessed();
-                DataHolder.facesCount = dbHelper.getFacesCount();
-                broadcastManager.sendBroadcast(intent22);
-                Log.d(TAG, "onHandleIntent is !buttonStart? " + buttonStart);
-                if (!buttonStart) {
-                    Log.d(TAG, "onHandleIntent !buttonStart");
-                    return;
-                }
-            }
-            
+
+
+
             lastMessage = "";
             PowerManager mgr = (PowerManager) getSystemService(Context.POWER_SERVICE);
             wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
@@ -156,9 +158,9 @@ public class FaceFinderService extends IntentService {
             Logger1.log("onHandleIntent threads " + threadsNum);
             
             // find faces on photos
-            List<String> photos = dbHelper.getAllPhotosToBeProcessed();
-            Log.d(TAG, "onHandleIntent photos " + photos.size());
-            if (photos.size() == 0) {
+            //List<String> photos = dbHelper.getAllPhotosToBeProcessed();
+            Log.d(TAG, "onHandleIntent photos " + allPhotos.size());
+            if (allPhotos.size() == 0) {
                 Log.d(TAG, "zero photos ");
                 buttonStart = false;
             	return;
@@ -172,44 +174,36 @@ public class FaceFinderService extends IntentService {
             //InputStream inputHaas = getResources().openRawResource(R.raw.haarcascade_frontalface_default);
             //Detector detector = Detector.create(inputHaas);
             Log.i(TAG, getFilesDir().getAbsolutePath());
-            String detecrtorName = getFilesDir() + File.separator + "detector.xml";
-            rawResourceToFile(R.raw.my_detector, detecrtorName);
+            String detectorName = getFilesDir() + File.separator + "detector.xml";
+            rawResourceToFile(R.raw.my_detector, detectorName);
             
             String secondDetectorName = getFilesDir() + File.separator + "detector_second.xml";
             rawResourceToFile(R.raw.my_detector_pr_2, secondDetectorName);
-            // just test
-            //detecrtorName = secondDetectorName; 
- 
+
             Log.d(TAG, "casade loaded");
             Logger1.log("casade loaded");
             int iPh = 0;
-            for (String photo : photos) {
+            for (String photo : allPhotos.keySet()) {
+                Photo photoInfo = allPhotos.get(photo);
                 try {
                     if (!buttonStart) {
                         break;
                     }
-                    mBuilder.setContentText(iPh + " из " + photos.size() + " обработано");
-                    mBuilder.setProgress(photos.size(), iPh, false);
-                    Notification not = mBuilder.build();
-                    //not.flags = not.flags | Notification.FLAG_INSISTENT;
-                    not.flags = not.flags | Notification.FLAG_ONGOING_EVENT;
-                    mNotifyManager.notify(notif_id, not);
-                    
+                    dbHelper.addNewPhoto(photoInfo);
+
                     iPh++;
                     Log.d(TAG, "photo" + photo);
-                    Logger1.log("photo " + photo + " " + iPh + " " + photos.size());
+                    Logger1.log("photo " + photo + " " + iPh + " " + allPhotos.size());
                     if (!new File(photo).exists()) {
                         Log.d(TAG, "photo " + photo + " doesn't exist");
                         continue;
                     }
 
-                    
                     ExifInterface exif = new ExifInterface(photo);
                     int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
                     int orient = getOrient(orientation);
                     Log.i(TAG, "orientation " + orientation);
-                    
-                    
+
                     BitmapFactory.Options bitmap_options = new BitmapFactory.Options();
                     bitmap_options.inPreferredConfig = Bitmap.Config.RGB_565;
 
@@ -238,7 +232,7 @@ public class FaceFinderService extends IntentService {
                     long time = System.currentTimeMillis();
                     Computations comp = new Computations();
                     
-                    List<Rectangle> res = Arrays.asList(comp.findFaces2(detecrtorName, secondDetectorName, photo, 1 / koef, orient));
+                    List<Rectangle> res = Arrays.asList(comp.findFaces2(detectorName, secondDetectorName, photo, 1 / koef, orient));
                     time = (System.currentTimeMillis() - time) / 1000;
                     Logger1.log("find in " + time);
                     Log.i(TAG, "foune " + res.size() + " faces");
@@ -266,11 +260,20 @@ public class FaceFinderService extends IntentService {
                         dbHelper.addFace(faceCur, photoId);
                     }
                     Log.d(TAG, "send processed photo " + photo);
-                    Intent intent22 = new Intent(PeopleFragment.UPDATE_FACES);
+                    intent22 = new Intent(PeopleFragment.UPDATE_FACES);
                     DataHolder.photoProcessedCount = dbHelper.getAllCountPhotosProcessed();
                     DataHolder.facesCount = dbHelper.getFacesCount();
                     intent22.putExtra("photo", photo);
                     broadcastManager.sendBroadcast(intent22);
+
+                    mBuilder.setContentText(DataHolder.photoProcessedCount + " из " + DataHolder.photoCount + " обработано");
+                    mBuilder.setProgress(DataHolder.photoCount, DataHolder.photoProcessedCount, false);
+                    Notification not = mBuilder.build();
+                    //not.flags = not.flags | Notification.FLAG_INSISTENT;
+                    not.flags = not.flags | Notification.FLAG_ONGOING_EVENT;
+                    mNotifyManager.notify(notif_id, not);
+
+
                  } catch (Exception e) {
                     Log.d(TAG, "error" + e.getMessage());
                     Logger1.log("error" + e.getMessage());
@@ -278,10 +281,9 @@ public class FaceFinderService extends IntentService {
                     dbHelper.updatePhoto(photo, -1);
                 }
             }
-            if (iPh == photos.size()) {
+            if (iPh == allPhotos.size()) {
                 buttonStart = false;
-                
-                Intent intent22 = new Intent(PeopleFragment.UPDATE_FACES);
+                intent22 = new Intent(PeopleFragment.UPDATE_FACES);
                 DataHolder.photoProcessedCount = dbHelper.getAllCountPhotosProcessed();
                 DataHolder.facesCount = dbHelper.getFacesCount();
                 broadcastManager.sendBroadcast(intent22);
