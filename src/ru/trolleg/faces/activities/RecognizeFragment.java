@@ -156,7 +156,7 @@ public class RecognizeFragment extends Fragment {
         Log.i("RecognizeFragment", "stats " + DataHolder.photoCount + " " + DataHolder.photoProcessedCount + " " + DataHolder.facesCount);
 
         LinearLayout men_lay = (LinearLayout) rootView.findViewById(R.id.men_lay);
-        men_lay.getLayoutParams().height = getResources().getDisplayMetrics().widthPixels / (FacesGridAdapter.WIDTH_NUM_PICS + 1) + DataHolder.dp2Px(16, context);
+        men_lay.getLayoutParams().height = getResources().getDisplayMetrics().widthPixels / (FacesGridAdapter.WIDTH_NUM_PICS + 1) + DataHolder.dp2Px(16 + 16, context);
         
         ImageView im2 = (ImageView) rootView.findViewById(R.id.add_face2);
         im2.setImageResource(R.drawable.add_face);
