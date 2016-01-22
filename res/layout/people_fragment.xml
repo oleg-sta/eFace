@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="5dp"
-        android:dividerHeight="20dp"
+        android:dividerHeight="0dp"
         android:divider="@drawable/list_divider"
         android:overScrollFooter="@android:color/transparent"
         android:footerDividersEnabled="false"/>

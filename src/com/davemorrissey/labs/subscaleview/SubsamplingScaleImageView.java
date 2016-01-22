@@ -84,6 +84,7 @@ public class SubsamplingScaleImageView extends View {
 
     /** для отладки обведение лиц в рамки*/
     public Face[] faces;
+    public boolean showFaces;
     /** Данный флаг регулирует необходимость загрузить высококачественное изображение. */
     public boolean preview = false;
     
@@ -1018,10 +1019,10 @@ public class SubsamplingScaleImageView extends View {
 
         }
         
-        if (faces != null && debug) {
+        if (faces != null && showFaces) {
             Paint pa = new Paint();
             pa.setColor(Color.YELLOW);
-            pa.setStrokeWidth(5);
+            pa.setStrokeWidth(1);
             pa.setStyle(Style.STROKE);
             if (matrix == null) { matrix = new Matrix(); }
             matrix.reset();
@@ -1036,7 +1037,7 @@ public class SubsamplingScaleImageView extends View {
                       (float)(sRect2.right * sWidth() / 100), (float)(sRect2.bottom * sHeight() / 100));
                 matrix.mapRect(sRect);
                 Log.i("Subs", "face "  + sRect.left +  " " + sRect.top);
-                pa.setAlpha((int)(face.probability * 255));
+                //pa.setAlpha((int)(face.probability * 255));
                 canvas.drawRect(sRect, pa);
             }
         }

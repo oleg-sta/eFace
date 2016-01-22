@@ -10,13 +10,32 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal" />
 
-    <TextView
-        android:id="@+id/name_man"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|top"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp" />
+    <LinearLayout
+        android:id="@+id/lay1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:layout_gravity="top"
+        android:background="@color/action_bar_color"
+        android:alpha="0.3">
+
+        <TextView
+            android:id="@+id/name_man"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:alpha="1"
+            android:layout_weight="1"
+            android:textSize="16sp" />
+        <CheckBox
+            android:id="@+id/show_faces"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:gravity="right|center_vertical"
+            android:alpha="1"/>
+
+    </LinearLayout>
 
     <ru.trolleg.faces.adapters.HorizontalListView
         android:id="@+id/gallery1"

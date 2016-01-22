@@ -26,7 +26,6 @@ import android.widget.TextView;
 public class FirstFacesOnPersonActivity extends ArrayAdapter<Integer>{
     private final Activity context;
     public final List<Integer> men;
-    public final Set<Integer> checked = new HashSet<Integer>();
 
     public FirstFacesOnPersonActivity(Activity context, List<Integer> men) {
         super(context, R.layout.name_faces, men);

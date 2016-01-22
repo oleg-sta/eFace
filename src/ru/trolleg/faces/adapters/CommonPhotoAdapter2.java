@@ -34,6 +34,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.OnImageEven
  */
 public class CommonPhotoAdapter2 extends PagerAdapter {
 
+    public boolean showFaces;
     public int currentPosition;
     public List<String> photos;
     private LayoutInflater inflater;
@@ -73,12 +74,13 @@ public class CommonPhotoAdapter2 extends PagerAdapter {
         } else {
             imageView.preview = false;
         }
+        imageView.showFaces = showFaces;
         cc.put(position, imageView);
         imageView.faces = infoPh.faces;
         imageView.setMaxScale(5);
         imageView.setMaximumDpi(5);
         imageView.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
-        imageView.setDebug(DataHolder.debugMode);
+        //imageView.setDebug(DataHolder.debugMode);
         
         final BitmapFactory.Options options2 = new BitmapFactory.Options();
         options2.inJustDecodeBounds = true;
@@ -96,7 +98,7 @@ public class CommonPhotoAdapter2 extends PagerAdapter {
             public void onClick(View v) {
                 View v2 = ((PhotoGalleryCommon) _activity).horizontal;
                 v2.setVisibility(v2.getVisibility() == View.VISIBLE? View.INVISIBLE : View.VISIBLE);
-                v2 = ((PhotoGalleryCommon) _activity).nameView;
+                v2 = ((PhotoGalleryCommon) _activity).v;
                 v2.setVisibility(v2.getVisibility() == View.VISIBLE? View.INVISIBLE : View.VISIBLE);
                 
             }
@@ -148,6 +150,19 @@ public class CommonPhotoAdapter2 extends PagerAdapter {
         if (imageView != null) {
             Log.i("CommonPhotoAdapter2", "redrawView2 " + imageView.uri);
             imageView.preview = false;
+            imageView.invalidate();
+        }
+    }
+
+    public void setFacesCheck(boolean isChecked) {
+        showFaces = isChecked;
+        for (SubsamplingScaleImageView vv : cc.values()) {
+            vv.showFaces = isChecked;
+        }
+        SubsamplingScaleImageView imageView = cc.get(currentPosition);
+        if (imageView != null) {
+            Log.i("CommonPhotoAdapter2", "redrawView2 " + imageView.uri);
+            imageView.showFaces = isChecked;
             imageView.invalidate();
         }
     }

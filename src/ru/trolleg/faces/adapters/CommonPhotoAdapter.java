@@ -9,6 +9,8 @@ import ru.trolleg.faces.DeactivableViewPager;
 import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.activities.DisplayCommonPhoto;
+import ru.trolleg.faces.data.InfoPhoto;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -40,7 +42,8 @@ public class CommonPhotoAdapter extends PagerAdapter {
     //TouchImageView imgDisplay;
     DeactivableViewPager mPager;
     Map<Integer, SubsamplingScaleImageView> cc = new HashMap<Integer, SubsamplingScaleImageView>();
-    
+    public boolean showFaces;
+
     public CommonPhotoAdapter(Activity activity, List<Integer> faces, DeactivableViewPager mPager) {
         this._activity = activity;
         this.faces = faces;
@@ -70,6 +73,7 @@ public class CommonPhotoAdapter extends PagerAdapter {
         } else {
             imageView.preview = false;
         }
+        imageView.showFaces = showFaces;
         cc.put(position, imageView);
         final ProgressBar bar = (ProgressBar) viewLayout.findViewById(R.id.progressBar);
         
@@ -77,7 +81,9 @@ public class CommonPhotoAdapter extends PagerAdapter {
         String photoPath = dbHelper.getPhotoPathByFaceId(faces.get(position));
         imageView.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
         imageView.setMaxScale(5);
-        imageView.setDebug(DataHolder.debugMode);
+        InfoPhoto infoPh = dbHelper.getInfoPhotoFull(photoPath);
+        imageView.faces = infoPh.faces;
+        //imageView.setDebug(DataHolder.debugMode);
         
         final BitmapFactory.Options options2 = new BitmapFactory.Options();
         options2.inJustDecodeBounds = true;
@@ -90,7 +96,7 @@ public class CommonPhotoAdapter extends PagerAdapter {
             public void onClick(View v) {
                 View v2 = ((DisplayCommonPhoto) _activity).horizontal;
                 v2.setVisibility(v2.getVisibility() == View.VISIBLE? View.INVISIBLE : View.VISIBLE);
-                v2 = ((DisplayCommonPhoto) _activity).nameView;
+                v2 = ((DisplayCommonPhoto) _activity).v;
                 v2.setVisibility(v2.getVisibility() == View.VISIBLE? View.INVISIBLE : View.VISIBLE);
                 
             }
@@ -145,5 +151,17 @@ public class CommonPhotoAdapter extends PagerAdapter {
             imageView.invalidate();
         }
     }
-     
+
+    public void setFacesCheck(boolean isChecked) {
+        showFaces = isChecked;
+        for (SubsamplingScaleImageView vv : cc.values()) {
+            vv.showFaces = isChecked;
+        }
+        SubsamplingScaleImageView imageView = cc.get(currentPosition);
+        if (imageView != null) {
+            Log.i("CommonPhotoAdapter2", "redrawView2 " + imageView.uri);
+            imageView.showFaces = isChecked;
+            imageView.invalidate();
+        }
+    }
 }

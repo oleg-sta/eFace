@@ -18,6 +18,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -28,6 +31,7 @@ import android.widget.TextView;
 public class DisplayCommonPhoto extends Activity {
 
     public TextView nameView;
+    public View v;
     public HorizontalListView horizontal;
     
     CommonPhotoAdapter mPagerAdapter;
@@ -43,6 +47,7 @@ public class DisplayCommonPhoto extends Activity {
         setContentView(R.layout.comon_photo_pager);
         Integer faceId = getIntent().getIntExtra(DataHolder.FACE_ID, 0);
         nameView = (TextView) findViewById(R.id.name_man);
+        v = findViewById(R.id.lay1);
         final DeactivableViewPager mPager = (DeactivableViewPager) findViewById(R.id.pager);
         DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
         Integer personId = dbHelper.getPersonIdByFaceId(faceId);
@@ -82,6 +87,14 @@ public class DisplayCommonPhoto extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mPager.setCurrentItem(position);
                 setCurrentFromBig(position, false);
+            }
+        });
+        CheckBox showFaces = (CheckBox) findViewById(R.id.show_faces);
+        showFaces.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.i("PhotoGalleryCommon", "onCheckedChanged " + isChecked);
+                mPagerAdapter.setFacesCheck(isChecked);
             }
         });
     }
