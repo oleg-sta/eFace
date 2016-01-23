@@ -11,7 +11,8 @@ import ru.trolleg.faces.R;
 import ru.trolleg.materialtabs.MaterialTab;
 import ru.trolleg.materialtabs.MaterialTabHost;
 import ru.trolleg.materialtabs.MaterialTabListener;
-import android.os.Build;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -127,29 +128,33 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
         inflater.inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-        case R.id.reset:
-            dbHelper.recreate();
-            return true;
-        case R.id.reset_people:
-            dbHelper.facesToNullPeople();
-            return true;
-        case R.id.copy_db:
-            copyDb();
-            return true;
-        case R.id.reser_cache:
-            resetCache();
-            return true;
-        case R.id.debug_mode:
-            DataHolder.debugMode = !DataHolder.debugMode;
-            return true;
-        case R.id.rate_dialog:
-            AppRater.appLaunched(this, true);
-        default:
-            return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.settings:
+                Intent searchIntent = new Intent(this, SettingsActivity.class);
+                startActivity(searchIntent);
+                return true;
+            case R.id.reset:
+                dbHelper.recreate();
+                return true;
+            case R.id.reset_people:
+                dbHelper.facesToNullPeople();
+                return true;
+            case R.id.copy_db:
+                copyDb();
+                return true;
+            case R.id.reser_cache:
+                resetCache();
+                return true;
+            case R.id.debug_mode:
+                DataHolder.debugMode = !DataHolder.debugMode;
+                return true;
+            case R.id.rate_dialog:
+                AppRater.appLaunched(this, true);
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

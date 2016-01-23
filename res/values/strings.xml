@@ -6,6 +6,7 @@
     <string name="act_faces_name">Лица</string>
     <string name="act_common_photo_name">Общее фото</string>
     <string name="help">Справка</string>
+    <string name="settings">Настройки</string>
     <string name="article_main" formatted="false"><![CDATA[
 <h3>Галерея лиц</h3>
 <h3>Поиск лиц</h3>
@@ -46,4 +47,5 @@
     <string name="cancel">Отмена</string>
     <string name="accept">Принять</string>
     <string name="make_photo_ava">Сделать фотографию главной?</string>
+    <string name="menu_settings">Настройки</string>
 </resources>

@@ -17,7 +17,12 @@ import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -27,13 +32,14 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class PhotoGalleryCommon extends Activity {
+public class PhotoGalleryCommon extends AppCompatActivity {
     public static final String PHOTOS_ARRAY = "photos_array";
     public static String PHOTO_ID = "photoId";
     public TextView nameView;
     public View v;
     public HorizontalListView horizontal;
     CommonPhotoAdapter2 mPagerAdapter;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -42,13 +48,24 @@ public class PhotoGalleryCommon extends Activity {
         List<String> photos = getIntent().getExtras().getStringArrayList(PHOTOS_ARRAY);
         Log.i("PhotoGalleryCommon", "photos " + photos);
         
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.comon_photo_pager);
 
+        final Toolbar toolbar = (android.support.v7.widget.Toolbar) this.findViewById(R.id.toolbar);
+        this.setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        v = toolbar;
+
         nameView = (TextView) findViewById(R.id.name_man);
-        v = findViewById(R.id.lay1);
+        //v = findViewById(R.id.lay1);
         final DeactivableViewPager mPager = (DeactivableViewPager) findViewById(R.id.pager);
         if (photos == null) {
             photos = MainActivity.getCameraImages(this, albumId);
@@ -58,6 +75,7 @@ public class PhotoGalleryCommon extends Activity {
         mPager.setCurrentItem(position);
         String fileName = new File(mPagerAdapter.photos.get(position)).getName();
         nameView.setText(fileName);
+        setTitle("");
         mPagerAdapter.currentPosition = position;
         mPager.addOnPageChangeListener(new OnPageChangeListener() {
             

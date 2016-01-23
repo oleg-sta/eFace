@@ -31,7 +31,7 @@ public class ShowCommonPhoto extends Activity {
         SubsamplingScaleImageView imageView = (SubsamplingScaleImageView) findViewById(R.id.imageView);
         imageView.setMaxScale(5);
         imageView.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
-        imageView.setDebug(DataHolder.debugMode);
+        //imageView.setDebug(DataHolder.debugMode);
         
         imageView.setImage(ImageSource.uri(infoPh));
     }

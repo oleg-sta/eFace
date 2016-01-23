@@ -31,8 +31,8 @@
             android:name="ru.trolleg.faces.activities.DisplayCommonPhoto">
         </activity>
         <activity
-            android:label="@string/help"
-            android:name="ru.trolleg.faces.activities.HelpActivity">
+            android:label="@string/settings"
+            android:name=".activities.SettingsActivity">
         </activity>
         <service android:name=".FaceFinderService" />
         <activity
