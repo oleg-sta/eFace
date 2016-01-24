@@ -1,20 +1,18 @@
 package ru.trolleg.faces.activities;
 
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.GridView;
+
 import java.util.List;
 
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.FacesGridAdapter;
 import ru.trolleg.faces.adapters.GridPhotosAdapter;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.GridView;
 
 /**
  * просмотр всех фотографий альбома

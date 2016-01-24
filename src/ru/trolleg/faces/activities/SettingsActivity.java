@@ -1,18 +1,15 @@
 package ru.trolleg.faces.activities;
 
-import ru.trolleg.faces.R;
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.text.Spanned;
-import android.util.Log;
+import ru.trolleg.faces.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.TextView;
+
+import ru.trolleg.faces.R;
 
 /**
  * @author sov

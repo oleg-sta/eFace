@@ -1,36 +1,24 @@
 package ru.trolleg.faces.activities;
 
+import android.os.Bundle;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v7.app.AppCompatActivity;
+import ru.trolleg.faces.Log;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TextView;
+
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.DeactivableViewPager;
-import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.CommonPhotoAdapter2;
-import ru.trolleg.faces.adapters.FacesCommonAdapter;
 import ru.trolleg.faces.adapters.HorizontalListView;
 import ru.trolleg.faces.adapters.HorizontalPhotoAdapter;
-import android.app.Activity;
-import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class PhotoGalleryCommon extends AppCompatActivity {
     public static final String PHOTOS_ARRAY = "photos_array";

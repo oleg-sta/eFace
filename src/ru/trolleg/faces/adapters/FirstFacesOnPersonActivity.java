@@ -14,7 +14,7 @@ import ru.trolleg.faces.data.Face;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.util.Log;
+import ru.trolleg.faces.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;

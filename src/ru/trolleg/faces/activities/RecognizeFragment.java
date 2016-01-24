@@ -19,7 +19,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.InputType;
 import android.util.DisplayMetrics;
-import android.util.Log;
+import ru.trolleg.faces.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;

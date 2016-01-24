@@ -1,6 +1,12 @@
 package ru.trolleg.faces.activities;
 
-import java.util.ArrayList;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.GridView;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -10,16 +16,6 @@ import ru.trolleg.faces.DictionaryOpenHelper;
 import ru.trolleg.faces.R;
 import ru.trolleg.faces.adapters.FacesGridAdapter;
 import ru.trolleg.faces.adapters.GridPhotosAdapter;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.GridView;
 
 public class ShowSearchResultActivity extends AppCompatActivity {
     

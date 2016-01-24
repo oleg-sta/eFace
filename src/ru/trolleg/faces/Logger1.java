@@ -18,7 +18,7 @@ public class Logger1 {
     static OutputStream out;
 
     public static void log(String message) {
-        if (true) {
+        if (!BuildConfig.DEBUG) {
             return;
         }
         try {

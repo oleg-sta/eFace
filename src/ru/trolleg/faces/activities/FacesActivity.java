@@ -18,7 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.Toolbar.LayoutParams;
 import android.text.InputType;
-import android.util.Log;
+import ru.trolleg.faces.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;

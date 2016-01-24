@@ -1,27 +1,25 @@
 package ru.trolleg.faces.activities;
 
-import java.util.List;
-
-import ru.trolleg.faces.DataHolder;
-import ru.trolleg.faces.DeactivableViewPager;
-import ru.trolleg.faces.DictionaryOpenHelper;
-import ru.trolleg.faces.R;
-import ru.trolleg.faces.adapters.CommonPhotoAdapter;
-import ru.trolleg.faces.adapters.FacesCommonAdapter;
-import ru.trolleg.faces.adapters.HorizontalListView;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.List;
+
+import ru.trolleg.faces.DataHolder;
+import ru.trolleg.faces.DeactivableViewPager;
+import ru.trolleg.faces.DictionaryOpenHelper;
+import ru.trolleg.faces.Log;
+import ru.trolleg.faces.R;
+import ru.trolleg.faces.adapters.CommonPhotoAdapter;
+import ru.trolleg.faces.adapters.FacesCommonAdapter;
+import ru.trolleg.faces.adapters.HorizontalListView;
 
 /**
  * Просмотр общего фото

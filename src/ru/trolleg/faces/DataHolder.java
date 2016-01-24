@@ -24,7 +24,6 @@ import android.graphics.RectF;
 import android.media.ExifInterface;
 import android.media.ThumbnailUtils;
 import android.support.v4.util.LruCache;
-import android.util.Log;
 
 
 public class DataHolder {

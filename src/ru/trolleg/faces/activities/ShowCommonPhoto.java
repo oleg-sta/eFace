@@ -1,18 +1,15 @@
 package ru.trolleg.faces.activities;
 
+import android.app.Activity;
+import android.os.Bundle;
+import ru.trolleg.faces.Log;
+import android.view.Window;
+import android.view.WindowManager;
+
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 
-import ru.trolleg.faces.BitmapWorkerTask;
-import ru.trolleg.faces.DataHolder;
 import ru.trolleg.faces.R;
-import ru.trolleg.faces.TouchImageView;
-import android.app.Activity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ProgressBar;
 
 public class ShowCommonPhoto extends Activity {
     
