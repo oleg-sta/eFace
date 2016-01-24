@@ -33,6 +33,10 @@
             android:label="@string/settings"
             android:name=".activities.SettingsActivity">
         </activity>
+        <activity
+            android:label="@string/about"
+            android:name=".activities.About">
+        </activity>
         <service android:name=".FaceFinderService" />
         <activity
             android:label="@string/act_people_name"

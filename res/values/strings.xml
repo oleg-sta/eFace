@@ -44,4 +44,6 @@
     <string name="tutorial_6_2">\tЛюбые пожелания и предложения Вы можете отправить через форму обратной связи</string>
     <string name="tutorial_6_3">\tСпасибо, что Вы с нами!</string>
     <string name="tutorial_6_4">В приложение</string>
+    <string name="menu_about">О программе</string>
+    <string name="about">О программе</string>
 </resources>

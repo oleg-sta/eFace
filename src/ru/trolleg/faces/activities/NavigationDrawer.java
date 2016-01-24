@@ -148,6 +148,9 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
                 Intent searchIntent = new Intent(this, SettingsActivity.class);
                 startActivity(searchIntent);
                 return true;
+            case R.id.about:
+                startActivity(new Intent(this, About.class));
+                return true;
             case R.id.tutorial:
                 startActivity(new Intent(this, TutorialActivity.class));
                 return true;
