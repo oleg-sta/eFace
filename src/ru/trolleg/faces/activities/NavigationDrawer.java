@@ -12,7 +12,9 @@ import ru.trolleg.materialtabs.MaterialTab;
 import ru.trolleg.materialtabs.MaterialTabHost;
 import ru.trolleg.materialtabs.MaterialTabListener;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -72,6 +74,16 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
                     tabHost.newTab().setText(mAppSectionsPagerAdapter.getPageTitle(i)).setTabListener(this)
                             );
         }
+
+        // первый старт и показ туториала
+        SharedPreferences prefs = getSharedPreferences("first_start", Context.MODE_PRIVATE);
+        if (prefs.getBoolean("first", true)) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("first", false);
+            editor.commit();
+            startActivity(new Intent(this, TutorialActivity.class));
+        }
+
         AppRater.appLaunched(this);
     }
     
@@ -135,6 +147,9 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
             case R.id.settings:
                 Intent searchIntent = new Intent(this, SettingsActivity.class);
                 startActivity(searchIntent);
+                return true;
+            case R.id.tutorial:
+                startActivity(new Intent(this, TutorialActivity.class));
                 return true;
             case R.id.reset:
                 dbHelper.recreate();

@@ -10,7 +10,6 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
     
     <application
         android:allowBackup="true"
@@ -58,6 +57,11 @@
         <activity
             android:label="поиск по галерее"
             android:name="ru.trolleg.faces.activities.ShowSearchResultActivity">
+        </activity>
+        <activity
+            android:label="туториал"
+            android:name="ru.trolleg.faces.activities.TutorialActivity"
+            android:screenOrientation="portrait">
         </activity>
         </application>
 
