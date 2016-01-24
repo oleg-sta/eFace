@@ -65,19 +65,10 @@ public class SearchPhotoActivity extends AppCompatActivity {
         });
         
         final SearchPhotoActivity fragment2 = this;
-        CheckBox allCheck = (CheckBox) findViewById(R.id.all_check);
         DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(this);
         final ListView listView2 = (ListView) findViewById(R.id.list_search_people);
         final PersonForSearchAdapter adap = new PersonForSearchAdapter(this, dbHelper.getAllIdsPerson(0, true));
         listView2.setAdapter(adap);
-        allCheck.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                adap.checkAll(isChecked);
-                adap.notifyDataSetChanged();
-            }
-        });
 
         if (startDates == null) {
             startDates = new Date();

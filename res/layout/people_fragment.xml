@@ -20,7 +20,4 @@
         android:overScrollFooter="@android:color/transparent"
         android:footerDividersEnabled="false"/>
     
-                
-
-
 </LinearLayout>

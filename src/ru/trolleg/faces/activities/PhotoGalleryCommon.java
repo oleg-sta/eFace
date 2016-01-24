@@ -53,19 +53,8 @@ public class PhotoGalleryCommon extends AppCompatActivity {
 
         setContentView(R.layout.comon_photo_pager);
 
-        final Toolbar toolbar = (android.support.v7.widget.Toolbar) this.findViewById(R.id.toolbar);
-        this.setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-        v = toolbar;
-
         nameView = (TextView) findViewById(R.id.name_man);
-        //v = findViewById(R.id.lay1);
+        v = nameView;
         final DeactivableViewPager mPager = (DeactivableViewPager) findViewById(R.id.pager);
         if (photos == null) {
             photos = MainActivity.getCameraImages(this, albumId);
@@ -114,14 +103,6 @@ public class PhotoGalleryCommon extends AppCompatActivity {
             }
         });
 
-        CheckBox showFaces = (CheckBox) findViewById(R.id.show_faces);
-        showFaces.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.i("PhotoGalleryCommon", "onCheckedChanged " + isChecked);
-                mPagerAdapter.setFacesCheck(isChecked);
-            }
-        });
     }
     
     public void setCurrentFromBig(int position, boolean fromBig) {

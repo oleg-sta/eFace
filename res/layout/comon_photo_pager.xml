@@ -11,50 +11,15 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.5">
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:theme="@style/ToolbarTheme"
-        app:popupTheme="@style/Toolbar_Popup"
-        app:titleTextAppearance="@style/Toolbar.TitleText" />
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/lay1"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:orientation="horizontal"
-        android:paddingTop="90dp"
-        android:layout_gravity="top"
-        android:background="@color/action_bar_color"
-        android:alpha="0">
-
-        <ImageView
-            android:layout_width="?attr/actionBarSize"
-            android:layout_height="?attr/actionBarSize"
-            android:src="@drawable/ic_action_back"/>
-        <TextView
-            android:id="@+id/name_man"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:alpha="1"
-            android:layout_weight="1"
-            android:textSize="16sp" />
-        <CheckBox
-            android:id="@+id/show_faces"
-            android:layout_width="30dp"
-            android:layout_height="match_parent"
-            android:gravity="right|center_vertical"
-            android:alpha="1"/>
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/name_man"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/all_text"
+        android:layout_gravity="center_horizontal|top"
+        android:alpha="1"
+        android:layout_weight="1"
+        android:textSize="16sp" />
 
     <ru.trolleg.faces.adapters.HorizontalListView
         android:id="@+id/gallery1"

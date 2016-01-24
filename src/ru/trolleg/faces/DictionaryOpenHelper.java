@@ -509,22 +509,22 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         s.close();
     }
 
+    private static void nullTime(Calendar cal) {
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+    }
     // TODO выдавать результат с указанием сколько людей на фотке нашлось и впорядке уменьшения количества наденных
     public List<String> getPhotoIds(Set<Integer> filterMan, Date startDate2, Date endDate2) {
         Date startDate;
         Date endDate;
         Calendar cal = Calendar.getInstance();
         cal.setTime(startDate2);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
+        nullTime(cal);
         startDate = cal.getTime();
         cal.setTime(endDate2);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
+        nullTime(cal);
         cal.add(Calendar.DAY_OF_MONTH, 1);
         endDate = cal.getTime();
         List<String> photos = new ArrayList<String>();
@@ -537,7 +537,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
                 inds += "," + idMan;
             }
             inds = inds + ")";
-            where += " and p.id in " + inds + " ";
+            where += " and p.id in " + inds;
         } else {
             query = "select ph.path, 1 c from photos ph ";
         }
@@ -547,13 +547,19 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         if (endDate != null) {
             where += " and time_photo < " + endDate.getTime();
         }
-        Log.i("DictionaryOpenHelper", "query " + where);
+        String fullQuery = query + where + " group by ph.path order by c desc";
+        Log.i("DictionaryOpenHelper", "query " + fullQuery);
         SQLiteDatabase s = getReadableDatabase();
-        Cursor c = s
-                .rawQuery(query
-                                + where + " group by ph.path order by c desc", null);
+        Cursor c = s.rawQuery(fullQuery, null);
         while (c.moveToNext()) {
-            photos.add(c.getString(0));
+            int count = c.getInt(1);
+            if (filterMan.size() > 0) {
+                if (count == filterMan.size()) {
+                    photos.add(c.getString(0));
+                }
+            } else {
+                photos.add(c.getString(0));
+            }
         }
         return photos;
     }
