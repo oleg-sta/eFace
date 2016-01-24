@@ -247,6 +247,9 @@ public class FaceFinderService extends IntentService {
                         }
                         // FaceppResult face = result.get("face").get(i);
                         Rectangle face = res.get(i);
+                        if (face.probability < 1) {
+                            continue;
+                        }
                         // FaceppResult position = face.get("position");
                         Face faceCur = new Face();
                         faces[i] = faceCur;
