@@ -31,6 +31,6 @@
         android:padding="5dip"
         android:textColor="#CF8ED1"
         android:textSize="18sp"
-        android:text="@string/skip"/>
+        android:text="@string/tutorial_skip"/>
 
 </LinearLayout>
