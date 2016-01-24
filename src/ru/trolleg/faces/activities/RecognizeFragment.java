@@ -124,7 +124,7 @@ public class RecognizeFragment extends Fragment {
         adapterFaces = new FacesGridAdapter(getActivity(), dbHelper.getAllIdsFacesForPerson(currentMan));
         final GridView listView = (GridView) rootView.findViewById(R.id.listFaces);
         listView.setColumnWidth(getResources().getDisplayMetrics().widthPixels / FacesGridAdapter.WIDTH_NUM_PICS);
-        //listView.set
+        listView.setEmptyView(rootView.findViewById(R.id.empty));
         listView.setAdapter(adapterFaces);
         adapterFaces.notifyDataSetChanged();
         Log.i("MainActivity", "size persons " + adapterFaces.faces.size());

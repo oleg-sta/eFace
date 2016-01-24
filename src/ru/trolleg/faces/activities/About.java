@@ -41,7 +41,7 @@ public class About extends AppCompatActivity {
 
     public void mailTo(View view) {
         Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                "mailto",getString(R.string.mail_to), null));
+                "mailto", getString(R.string.mail_to), null));
         intent.putExtra(Intent.EXTRA_SUBJECT, "eFace");
         startActivity(Intent.createChooser(intent, getString(R.string.send_mail_with)));
     }

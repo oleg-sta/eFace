@@ -49,6 +49,9 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
     
     @Override
     public int getCount() {
+        if (faces.size() == 0) {
+            return 0;
+        }
         return faces.size() + WIDTH_NUM_PICS + 1;
     }
 

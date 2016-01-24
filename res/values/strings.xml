@@ -67,4 +67,5 @@
     <string name="by_name">По имени</string>
     <string name="by_quantity">По количеству</string>
     <string name="search_on_gallery">поиск по галерее</string>
+    <string name="no_faces">Нет ни одного найденного лица, запустите поиск кнопкой «Плей»</string>
 </resources>
