@@ -34,7 +34,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE photos (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, path TEXT, time_processed real, time_photo integer);");
         db.execSQL("create table faces (guid text, photo_id integer, person_id integer, height real, width real, centerX real, centerY real, id integer PRIMARY KEY AUTOINCREMENT NOT NULL, probability real);");
-        db.execSQL("create table "+TABLE_PERSON+" (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, name text, name_upper text,deleted INTEGER, ava_id integer);");
+        db.execSQL("create table " + TABLE_PERSON + " (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, name text, name_upper text,deleted INTEGER, ava_id integer);");
         db.execSQL("CREATE INDEX photos_idx ON photos(path)");
     }
     
@@ -166,10 +166,6 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         c.close();
         s.close();
         return faces;
-    }
-
-    public int addPerson() {
-        return addPerson(MainActivity.INPUT_NAME);
     }
 
     public int addPerson(String name) {
@@ -401,14 +397,6 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         return res;
 	}
 
-	public void removeFromPerson(int faceId) {
-		//String guidNewPerson = UUID.randomUUID().toString();
-		int newPerosn = addPerson();
-		Face face = getFaceForId(faceId);
-		addFaceToPerson(face.guid, newPerosn);
-	}
-
-	
     public void removePerson(Integer oldPersonId) {
         SQLiteDatabase s = getWritableDatabase();
         s.execSQL("delete from "+TABLE_PERSON+" where id = " + oldPersonId);

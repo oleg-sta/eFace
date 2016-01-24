@@ -25,7 +25,6 @@ import ru.trolleg.faces.data.Photo;
 public class MainActivity {
 
     public final static String NO_FACES = "Не лица";
-    public final static String INPUT_NAME = "Введите имя";
 
     public static Map<String, Photo> getCameraPhotos(Context context) {
         final String[] projection = { MediaStore.Images.Media.DATA, Images.Media.BUCKET_DISPLAY_NAME, Images.Media._ID, Images.Media.DATE_TAKEN};
