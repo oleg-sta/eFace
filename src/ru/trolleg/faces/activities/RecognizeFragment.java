@@ -61,21 +61,18 @@ public class RecognizeFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.v("RecognizeFragment", "onCreate " + this);
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         broadcastManager = LocalBroadcastManager.getInstance(getActivity());
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.i("RecognizeFragment", "broadcastReceiver onReceive");
                 adapterMans.notifyDataSetChanged();
             }
         };
         broadcastReceiver2 = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.i("RecognizeFragment", "broadcastReceiver2 onReceive");
                 onReceiveResult2(context, intent);
             }
         };
@@ -88,12 +85,10 @@ public class RecognizeFragment extends Fragment {
     }
     @Override
     public void onStart() {
-        Log.v("RecognizeFragment", "onStart");
         super.onStart();
         if (!FaceFinderService.buttonStart) {
             if (!FaceFinderService.instance) {
                 FaceFinderService.instance = true;
-                Log.i("RecognizeFragment", "!FaceFinderService.buttonStart");
                 Intent intent = new Intent(context, FaceFinderService.class);
                 intent.putExtra(FaceFinderService.OPER, Operation.FIND_PHOTOS);
                 getActivity().startService(intent);
@@ -104,13 +99,11 @@ public class RecognizeFragment extends Fragment {
 
     @Override
     public void onStop() {
-        Log.v("RecognizeFragment", "onStop");
         super.onStop();
     }
     
     @Override
     public void onDestroy() {
-        Log.v("RecognizeFragment", "onDestroy");
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver2);
         super.onDestroy();
@@ -118,7 +111,6 @@ public class RecognizeFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.v("RecognizeFragment", "onCreateView");
         View rootView = inflater.inflate(R.layout.recognition_fragment, container, false);
         dbHelper = new DictionaryOpenHelper(getActivity());
 
@@ -126,7 +118,6 @@ public class RecognizeFragment extends Fragment {
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         context = getActivity();
-        Log.i("RecognizeFragment", "context " + context);
         final Context d = getActivity();
         final RecognizeFragment this1 = this;
 
@@ -176,12 +167,12 @@ public class RecognizeFragment extends Fragment {
                     input.setHint(R.string.enter_name);
                     input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS | InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setMessage("Добавление человека, выделено лиц - " + this1.adapterFaces.checked.size());
+                    builder.setMessage(String.format(d.getString(R.string.add_man), this1.adapterFaces.checked.size()));
                     builder.setView(input).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             String newName =  input.getText().toString();
                             if ("".equals(newName)) {
-                                newName = "Без имени";
+                                newName = d.getString(R.string.without_name);
                             }
                             final int newPerson = dbHelper.addPerson(newName);
                             adapterMans.men.add(newPerson);
@@ -196,7 +187,6 @@ public class RecognizeFragment extends Fragment {
                             Log.i("DragOverListMen", "No");
                         }
                     });
-                    // Create the AlertDialog object and return it
                     AlertDialog alertDialog = builder.create();
                     alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                     alertDialog.show();

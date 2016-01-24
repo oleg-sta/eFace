@@ -9,7 +9,7 @@
         android:id="@+id/empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Нет ни одного человека, перейдите на вкладку Распознавание и создайде людей." />
+        android:text="@string/no_man" />
     <ListView
         android:id="@+id/list_man"
         android:layout_width="match_parent"

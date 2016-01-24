@@ -134,19 +134,19 @@ public class FaceFinderService extends IntentService {
             wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
             wakeLock.acquire();
             
-            Notification note = new Notification(R.drawable.stat_notify_chat, "Обработка фотографий запущена",
+            Notification note = new Notification(R.drawable.stat_notify_chat, getString(R.string.proceesing_photo_started),
                     System.currentTimeMillis());
             Intent i2 = new Intent(this, NavigationDrawer.class);
             i2.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent pi = PendingIntent.getActivity(this, 0, i2, 0);
-            note.setLatestEventInfo(this, "Обработка фотографий", "Подождите...", pi);
+            note.setLatestEventInfo(this, getString(R.string.photo_processing), getString(R.string.waittt), pi);
             note.flags |= Notification.FLAG_NO_CLEAR;
             startForeground(notif_id, note);
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
             
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, NavigationDrawer.class), 0);
             NotificationManager mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            mBuilder.setContentTitle(getText(R.string.app_name)).setContentText("Обработка начата").setSmallIcon(R.drawable.stat_notify_chat);
+            mBuilder.setContentTitle(getText(R.string.app_name)).setContentText(getString(R.string.processing_started)).setSmallIcon(R.drawable.stat_notify_chat);
             mBuilder.setContentIntent(contentIntent);
             
             DataHolder dataHolder = DataHolder.getInstance();
@@ -265,7 +265,7 @@ public class FaceFinderService extends IntentService {
                     intent22.putExtra("photo", photo);
                     broadcastManager.sendBroadcast(intent22);
 
-                    mBuilder.setContentText(DataHolder.photoProcessedCount + " из " + DataHolder.photoCount + " обработано");
+                    mBuilder.setContentText(String.format(getString(R.string.status_process), DataHolder.photoProcessedCount, DataHolder.photoCount));
                     mBuilder.setProgress(DataHolder.photoCount, DataHolder.photoProcessedCount, false);
                     Notification not = mBuilder.build();
                     //not.flags = not.flags | Notification.FLAG_INSISTENT;
@@ -287,7 +287,7 @@ public class FaceFinderService extends IntentService {
                 DataHolder.facesCount = dbHelper.getFacesCount();
                 broadcastManager.sendBroadcast(intent22);
             }
-            mBuilder.setContentText("Обработка завершена");
+            mBuilder.setContentText(getString(R.string.process_ended));
             mBuilder.setProgress(iPh, iPh, false);
             Notification not = mBuilder.build();
             not.defaults |= Notification.DEFAULT_SOUND;

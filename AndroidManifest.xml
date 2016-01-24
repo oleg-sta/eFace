@@ -26,7 +26,6 @@
             </intent-filter>
         </activity> 
         <activity
-            android:label="@string/act_common_photo_name"
             android:name="ru.trolleg.faces.activities.DisplayCommonPhoto">
         </activity>
         <activity
@@ -39,31 +38,26 @@
         </activity>
         <service android:name=".FaceFinderService" />
         <activity
-            android:label="@string/act_people_name"
             android:name="ru.trolleg.faces.activities.FacesActivity">
         </activity>
         <activity
-            android:label="@string/act_people_name"
             android:name="ru.trolleg.faces.activities.PhotoGalleryCommon">
         </activity>
         <activity
-            android:label="@string/act_people_name"
             android:name="ru.trolleg.faces.activities.ShowCommonPhoto">
         </activity>
         <activity
-            android:label="@string/act_people_name"
             android:name="ru.trolleg.faces.activities.PhotoGridFragment">
         </activity>
         <activity
-            android:label="поиск по галерее"
+            android:label="@string/search_on_gallery"
             android:name="ru.trolleg.faces.activities.SearchPhotoActivity">
         </activity>
         <activity
-            android:label="поиск по галерее"
+            android:label="@string/search_on_gallery"
             android:name="ru.trolleg.faces.activities.ShowSearchResultActivity">
         </activity>
         <activity
-            android:label="туториал"
             android:name="ru.trolleg.faces.activities.TutorialActivity"
             android:screenOrientation="portrait">
         </activity>

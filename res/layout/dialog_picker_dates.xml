@@ -7,12 +7,12 @@
         android:id="@+id/first_date"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="с ..." >
+        android:text="" >
     </Button>
     <Button
         android:id="@+id/last_date"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="по ..." >
+        android:text="" >
     </Button>
 </LinearLayout>

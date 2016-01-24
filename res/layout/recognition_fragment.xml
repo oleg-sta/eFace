@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:typeface="sans"
-                android:text="фото на телефоне" />
+                android:text="@string/photo_on_phone" />
             
             <FrameLayout
                 android:layout_width="wrap_content"
@@ -82,7 +82,7 @@
                 style="@style/CodeFontStatsName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="обработано фото"
+                android:text="@string/photo_processed"
                 android:typeface="sans"
                 android:textColor="@color/all_text" />
 
@@ -107,7 +107,7 @@
                 style="@style/CodeFontStatsName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="найдено лиц"
+                android:text="@string/found_faces"
                 android:typeface="sans"
                 android:textColor="@color/all_text" />
 
@@ -170,17 +170,9 @@
                 android:textColor="@color/all_text"
                 android:singleLine="true"
                 android:layout_marginTop="-4dp"
-                android:text="Корзина"
+                android:text="@string/trash"
                 android:textSize="12sp" />
         </LinearLayout>
-        <!--
-             <ImageView
-            android:id="@+id/trash"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_margin="5dp"
-            android:src="@drawable/full_trash" />
-        -->
     </LinearLayout>
 
 </LinearLayout>

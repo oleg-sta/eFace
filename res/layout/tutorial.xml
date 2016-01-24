@@ -31,6 +31,6 @@
         android:padding="5dip"
         android:textColor="#CF8ED1"
         android:textSize="18sp"
-        android:text="пропустить"/>
+        android:text="@string/skip"/>
 
 </LinearLayout>

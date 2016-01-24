@@ -4,11 +4,11 @@
 
     <item
         android:id="@+id/change_name"
-        android:title="Изменить имя"
+        android:title="@string/change_name"
         app:showAsAction="never"/>
     <item
         android:id="@+id/set_ava"
-        android:title="Установить аватарку"
+        android:title="@string/set_ava"
         app:showAsAction="never"/>
 
 </menu>

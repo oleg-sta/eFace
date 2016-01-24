@@ -127,7 +127,7 @@ public class FacesActivity extends AppCompatActivity {
                 return true;
             case R.id.set_ava:
                 facesGrid.setAva = true;
-                Toast.makeText(this, "Нажмите на фотографию", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.click_photo, Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

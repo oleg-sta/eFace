@@ -1,5 +1,6 @@
 package ru.trolleg.faces.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -43,12 +44,12 @@ public class TutorialFragment extends Fragment {
             case 4:
                 return inflater.inflate(R.layout.tutorial_5, null);
             default:
-                return getTutorial6(inflater);
+                return getTutorial6(inflater, getActivity());
 
         }
     }
 
-    private View getTutorial6(LayoutInflater inflater) {
+    private View getTutorial6(LayoutInflater inflater, final Context context) {
         View v = inflater.inflate(R.layout.tutorial_6, null);
         View vStart = v.findViewById(R.id.start);
         vStart.setOnClickListener(new View.OnClickListener() {
@@ -61,9 +62,9 @@ public class TutorialFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                        "mailto", "moiaddress@gmail.com", null));
+                        "mailto", context.getString(R.string.mail_to), null));
                 intent.putExtra(Intent.EXTRA_SUBJECT, "eFace");
-                startActivity(Intent.createChooser(intent, "Отправить письмо с помощью"));
+                startActivity(Intent.createChooser(intent, context.getString(R.string.send_mail_with)));
             }
         });
         return v;

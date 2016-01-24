@@ -91,7 +91,7 @@ public class PersonListToRecogniseAdapter extends PagerAdapter {
                 } else {
                     String toName = dbHelper.getPersonName(manId);
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setMessage("Добавление выделено лиц - " + act.adapterFaces.checked.size() + " в " + toName);
+                    builder.setMessage(String.format(context.getString(R.string.add_to_man), act.adapterFaces.checked.size(), toName));
                     builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             moveFaces(act, manId, dbHelper);
