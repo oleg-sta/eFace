@@ -7,10 +7,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import ru.trolleg.faces.activities.MainActivity;
@@ -127,8 +129,6 @@ public class FaceFinderService extends IntentService {
                 return;
             }
 
-
-
             lastMessage = "";
             PowerManager mgr = (PowerManager) getSystemService(Context.POWER_SERVICE);
             wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
@@ -182,6 +182,11 @@ public class FaceFinderService extends IntentService {
             Log.d(TAG, "casade loaded");
             Logger1.log("casade loaded");
             int iPh = 0;
+            // sort map
+            ValueComparator bvc = new ValueComparator(allPhotos);
+            TreeMap sortedMap = new TreeMap(bvc);
+            sortedMap.putAll(allPhotos);
+            allPhotos = sortedMap;
             for (String photo : allPhotos.keySet()) {
                 Photo photoInfo = allPhotos.get(photo);
                 try {
@@ -305,7 +310,23 @@ public class FaceFinderService extends IntentService {
             }
         }
     }
-    
+
+    class ValueComparator implements Comparator<String> {
+        Map<String, Photo> base;
+
+        public ValueComparator(Map<String, Photo> base) {
+            this.base = base;
+        }
+
+        public int compare(String a, String b) {
+            if (base.get(a).dateTaken != null && base.get(b).dateTaken != null) {
+                return -base.get(a).dateTaken.compareTo(base.get(b).dateTaken);
+            } else {
+                return 0;
+            }
+        }
+    }
+
     private Rectangle rectFromFace(android.media.FaceDetector.Face face, int i, int j)
     {
         PointF pointf = new PointF();
