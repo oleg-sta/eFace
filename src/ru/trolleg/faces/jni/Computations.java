@@ -1,6 +1,5 @@
 package ru.trolleg.faces.jni;
 
-import detection.Detector;
 import detection.Rectangle;
 
 public class Computations {
@@ -8,9 +7,6 @@ public class Computations {
         System.loadLibrary("Computations");
     }
 
-    public native Rectangle[] findFaces(int[][] grayImage, float baseScale, float increment, int min_neighbors,
-            float scale_inc, boolean doCannyPruning, Detector detector, int threadsNum);
-    
     /**
      * 
      * @param photo полный путь до фото

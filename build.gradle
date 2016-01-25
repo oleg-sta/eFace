@@ -22,7 +22,6 @@ repositories {
 }
 
 dependencies {
-    compile "jdom:jdom:1.0"
     compile "com.android.support:support-v4:22.2.+"
     compile "com.android.support:appcompat-v7:22.2.+"
     compile 'com.viewpagerindicator:library:2.4.1@aar'
