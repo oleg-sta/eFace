@@ -7,8 +7,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -183,12 +188,25 @@ public class FaceFinderService extends IntentService {
             Logger1.log("casade loaded");
             int iPh = 0;
             // sort map
-            ValueComparator bvc = new ValueComparator(allPhotos);
-            TreeMap sortedMap = new TreeMap(bvc);
-            sortedMap.putAll(allPhotos);
-            allPhotos = sortedMap;
-            for (String photo : allPhotos.keySet()) {
-                Photo photoInfo = allPhotos.get(photo);
+            Log.d(TAG, "allPhotos.size " + allPhotos.size() + " " + allPhotos);
+
+            Collection<Photo> photos = allPhotos.values();
+            List<Photo> photosL = new ArrayList<>(photos);
+            Collections.sort(photosL, new Comparator<Photo>() {
+                @Override
+                public int compare(Photo lhs, Photo rhs) {
+                    if (lhs.dateTaken != null && rhs.dateTaken != null) {
+                        return -lhs.dateTaken.compareTo(rhs.dateTaken);
+                    } else {
+                        return 0;
+                    }
+                }
+            });
+
+            Log.d(TAG, "allPhotos.size " + allPhotos.size() + " " + allPhotos);
+            for (Photo photo1 : photosL) {
+                String photo = photo1.path;
+                Photo photoInfo = photo1;
                 try {
                     if (!buttonStart) {
                         break;
@@ -307,22 +325,6 @@ public class FaceFinderService extends IntentService {
         } finally {
             if (wakeLock != null) {
                 wakeLock.release();
-            }
-        }
-    }
-
-    class ValueComparator implements Comparator<String> {
-        Map<String, Photo> base;
-
-        public ValueComparator(Map<String, Photo> base) {
-            this.base = base;
-        }
-
-        public int compare(String a, String b) {
-            if (base.get(a).dateTaken != null && base.get(b).dateTaken != null) {
-                return -base.get(a).dateTaken.compareTo(base.get(b).dateTaken);
-            } else {
-                return 0;
             }
         }
     }

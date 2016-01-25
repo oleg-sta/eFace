@@ -119,6 +119,9 @@ public class DataHolder {
         if (bm == null) {
             Face faceCur = getFace(db, faceId);
             String path = getPathPhoto(db, faceCur.photoId);
+            if (path == null) {
+                return null;
+            }
             File file = new File(context.getFilesDir(), faceId + ".jpg");
             if (file.exists()) {
                 BitmapFactory.Options options = new BitmapFactory.Options();

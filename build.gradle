@@ -48,10 +48,19 @@ android {
 
     buildTypes {
         release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt')
             signingConfig signingConfigs.release
         }
         debug {
             signingConfig signingConfigs.debug
+        }
+    }
+    productFlavors {
+        flavor1 {
+        }
+        flavor2 {
+            proguardFile 'other-rules.pro'
         }
     }
     sourceSets {

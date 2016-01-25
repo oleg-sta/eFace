@@ -25,3 +25,8 @@
 -keep class android.support.v4.** { *; }
 -keep interface android.support.v4.** { *; }
 -keep public class android.support.v4.**
+-keep public class android.support.v4.**
+-keep public class detection.**
+-keepclassmembers class detection.Rectangle{
+ public <init>(int, int, int, int);
+}
