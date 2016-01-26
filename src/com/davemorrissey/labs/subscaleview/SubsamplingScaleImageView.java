@@ -63,9 +63,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
-import ru.trolleg.faces.DataHolder;
-import ru.trolleg.faces.R.styleable;
-import ru.trolleg.faces.data.Face;
+import ru.flightlabs.eface.R.styleable;
+import ru.flightlabs.eface.data.Face;
 
 /**
  * Displays an image subsampled as necessary to avoid loading too much image data into memory. After a pinch to zoom in,

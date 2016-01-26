@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <ru.trolleg.faces.views.SquaredImageView
+    <ru.flightlabs.eface.views.SquaredImageView
         android:id="@+id/one_face1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

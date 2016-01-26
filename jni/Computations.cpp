@@ -36,7 +36,7 @@ void rot90(cv::Mat &matImage, int rotflag){
   }
 }
 
-JNIEXPORT jobjectArray JNICALL Java_ru_trolleg_faces_jni_Computations_findFaces2(JNIEnv* env, jobject thiz, jstring detectorXml1, jstring detectorXml2, jstring photoPath, jdouble koef, jint rotflat) {
+JNIEXPORT jobjectArray JNICALL Java_ru_flightlabs_eface_jni_Computations_findFaces2(JNIEnv* env, jobject thiz, jstring detectorXml1, jstring detectorXml2, jstring photoPath, jdouble koef, jint rotflat) {
 	try {
 	cv::CascadeClassifier face_cascade;
 	const char *s = env->GetStringUTFChars(detectorXml1, NULL);

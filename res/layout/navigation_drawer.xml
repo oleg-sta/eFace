@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ru.trolleg.faces.activities.NavigationDrawer">
+    tools:context="ru.flightlabs.eface.activities.NavigationDrawer">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -14,7 +14,7 @@
         app:popupTheme="@style/Toolbar_Popup"
         app:titleTextAppearance="@style/Toolbar.TitleText" />
 
-    <ru.trolleg.materialtabs.MaterialTabHost
+    <ru.flightlabs.materialtabs.MaterialTabHost
         android:id="@+id/tabHost"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -24,7 +24,7 @@
          />
     <!-- app:materialTabsPrimaryColor="@color/action_bar_color"-->
 
-    <ru.trolleg.faces.adapters.MyViewPager
+    <ru.flightlabs.eface.adapters.MyViewPager
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/pager"
         android:layout_width="match_parent"

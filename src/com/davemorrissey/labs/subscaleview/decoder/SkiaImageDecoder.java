@@ -13,7 +13,7 @@ import android.util.Log;
 import java.io.InputStream;
 import java.util.List;
 
-import ru.trolleg.faces.FaceFinderService;
+import ru.flightlabs.eface.FaceFinderService;
 
 /**
  * Default implementation of {@link com.davemorrissey.labs.subscaleview.decoder.ImageDecoder}

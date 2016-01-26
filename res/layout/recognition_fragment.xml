@@ -141,7 +141,7 @@
         android:background="@color/action_button_color"
         android:orientation="horizontal" >
 
-        <ru.trolleg.faces.adapters.MyViewPagerMans
+        <ru.flightlabs.eface.adapters.MyViewPagerMans
             android:id="@+id/aaa"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -153,7 +153,7 @@
             android:layout_weight="1"
             android:orientation="vertical" >
 
-            <ru.trolleg.faces.views.SquaredImageView
+            <ru.flightlabs.eface.views.SquaredImageView
                 android:id="@+id/trash"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

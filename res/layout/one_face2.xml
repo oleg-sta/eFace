@@ -1,4 +1,4 @@
-<ru.trolleg.faces.views.SquaredLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ru.flightlabs.eface.views.SquaredLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="80dp"
     android:layout_height="80dp"
@@ -22,4 +22,4 @@
             android:visibility="gone" />
     </FrameLayout>
 
-</ru.trolleg.faces.views.SquaredLinearLayout>
+</ru.flightlabs.eface.views.SquaredLinearLayout>
