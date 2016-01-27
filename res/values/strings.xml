@@ -9,9 +9,9 @@
         <item>@string/tab_name_gallery</item>
     </string-array>
     <string name="app_rater_remind_later">Remind later</string>
-    <string name="app_rater_name_dialog">Evaluate the app</string>
-    <string name="app_rater_message">If you liked the app, please, find some time to evaluate it. Thank you for your support!</string>
-    <string name="apo_rater_rate_now">Evaluate now</string>
+    <string name="app_rater_name_dialog">Rate our app!</string>
+    <string name="app_rater_message">If you like our app, rate it!</string>
+    <string name="apo_rater_rate_now">Rate now!</string>
     <string name="enter_name">Enter a name</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
@@ -26,7 +26,7 @@
     <string name="make_photo_ava">Select as a main photo?</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_tutorial">Help</string>
-    <string name="tutorial_1_welcome">\tWelcome to eFace - convenient gallery with face search interface!</string>
+    <string name="tutorial_1_welcome">\tWelcome to eFace - convenient gallery with face recognition interface!</string>
     <string name="tutorial_2_1">\tButton Play in RECOGNITION tab starts face search:</string>
     <string name="tutorial_2_2">\tFace search requires some computing power. So, be careful with your battery`s charge</string>
     <string name="tutorial_2_3">\tYou can always stop face search in RECOGNITION tab</string>
@@ -49,21 +49,21 @@
     <string name="without_name">No name</string>
     <string name="mail_to">moiaddress@gmail.com</string>
     <string name="add_to_man" formatted="false">Adding. Selected faces - %d in %s</string>
-    <string name="proceesing_photo_started">Face search launched</string>
+    <string name="proceesing_photo_started">Face search started</string>
     <string name="photo_processing">Photo processing</string>
     <string name="waittt">Wait...</string>
     <string name="processing_started">Face search started</string>
     <string name="status_process" formatted="false">%d from %d processed</string>
     <string name="process_ended">Face search is completed</string>
     <string name="feedback">Feedback</string>
-    <string name="rate_us">Evaluate us</string>
+    <string name="rate_us">Rate us!</string>
     <string name="no_man">There are no people. Switch to RECOGNITION tab and create people.</string>
-    <string name="photo_on_phone">number of photos</string>
-    <string name="photo_processed">processed photos</string>
-    <string name="found_faces">faces found</string>
+    <string name="photo_on_phone">Number of photos</string>
+    <string name="photo_processed">Processed photos</string>
+    <string name="found_faces">Faces found</string>
     <string name="trash">Bin</string>
     <string name="change_name">Change name</string>
-    <string name="set_ava">Set the main photo</string>
+    <string name="set_ava">Select as the main photo</string>
     <string name="by_name">By name</string>
     <string name="by_quantity">By number</string>
     <string name="search_on_gallery">gallery search</string>

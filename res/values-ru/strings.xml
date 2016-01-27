@@ -5,7 +5,7 @@
     <string name="settings">Настройки</string>
     <string name="app_rater_remind_later">Напомнить позже</string>
     <string name="app_rater_name_dialog">Оцените приложение</string>
-    <string name="app_rater_message">Если Вам понравилось приложение eFace, пожалуйста, найдите время, чтобы оценить его. Спасибо за Вашу поддержку!</string>
+    <string name="app_rater_message">Если Вам понравилось приложение eFace, пожалуйста, оцените его!</string>
     <string name="apo_rater_rate_now">Оценить сейчас</string>
     <string name="enter_name">Введите имя</string>
     <string name="yes">Да</string>
@@ -52,9 +52,9 @@
     <string name="feedback">Обратная связь</string>
     <string name="rate_us">Оценить нас</string>
     <string name="no_man">Нет ни одного человека, перейдите на вкладку Распознавание и создайде людей.</string>
-    <string name="photo_on_phone">фото на телефоне</string>
-    <string name="photo_processed">обработано фото</string>
-    <string name="found_faces">найдено лиц</string>
+    <string name="photo_on_phone">Фото на телефоне</string>
+    <string name="photo_processed">Обработано фото</string>
+    <string name="found_faces">Найдено лиц</string>
     <string name="trash">Корзина</string>
     <string name="change_name">Изменить имя</string>
     <string name="set_ava">Установить аватарку</string>
