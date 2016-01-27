@@ -30,3 +30,7 @@
 -keepclassmembers class detection.Rectangle{
  public <init>(int, int, int, int);
 }
+-keep public class ru.flightlabs.eface.jni.**
+-keepclassmembers class ru.flightlabs.eface.jni.Computations{
+ public detection.Rectangle[] findFaces2(java.lang.String, java.lang.String, java.lang.String, double, int);
+}
