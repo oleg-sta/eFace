@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">eFace</string>
+    <string name="menu_menu">Меню</string>
+    <string name="help">Справка</string>
+    <string name="settings">Настройки</string>
+    <string name="app_rater_remind_later">Напомнить позже</string>
+    <string name="app_rater_name_dialog">Оцените приложение</string>
+    <string name="app_rater_message">Если Вам понравилось приложение eFace, пожалуйста, найдите время, чтобы оценить его. Спасибо за Вашу поддержку!</string>
+    <string name="apo_rater_rate_now">Оценить сейчас</string>
+    <string name="enter_name">Введите имя</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="tab_name_people">ЛЮДИ</string>
+    <string name="tab_name_recognition">РАСПОЗНАВАНИЕ</string>
+    <string name="tab_name_gallery">ГАЛЕРЕЯ</string>
+    <string name="query_hint">Поиск...</string>
+    <string name="first_pick_faces">Сначала выделите лица.</string>
+    <string name="set_period">Установите период</string>
+    <string name="cancel">Отмена</string>
+    <string name="accept">Принять</string>
+    <string name="make_photo_ava">Сделать фотографию главной?</string>
+    <string name="menu_settings">Настройки</string>
+    <string name="menu_tutorial">Справка</string>
+    <string name="tutorial_1_welcome">\tДобро пожаловать в приложение eFace - удобную галерею с функционалом поиска лиц!</string>
+    <string name="tutorial_2_1">\tКнопка «Плей» во вкладке распознавание запускает поиск лиц:</string>
+    <string name="tutorial_2_2">\tПоиск требует вычислительных мощностей, поэтому будьте внимательны с зарядом батареи</string>
+    <string name="tutorial_2_3">\tВы всегда можете остановить поиск во вкладке распознавание</string>
+    <string name="tutorial_3_1">\tВо вкладке распознавание выделенные галочками лица распределяйте между Вашими знакомыми</string>
+    <string name="tutorial_3_2">\tТам же Вы можете переносить лица между людьми. Все «не лица» и незнакомых людей Вы можете помещать в корзину</string>
+    <string name="tutorial_3_3">\tВо вкладке распознавание длинное нажатие на найденное лицо покажет фотографию целиком</string>
+    <string name="tutorial_4_1">\tТеперь все фотографии с любым Вашим другом всегда будут в одном месте!</string>
+    <string name="tutorial_4_2">\tПросто перейдите во вкладку люди и пользуйтесь удобным функционалом просмотра</string>
+    <string name="tutorial_5_1">\tВстроенная в eFace галерея позволяет не только просматривать все Ваши фотографии, но и делать удобный поиск по ним:</string>
+    <string name="tutorial_6_1">\teFace не модифицирует и не удаляет фотографии с Вашего телефона! Оно также не загружает их в интернет!</string>
+    <string name="tutorial_6_2">\tЛюбые пожелания и предложения Вы можете отправить через форму обратной связи</string>
+    <string name="tutorial_6_3">\tСпасибо, что Вы с нами!</string>
+    <string name="tutorial_6_4">В приложение</string>
+    <string name="tutorial_skip">пропустить</string>
+    <string name="menu_about">О программе</string>
+    <string name="about">О программе</string>
+    <string name="send_mail_with">Отправить письмо с помощью</string>
+    <string name="click_photo">Нажмите на фотографию</string>
+    <string name="add_man" formatted="false">Добавление человека, выделено лиц - %d</string>
+    <string name="without_name">Без имени</string>
+    <string name="add_to_man" formatted="false">Добавление. Выделено лиц - %d в %s</string>
+    <string name="proceesing_photo_started">Обработка фотографий запущена</string>
+    <string name="photo_processing">Обработка фотографий</string>
+    <string name="waittt">Подождите...</string>
+    <string name="processing_started">Обработка начата</string>
+    <string name="status_process" formatted="false">%d из %d обработано</string>
+    <string name="process_ended">Обработка завершена</string>
+    <string name="feedback">Обратная связь</string>
+    <string name="rate_us">Оценить нас</string>
+    <string name="no_man">Нет ни одного человека, перейдите на вкладку Распознавание и создайде людей.</string>
+    <string name="photo_on_phone">фото на телефоне</string>
+    <string name="photo_processed">обработано фото</string>
+    <string name="found_faces">найдено лиц</string>
+    <string name="trash">Корзина</string>
+    <string name="change_name">Изменить имя</string>
+    <string name="set_ava">Установить аватарку</string>
+    <string name="by_name">По имени</string>
+    <string name="by_quantity">По количеству</string>
+    <string name="search_on_gallery">поиск по галерее</string>
+    <string name="no_faces">Нет ни одного найденного лица, запустите поиск кнопкой «Плей»</string>
+</resources>
