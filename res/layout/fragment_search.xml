@@ -63,8 +63,8 @@
 
             <ImageView
                 android:id="@+id/search_button_album"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_gravity="right|bottom"
                 android:paddingRight="5dip"
                 android:paddingBottom="5dip"
