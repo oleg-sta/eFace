@@ -47,7 +47,7 @@
     <string name="click_photo">Tap a photo</string>
     <string name="add_man" formatted="false">Adding a person: selected faces - %d</string>
     <string name="without_name">No name</string>
-    <string name="mail_to">moiaddress@gmail.com</string>
+    <string name="mail_to">feedback@flightlabs.ru</string>
     <string name="add_to_man" formatted="false">Adding. Selected faces - %d in %s</string>
     <string name="proceesing_photo_started">Face search started</string>
     <string name="photo_processing">Photo processing</string>
