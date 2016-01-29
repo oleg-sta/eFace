@@ -25,8 +25,6 @@ public class ShowSearchResultActivity extends AppCompatActivity {
     public Set<Integer> filterMan;
     public Date startDate;
     public Date endDate;
-    
-    FragmentAlbumManager fragmentAlbumManager;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
