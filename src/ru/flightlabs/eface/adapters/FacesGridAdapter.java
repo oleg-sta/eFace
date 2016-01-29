@@ -129,7 +129,7 @@ public class FacesGridAdapter extends ArrayAdapter<Integer> {
                 public boolean onLongClick(View view) {
                     String photo = dbHelper.getPhotoPathByFaceId(faceId);
                     Intent personIntent = new Intent(context, ShowCommonPhoto.class);
-                    personIntent.putExtra("photo", photo);
+                    personIntent.putExtra(ShowCommonPhoto.PHOTO, photo);
                     context.startActivity(personIntent);
                     return true;
                 }

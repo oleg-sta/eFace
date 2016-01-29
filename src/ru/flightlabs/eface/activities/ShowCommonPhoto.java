@@ -12,7 +12,8 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import ru.flightlabs.eface.R;
 
 public class ShowCommonPhoto extends Activity {
-    
+
+    public static final String PHOTO = "photo";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +24,7 @@ public class ShowCommonPhoto extends Activity {
         Log.i("DisplayCommonPhoto", "onCreate");
         setContentView(R.layout.show_common_photo);
         
-        String infoPh = getIntent().getStringExtra("photo");
+        String infoPh = getIntent().getStringExtra(PHOTO);
         
         SubsamplingScaleImageView imageView = (SubsamplingScaleImageView) findViewById(R.id.imageView);
         imageView.setMaxScale(5);

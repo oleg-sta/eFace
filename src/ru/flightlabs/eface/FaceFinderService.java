@@ -19,6 +19,7 @@ import java.util.UUID;
 import ru.flightlabs.eface.activities.MainActivity;
 import ru.flightlabs.eface.activities.NavigationDrawer;
 import ru.flightlabs.eface.activities.PeopleFragment;
+import ru.flightlabs.eface.activities.RecognizeFragment;
 import ru.flightlabs.eface.data.Face;
 import ru.flightlabs.eface.data.Photo;
 import ru.flightlabs.eface.jni.Computations;
@@ -72,7 +73,6 @@ public class FaceFinderService extends IntentService {
     public FaceFinderService(String name) {
         super(name);
         Log.d(TAG, "FaceFinderService");
-        Logger1.log("FaceFinderService");
         // TODO Auto-generated constructor stub
     }
     
@@ -97,7 +97,6 @@ public class FaceFinderService extends IntentService {
     // запуск для подсчета фотографий и обработки
     @Override
     protected void onHandleIntent(Intent intent) {
-        Logger1.log("onHandleIntent");
         Log.d(TAG, "onHandleIntent " + intent);
         WakeLock wakeLock = null;
         try {
@@ -155,8 +154,7 @@ public class FaceFinderService extends IntentService {
             int threadsNum = info.availableProcessors();
                         
             Log.d(TAG, "onHandleIntent threads " + threadsNum);
-            Logger1.log("onHandleIntent threads " + threadsNum);
-            
+
             // find faces on photos
             //List<String> photos = dbHelper.getAllPhotosToBeProcessed();
             Log.d(TAG, "onHandleIntent photos " + allPhotos.size());
@@ -170,9 +168,6 @@ public class FaceFinderService extends IntentService {
                 return;
             }
             Log.d(TAG, "loading casade...");
-            Logger1.log("loading casade...");
-            //InputStream inputHaas = getResources().openRawResource(R.raw.haarcascade_frontalface_default);
-            //Detector detector = Detector.create(inputHaas);
             Log.i(TAG, getFilesDir().getAbsolutePath());
             String detectorName = getFilesDir() + File.separator + "detector.xml";
             rawResourceToFile(R.raw.my_detector, detectorName);
@@ -181,7 +176,6 @@ public class FaceFinderService extends IntentService {
             rawResourceToFile(R.raw.my_detector_pr_2, secondDetectorName);
 
             Log.d(TAG, "casade loaded");
-            Logger1.log("casade loaded");
             int iPh = 0;
             // sort map
             Log.d(TAG, "allPhotos.size " + allPhotos.size() + " " + allPhotos);
@@ -211,7 +205,6 @@ public class FaceFinderService extends IntentService {
 
                     iPh++;
                     Log.d(TAG, "photo" + photo);
-                    Logger1.log("photo " + photo + " " + iPh + " " + allPhotos.size());
                     if (!new File(photo).exists()) {
                         Log.d(TAG, "photo " + photo + " doesn't exist");
                         continue;
@@ -252,7 +245,6 @@ public class FaceFinderService extends IntentService {
                     
                     List<Rectangle> res = Arrays.asList(comp.findFaces2(detectorName, secondDetectorName, photo, 1 / koef, orient));
                     time = (System.currentTimeMillis() - time) / 1000;
-                    Logger1.log("find in " + time);
                     Log.i(TAG, "foune " + res.size() + " faces");
 
                     Face[] faces = new Face[res.size()];
@@ -284,7 +276,7 @@ public class FaceFinderService extends IntentService {
                     intent22 = new Intent(PeopleFragment.UPDATE_FACES);
                     DataHolder.photoProcessedCount = dbHelper.getAllCountPhotosProcessed();
                     DataHolder.facesCount = dbHelper.getFacesCount();
-                    intent22.putExtra("photo", photo);
+                    intent22.putExtra(RecognizeFragment.PHOTO, photo);
                     broadcastManager.sendBroadcast(intent22);
 
                     mBuilder.setContentText(String.format(getString(R.string.status_process), DataHolder.photoProcessedCount, DataHolder.photoCount));
@@ -297,7 +289,6 @@ public class FaceFinderService extends IntentService {
 
                  } catch (Exception e) {
                     Log.d(TAG, "error" + e.getMessage());
-                    Logger1.log("error" + e.getMessage());
                     e.printStackTrace();
                     dbHelper.updatePhoto(photo, -1);
                 }
@@ -400,14 +391,12 @@ public class FaceFinderService extends IntentService {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "onStartCommand22");
         super.onStartCommand(intent, flags, startId);
-        Logger1.log("onStartCommand22");
         return START_STICKY;
     }
 
     @Override
     public void onCreate() {
         Log.i(TAG, "onCreate22");
-        Logger1.log("onCreate22");
         super.onCreate();
         broadcastManager = LocalBroadcastManager.getInstance(this);
     }
@@ -415,18 +404,16 @@ public class FaceFinderService extends IntentService {
     @Override
     public void onStart(Intent intent, int startId) {
         Log.i(TAG, "onStart22");
-        Logger1.log("onStart22");
         super.onStart(intent, startId);
     }
 
     @Override
     public void onDestroy() {
         Log.i(TAG, "onDestroy22");
-        Logger1.log("onDestroy22");
         // TODO synchronize
         if (!buttonStart) {
             Intent intent22 = new Intent(PeopleFragment.UPDATE_FACES);
-            intent22.putExtra("ended", true);
+            intent22.putExtra(RecognizeFragment.ENDED, true);
             broadcastManager.sendBroadcast(intent22);
             instance = false;
         } else {

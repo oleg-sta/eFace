@@ -42,7 +42,10 @@ public class RecognizeFragment extends Fragment {
     private LocalBroadcastManager broadcastManager;
     private BroadcastReceiver broadcastReceiver;
     private BroadcastReceiver broadcastReceiver2;
-    
+
+    public static final String PHOTO = "photo";
+    public static final String ENDED = "ended";
+
     DictionaryOpenHelper dbHelper;
     public FacesGridAdapter adapterFaces;
     public PersonListToRecogniseAdapter adapterMans;
@@ -214,8 +217,8 @@ public class RecognizeFragment extends Fragment {
     }
 
     public void onReceiveResult2(Context context2, Intent intent2) {
-        String photo = intent2.getStringExtra("photo");
-        boolean ended = intent2.getBooleanExtra("ended", false);
+        String photo = intent2.getStringExtra(PHOTO);
+        boolean ended = intent2.getBooleanExtra(ENDED, false);
         if (ended && stMenu != null) {
             stMenu.setIcon(R.drawable.start);
         }
