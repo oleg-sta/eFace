@@ -177,7 +177,14 @@ public class RecognizeFragment extends Fragment {
                             if ("".equals(newName)) {
                                 newName = d.getString(R.string.without_name);
                             }
-                            final int newPerson = dbHelper.addPerson(newName);
+                            Integer i1 = null;
+                            for (Integer i : adapterFaces.checked) {
+                                i1 = i;
+                                break;
+                            }
+                            int faceId = adapterFaces.faces.get(i1);
+
+                            final int newPerson = dbHelper.addPerson(newName, faceId);
                             adapterMans.men.add(newPerson);
                             PersonListToRecogniseAdapter.moveFaces(this1, newPerson, dbHelper);
                             adapterMans.notifyDataSetChanged();

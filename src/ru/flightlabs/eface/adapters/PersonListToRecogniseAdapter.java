@@ -21,6 +21,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import ru.flightlabs.eface.Log;
+import ru.flightlabs.eface.data.Person;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,10 +63,11 @@ public class PersonListToRecogniseAdapter extends PagerAdapter {
 
         final int manId = men.get(position);
         final DictionaryOpenHelper dbHelper = new DictionaryOpenHelper(context);
-        String name = dbHelper.getPersonName(manId);
-        text.setText(name);
-        //List<Integer> faces = dbHelper.getAllIdsFacesForPerson(manId);
-        Integer faceAva = dbHelper.getAvaFace(manId);
+        Person person = dbHelper.getPerson(manId);
+
+        text.setText(person.name);
+        Integer faceAva = person.avaId;
+
         Bitmap bm = null;
         if (faceAva != null) {
             Face face = dbHelper.getFaceForId(faceAva);

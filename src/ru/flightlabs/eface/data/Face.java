@@ -14,6 +14,5 @@ public class Face {
     public double centerX, centerY, height, width;
     public int photoId;
     public String guid;
-    public Bitmap littleFace;
     public float probability;
 }

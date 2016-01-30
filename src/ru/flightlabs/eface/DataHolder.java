@@ -106,9 +106,11 @@ public class DataHolder {
     }
     
     public Bitmap getLittleFaceInCirle(SQLiteDatabase db, String faceId, Context context) {
+        Log.i(TAG, "getLittleFaceInCirle " + faceId);
         String key = faceId + "_circle";
         Bitmap bm = mMemoryCache.get(key);
         if (bm != null) {
+            Log.i(TAG, "getLittleFaceInCirle got in mamcache " + faceId);
             return bm;
         }
 
@@ -318,6 +320,7 @@ public class DataHolder {
         return bm;
     }
 
+    // TODO: beware of collision
     private String md5(String s) {
         try {
             MessageDigest m = MessageDigest.getInstance("MD5");

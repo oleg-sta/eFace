@@ -9,6 +9,7 @@ import java.util.Set;
 import ru.flightlabs.eface.activities.MainActivity;
 import ru.flightlabs.eface.data.Face;
 import ru.flightlabs.eface.data.InfoPhoto;
+import ru.flightlabs.eface.data.Person;
 import ru.flightlabs.eface.data.Photo;
 import android.content.ContentValues;
 import android.content.Context;
@@ -168,9 +169,9 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         return faces;
     }
 
-    public int addPerson(String name) {
+    public int addPerson(String name, Integer avaId) {
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("insert into "+TABLE_PERSON+" (name, "+COL_NAME_UPPER+") values ('"+encapsulateSql(name)+"', '"+encapsulateSql(name.toUpperCase())+"')");
+        s.execSQL("insert into " + TABLE_PERSON + " (name, " + COL_NAME_UPPER + ", ava_id) values ('" + encapsulateSql(name) + "', '" + encapsulateSql(name.toUpperCase()) + "', " + avaId + ")");
         int id = getLastId(s);
         s.close();
         return id;
@@ -341,7 +342,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     	if (res != null) {
     		return res;
     	}
-        return addPerson(name);
+        return addPerson(name, null);
     }
     
     public Integer getPersonByName(String name) {
@@ -356,8 +357,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         return res;
     }
     /**
-     * ������� ���� �� ����� ������� � ������
-     * 
+     *
      * @param toPersonId
      * @param fromPersonId
      */
@@ -399,7 +399,7 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
 
     public void removePerson(Integer oldPersonId) {
         SQLiteDatabase s = getWritableDatabase();
-        s.execSQL("delete from "+TABLE_PERSON+" where id = " + oldPersonId);
+        s.execSQL("delete from " + TABLE_PERSON + " where id = " + oldPersonId);
         s.close();
     }
 
@@ -576,5 +576,27 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
             }
         }
         s.close();
+    }
+
+    public Person getPerson(int manId) {
+        Person person = new Person();
+        SQLiteDatabase s = getReadableDatabase();
+        Cursor c = s.rawQuery("select name, ava_id from "+TABLE_PERSON+" where id = " + manId, null);
+        if (c.moveToNext()) {
+            person.name = c.getString(0);
+            if (!c.isNull(1)) {
+                person.avaId = c.getInt(1);
+            }
+        }
+        c.close();
+        if (person.avaId == null) {
+            c = s.rawQuery("select f.id from faces f where f.person_id = " + manId + " order by f.id", null);
+            if (c.moveToNext()) {
+                person.avaId = c.getInt(0);
+            }
+            c.close();
+        }
+        s.close();
+        return person;
     }
 }
