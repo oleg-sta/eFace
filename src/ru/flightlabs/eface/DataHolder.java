@@ -5,6 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import ru.flightlabs.eface.data.Face;
 import android.content.Context;
@@ -25,6 +29,8 @@ import android.media.ExifInterface;
 import android.media.ThumbnailUtils;
 import android.support.v4.util.LruCache;
 
+import com.jakewharton.wrapper.DiskLruImageCache;
+
 
 public class DataHolder {
 
@@ -37,14 +43,24 @@ public class DataHolder {
 	public static final String ALBUM_ID = "albumId";
     public static final String PERSON_ID = "personId";
     public static LruCache<String, Bitmap> mMemoryCache;
+    private static DiskLruImageCache diskLruCacheImage;
     public static boolean debugMode = true;
     
     public static int photoCount = -1;
     public static int photoProcessedCount;
     public static int facesCount;
 
+    private static final int DEFAULT_DISK_CACHE_SIZE = 1024 * 1024 * 50; // 10MB
+
     private static final DataHolder holder = new DataHolder();
 
+    // потоко небезопасно
+    public static DiskLruImageCache getDiskLruImageCache(Context context) {
+        if (diskLruCacheImage == null) {
+            diskLruCacheImage = new DiskLruImageCache(context, "img", DEFAULT_DISK_CACHE_SIZE, Bitmap.CompressFormat.JPEG, 100);
+        }
+        return diskLruCacheImage;
+    }
     public static DataHolder getInstance() {
         if (mMemoryCache == null) {
             final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
@@ -95,7 +111,7 @@ public class DataHolder {
         if (bm != null) {
             return bm;
         }
-        
+
         Bitmap squaredFace = getLittleFace(db, faceId, context);
         Bitmap output = Bitmap.createBitmap(squaredFace.getWidth(),
                 squaredFace.getHeight(), Config.ARGB_8888);
@@ -117,22 +133,16 @@ public class DataHolder {
     public Bitmap getLittleFace(SQLiteDatabase db, String faceId, Context context) {
         Bitmap bm = mMemoryCache.get(faceId);
         if (bm == null) {
+            DiskLruImageCache diskLruImageCache = getDiskLruImageCache(context);
             Face faceCur = getFace(db, faceId);
             String path = getPathPhoto(db, faceCur.photoId);
             if (path == null) {
                 return null;
             }
-            File file = new File(context.getFilesDir(), faceId + ".jpg");
-            if (file.exists()) {
+            if (diskLruImageCache.containsKey(faceId)) {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inPreferredConfig = Bitmap.Config.RGB_565;
-                try {
-                    bm = BitmapFactory.decodeStream(new FileInputStream(file), null, options);
-                } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                    return null;
-                }
+                bm = diskLruImageCache.getBitmap(faceId);
             } else {
                 //final BitmapFactory.Options options = new BitmapFactory.Options();
                 
@@ -170,7 +180,7 @@ public class DataHolder {
                 double faceWidth = faceCur.width * width1 / 100;
                 double faceHeight = faceCur.height * height1 / 100;
                 
-                Log.i("DataHolder", "cut " + path+ " "+ faceWidth + " " + faceHeight);
+                Log.i("DataHolder", "cut " + path + " " + faceWidth + " " + faceHeight);
                 if (faceWidth > 15800 || faceHeight > 15800 || path.toUpperCase().endsWith(".BMP")) {
                     Log.i("DataHolder", "old way");
                     bm = getLittleFaceoldWay(path, faceCur);
@@ -239,21 +249,8 @@ public class DataHolder {
                     //bm = Bitmap.createBitmap(bm, 0, 0, bmTmp.getWidth(), bmTmp.getHeight(), matrix, true);
                 }
                 
-                Log.v("DataHolder", "file dir " + context.getFilesDir());
-                file = new File(context.getFilesDir(), faceId + ".jpg");
-                try {
-                    if (file.createNewFile()) {
-                        FileOutputStream os = new FileOutputStream(file);
-                        bm.compress(Bitmap.CompressFormat.JPEG, 100, os);
-                        os.flush();
-                        os.close();
-                    }
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                diskLruImageCache.put(faceId, bm);
             }
-            
             mMemoryCache.put(faceId, bm);
         }
         return bm;
@@ -295,18 +292,13 @@ public class DataHolder {
     public Bitmap getLittleCropedPhoto(String photo, Context context, int size) {
         String key = photo + "_" + size;
         Bitmap bm = mMemoryCache.get(key);
-        String toSave = new File(key).getName() + key.hashCode();
+        String toSave = md5(new File(key).getName() + key.hashCode());
         if (bm == null) {
-            File file = new File(context.getCacheDir(), toSave);
-            if (file.exists()) {
+            DiskLruImageCache diskLruImageCache = getDiskLruImageCache(context);
+            if (diskLruImageCache.containsKey(toSave)) {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inPreferredConfig = Bitmap.Config.RGB_565;
-                try {
-                    bm = BitmapFactory.decodeStream(new FileInputStream(file), null, options);
-                } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                bm = diskLruImageCache.getBitmap(toSave);
             } else {
                 final BitmapFactory.Options options = new BitmapFactory.Options();
                 bm = FaceFinderService.decodeSampledBitmapFromResource(photo, size, size, options, true);
@@ -319,22 +311,25 @@ public class DataHolder {
                     return null;
                 }
                 Log.i(TAG, "photo " + photo + " size " + bm.getWidth() + " " + bm.getHeight() + " koef " + (1.0f * bm.getWidth() * bm.getHeight()) / (size * size));
-                file = new File(context.getCacheDir(), toSave);
-                try {
-                    if (file.createNewFile()) {
-                        FileOutputStream os = new FileOutputStream(file);
-                        bm.compress(Bitmap.CompressFormat.JPEG, 100, os);
-                        os.flush();
-                        os.close();
-                    }
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                diskLruImageCache.put(toSave, bm);
             }
             mMemoryCache.put(key, bm);
         }
         return bm;
+    }
+
+    private String md5(String s) {
+        try {
+            MessageDigest m = MessageDigest.getInstance("MD5");
+            m.update(s.getBytes("UTF-8"));
+            byte[] digest = m.digest();
+            BigInteger bigInt = new BigInteger(1, digest);
+            return bigInt.toString(16);
+        } catch (NoSuchAlgorithmException e) {
+            throw new AssertionError();
+        } catch (UnsupportedEncodingException e) {
+            throw new AssertionError();
+        }
     }
     
     public static File getDiskCacheDir(Context context, String uniqueName) {
