@@ -53,6 +53,8 @@ public class RecognizeFragment extends Fragment {
     Context context;
     MenuItem stMenu;
 
+    View empty;
+
     TextView phoCOuntTw;
     ProgressBar phoCOuntTwPr;
     TextView phoProCOuntTw;
@@ -127,7 +129,8 @@ public class RecognizeFragment extends Fragment {
         adapterFaces = new FacesGridAdapter(getActivity(), dbHelper.getAllIdsFacesForPerson(currentMan));
         final GridView listView = (GridView) rootView.findViewById(R.id.listFaces);
         listView.setColumnWidth(getResources().getDisplayMetrics().widthPixels / FacesGridAdapter.WIDTH_NUM_PICS);
-        listView.setEmptyView(rootView.findViewById(R.id.empty));
+        empty = rootView.findViewById(R.id.empty);
+        setEmpty();
         listView.setAdapter(adapterFaces);
         adapterFaces.notifyDataSetChanged();
         Log.i("MainActivity", "size persons " + adapterFaces.faces.size());
@@ -215,6 +218,8 @@ public class RecognizeFragment extends Fragment {
                 } else {
                     if (currentMan == null || currentMan != thrashid) {
                         PersonListToRecogniseAdapter.moveFaces(this1, thrashid, dbHelper);
+                        Intent intent = new Intent(PeopleFragment.UPDATE_PEOPLE);
+                        broadcastManager.sendBroadcast(intent);
                     }
                 }
             }
@@ -223,7 +228,16 @@ public class RecognizeFragment extends Fragment {
         return rootView;
     }
 
+    private void setEmpty() {
+        if (dbHelper.hasAnyFace()) {
+            empty.setVisibility(View.GONE);
+        } else {
+            empty.setVisibility(View.VISIBLE);
+        }
+    }
+
     public void onReceiveResult2(Context context2, Intent intent2) {
+        setEmpty();
         String photo = intent2.getStringExtra(PHOTO);
         boolean ended = intent2.getBooleanExtra(ENDED, false);
         if (ended && stMenu != null) {

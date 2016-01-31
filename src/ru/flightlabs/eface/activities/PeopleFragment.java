@@ -23,11 +23,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 public class PeopleFragment extends Fragment implements OnQueryTextListener, OnCloseListener   {
     
     public final static String UPDATE_PEOPLE = "ru.trolleg.update_people";
     public final static String UPDATE_FACES = "ru.trolleg.update_faces";
-    
+
+    View empty;
     
     FirstFacesOnPersonActivity adapterMans;
     DictionaryOpenHelper dbHelper;
@@ -45,7 +48,6 @@ public class PeopleFragment extends Fragment implements OnQueryTextListener, OnC
     @Override
     public void onResume() {
         Log.i("PeopleFragment", "onResume");
-        //researchPeople();
         super.onResume();
     }
 
@@ -71,15 +73,11 @@ public class PeopleFragment extends Fragment implements OnQueryTextListener, OnC
     public void onStart() {
         Log.i("PeopleFragment", "onStart");
         super.onStart();
-//        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(broadcastReceiver,
-//                new IntentFilter(UPDATE_PEOPLE)
-//        );
     }
     
 
     @Override
     public void onDestroy() {
-        // TODO Auto-generated method stub
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver);
         super.onDestroy();
     }
@@ -89,19 +87,19 @@ public class PeopleFragment extends Fragment implements OnQueryTextListener, OnC
     public void onStop() {
         Log.i("PeopleFragment", "onStop");
         super.onStop();
-//        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver);
     }
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i("PeopleFragment", "onCreateView");
         View rootView = inflater.inflate(R.layout.people_fragment, container, false);
-        
+
+        empty = rootView.findViewById(R.id.empty);
         dbHelper = new DictionaryOpenHelper(getActivity());
-        adapterMans = new FirstFacesOnPersonActivity(getActivity(), dbHelper.getAllIdsPerson(sortMode, sortAsc));
+        adapterMans = new FirstFacesOnPersonActivity(getActivity(), new ArrayList<Integer>());
         final ListView listView2 = (ListView) rootView.findViewById(R.id.list_man);
-        listView2.setEmptyView(rootView.findViewById(R.id.empty));
         listView2.setAdapter(adapterMans);
+        researchPeople();
         return rootView;
     }
 
@@ -147,6 +145,11 @@ public class PeopleFragment extends Fragment implements OnQueryTextListener, OnC
         adapterMans.clear();
         adapterMans.addAll(dbHelper.getAllIdsPerson(sortMode, sortAsc, filterName));
         adapterMans.notifyDataSetChanged();
+        if (dbHelper.hasAnyMan()) {
+            empty.setVisibility(View.GONE);
+        } else {
+            empty.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -161,9 +164,6 @@ public class PeopleFragment extends Fragment implements OnQueryTextListener, OnC
     @Override
     public boolean onQueryTextSubmit(String textNew) {
         Log.i("QUERY", "New text is1 " + textNew);
-//        adapterMans.clear();
-//        adapterMans.addAll(dbHelper.getAllIdsPerson(sortMode, textNew));
-//        adapterMans.notifyDataSetChanged();
         return true;
     }
 

@@ -283,6 +283,31 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
     public List<Integer> getAllIdsPerson(int sortMode, boolean sortAsc) {
         return getAllIdsPerson(sortMode, sortAsc, null);
     }
+
+    public boolean hasAnyMan() {
+        boolean result = false;
+        SQLiteDatabase s = getReadableDatabase();
+        Cursor c = s.rawQuery("select 1 from " + TABLE_PERSON + " where name <> '"+MainActivity.NO_FACES+"' limit 1", null);
+        if (c.moveToNext()) {
+            result = true;
+        }
+        c.close();
+        s.close();
+        return result;
+    }
+
+    public boolean hasAnyFace() {
+        boolean result = false;
+        SQLiteDatabase s = getReadableDatabase();
+        Cursor c = s.rawQuery("select 1 from faces limit 1", null);
+        if (c.moveToNext()) {
+            result = true;
+        }
+        c.close();
+        s.close();
+        return result;
+    }
+
     public List<Integer> getAllIdsPerson(int sortMode, boolean sortAsc, String textNew) {
         String addWhere = "";
         if (textNew != null) {
@@ -599,4 +624,5 @@ public class DictionaryOpenHelper extends SQLiteOpenHelper {
         s.close();
         return person;
     }
+
 }
