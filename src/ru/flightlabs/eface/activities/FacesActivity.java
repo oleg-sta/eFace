@@ -18,6 +18,8 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.Toolbar.LayoutParams;
 import android.text.InputType;
 import ru.flightlabs.eface.Log;
+import ru.flightlabs.eface.data.Face;
+
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -81,10 +83,13 @@ public class FacesActivity extends AppCompatActivity {
         
         iv = (ImageView) v.findViewById(R.id.img_action);
         Integer avaId = dbHelper.getAvaFace(personId);
-        String photo = dbHelper.getFaceForId(avaId).guid;
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        iv.setImageBitmap(DataHolder.getInstance().getLittleFaceInCirle(db, photo, this));
-        db.close();
+        Face faceAva = dbHelper.getFaceForId(avaId);
+        if (faceAva != null) {
+            String photo = faceAva.guid;
+            SQLiteDatabase db = dbHelper.getReadableDatabase();
+            iv.setImageBitmap(DataHolder.getInstance().getLittleFaceInCirle(db, photo, this));
+            db.close();
+        }
         
         facesGrid = new FacesGridShow(this, dbHelper.getAllIdsFacesForPerson(personId));
         namePerson2.setText(getResources().getQuantityString(R.plurals.numberOfPhoto, facesGrid.faces.size(), facesGrid.faces.size()));

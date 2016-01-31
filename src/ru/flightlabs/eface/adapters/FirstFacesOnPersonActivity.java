@@ -54,21 +54,23 @@ public class FirstFacesOnPersonActivity extends ArrayAdapter<Integer>{
         Resources res = getContext().getResources();
         String photoCount = res.getQuantityString(R.plurals.numberOfPhoto, faces2.size(), faces2.size());
         holder.countText.setText(photoCount);
+        convertView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent personIntent = new Intent(context, FacesActivity.class);
+                Log.i("MenListOnPeopleActivity", "manId " + manId);
+                personIntent.putExtra(DataHolder.PERSON_ID, manId);
+                context.startActivity(personIntent);
+
+            }
+        });
         if (avaId != null) {
             Face face = dbHelper.getFaceForId(avaId);
-            
-            BitmapWorkerFaceCrop.loadImage(face, context, holder, position, true);
-            convertView.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent personIntent = new Intent(context, FacesActivity.class);
-                    Log.i("MenListOnPeopleActivity", "manId " + manId);
-                    personIntent.putExtra(DataHolder.PERSON_ID, manId);
-                    context.startActivity(personIntent);
-
-                }
-            });
-
+            if (face != null) {
+                BitmapWorkerFaceCrop.loadImage(face, context, holder, position, true);
+            } else {
+                holder.view.setImageBitmap(null);
+            }
         }
         return convertView;
     }

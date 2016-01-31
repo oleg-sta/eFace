@@ -71,10 +71,14 @@ public class PersonListToRecogniseAdapter extends PagerAdapter {
         Bitmap bm = null;
         if (faceAva != null) {
             Face face = dbHelper.getFaceForId(faceAva);
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
-            bm = DataHolder.getInstance().getLittleFaceInCirle(db, face.guid, context);
-            db.close();
-            view.setImageBitmap(bm);
+            if (face != null) {
+                SQLiteDatabase db = dbHelper.getReadableDatabase();
+                bm = DataHolder.getInstance().getLittleFaceInCirle(db, face.guid, context);
+                db.close();
+                view.setImageBitmap(bm);
+            } else {
+                view.setImageBitmap(null);
+            }
         } else {
             view.setImageResource(android.R.color.transparent);
         }
