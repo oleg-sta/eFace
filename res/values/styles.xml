@@ -24,6 +24,7 @@
         <!-- Customize your theme here. -->
         <item name="windowActionBar">false</item>
         <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="android:alertDialogTheme">@style/Theme.AppCompat.Light.Dialog.Alert</item>
     </style>
 
     <style name="MyTheme" parent="@android:style/Theme.Holo.Light">

@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -176,7 +177,7 @@ public class RecognizeFragment extends Fragment {
                     builder.setMessage(String.format(d.getString(R.string.add_man), this1.adapterFaces.checked.size()));
                     builder.setView(input).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            String newName =  input.getText().toString();
+                            String newName = input.getText().toString();
                             if ("".equals(newName)) {
                                 newName = d.getString(R.string.without_name);
                             }
@@ -191,7 +192,7 @@ public class RecognizeFragment extends Fragment {
                             adapterMans.men.add(newPerson);
                             PersonListToRecogniseAdapter.moveFaces(this1, newPerson, dbHelper);
                             adapterMans.notifyDataSetChanged();
-                            
+
                             Intent intent = new Intent(PeopleFragment.UPDATE_PEOPLE);
                             broadcastManager.sendBroadcast(intent);
                         }
@@ -204,6 +205,23 @@ public class RecognizeFragment extends Fragment {
                     alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                     alertDialog.show();
                 }
+            }
+        });
+        im2.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Log.i("RecognizeFragment", "setOnLongClickListener");
+                if (currentMan == null) {
+                    if (adapterFaces.checked.isEmpty()) {
+                        for (int i = 0; i < adapterFaces.getCount(); i++) {
+                            adapterFaces.checked.add(i);
+                        }
+                    } else {
+                        adapterFaces.checked.clear();
+                    }
+                    adapterFaces.notifyDataSetChanged();
+                }
+                return true;
             }
         });
         
@@ -220,6 +238,13 @@ public class RecognizeFragment extends Fragment {
                         PersonListToRecogniseAdapter.moveFaces(this1, thrashid, dbHelper);
                         Intent intent = new Intent(PeopleFragment.UPDATE_PEOPLE);
                         broadcastManager.sendBroadcast(intent);
+                        SharedPreferences prefs = getActivity().getSharedPreferences("first_start", Context.MODE_PRIVATE);
+                        if (prefs.getBoolean("first_trash", true)) {
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putBoolean("first_trash", false);
+                            editor.commit();
+                            Toast.makeText(getActivity(), R.string.trash_message, Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             }

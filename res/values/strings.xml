@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">eFace</string>
     <string name="menu_menu">Menu</string>
-    <string name="help">Help</string>
+    <string name="help">Manual</string>
     <string name="settings">Settings</string>
     <string-array name="tab_array">
         <item>@string/tab_name_people</item>
@@ -47,7 +47,7 @@
     <string name="click_photo">Tap a photo</string>
     <string name="add_man" formatted="false">Adding a person: selected faces - %d</string>
     <string name="without_name">No name</string>
-    <string name="mail_to">feedback@flightlabs.ru</string>
+    <string name="mail_to" translatable="false">feedback@flightlabs.ru</string>
     <string name="add_to_man" formatted="false">Adding. Selected faces - %d in %s</string>
     <string name="proceesing_photo_started">Face search started</string>
     <string name="photo_processing">Photo processing</string>
@@ -68,4 +68,5 @@
     <string name="by_quantity">By number</string>
     <string name="search_on_gallery">gallery search</string>
     <string name="no_faces">To start face search, please, tap the button Play</string>
+    <string name="trash_message">Photo not deleted, only marked irrelevant</string>
 </resources>

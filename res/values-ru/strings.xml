@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">eFace</string>
     <string name="menu_menu">Меню</string>
-    <string name="help">Справка</string>
+    <string name="help">Инструкция</string>
     <string name="settings">Настройки</string>
     <string name="app_rater_remind_later">Напомнить позже</string>
     <string name="app_rater_name_dialog">Оцените приложение</string>
@@ -22,10 +22,10 @@
     <string name="menu_settings">Настройки</string>
     <string name="menu_tutorial">Справка</string>
     <string name="tutorial_1_welcome">\tДобро пожаловать в приложение eFace - удобную галерею с функционалом поиска лиц!</string>
-    <string name="tutorial_2_1">\tКнопка «Плей» во вкладке распознавание запускает поиск лиц.</string>
+    <string name="tutorial_2_1">\tКнопка «Плей» во вкладке Распознавание запускает поиск лиц.</string>
     <string name="tutorial_2_2">\tПоиск требует вычислительных мощностей, поэтому будьте внимательны с зарядом батареи!</string>
-    <string name="tutorial_2_3">\tВы всегда можете остановить поиск во вкладке распознавание.</string>
-    <string name="tutorial_3_1">\tВо вкладке распознавание выделенные галочками лица распределяйте между Вашими знакомыми.</string>
+    <string name="tutorial_2_3">\tВы всегда можете остановить поиск во вкладке Распознавание.</string>
+    <string name="tutorial_3_1">\tВо вкладке Распознавание выделенные галочками лица распределяйте между Вашими знакомыми.</string>
     <string name="tutorial_3_2">\tТам же Вы можете переносить лица между людьми. Все «не лица» и незнакомых людей Вы можете помещать в корзину.</string>
     <string name="tutorial_3_3">\tВо вкладке распознавание длинное нажатие на найденное лицо покажет фотографию целиком.</string>
     <string name="tutorial_4_1">\tТеперь все фотографии с любым Вашим другом всегда будут в одном месте.</string>
@@ -51,7 +51,7 @@
     <string name="process_ended">Обработка завершена</string>
     <string name="feedback">Обратная связь</string>
     <string name="rate_us">Оценить нас</string>
-    <string name="no_man">Нет ни одного человека, перейдите на вкладку Распознавание и создайде людей.</string>
+    <string name="no_man">Нет ни одного человека, перейдите на вкладку Распознавание и создайте людей.</string>
     <string name="photo_on_phone">Фото на телефоне</string>
     <string name="photo_processed">Обработано фото</string>
     <string name="found_faces">Найдено лиц</string>
@@ -62,4 +62,5 @@
     <string name="by_quantity">По количеству</string>
     <string name="search_on_gallery">поиск по галерее</string>
     <string name="no_faces">Нет ни одного найденного лица, запустите поиск кнопкой «Плей»</string>
+    <string name="trash_message">Фото не удалены, а отмечены как нерелевантные</string>
 </resources>
