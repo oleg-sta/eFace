@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">eFace</string>
     <string name="menu_menu">Меню</string>
-    <string name="help">Инструкция</string>
     <string name="settings">Настройки</string>
     <string name="app_rater_remind_later">Напомнить позже</string>
     <string name="app_rater_name_dialog">Оцените приложение</string>
@@ -20,7 +19,7 @@
     <string name="accept">Принять</string>
     <string name="make_photo_ava">Сделать фотографию главной?</string>
     <string name="menu_settings">Настройки</string>
-    <string name="menu_tutorial">Справка</string>
+    <string name="menu_tutorial">Инструкция</string>
     <string name="tutorial_1_welcome">\tДобро пожаловать в приложение eFace - удобную галерею с функционалом поиска лиц!</string>
     <string name="tutorial_2_1">\tКнопка «Плей» во вкладке Распознавание запускает поиск лиц.</string>
     <string name="tutorial_2_2">\tПоиск требует вычислительных мощностей, поэтому будьте внимательны с зарядом батареи!</string>
