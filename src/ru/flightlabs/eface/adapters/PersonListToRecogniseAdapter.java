@@ -116,19 +116,19 @@ public class PersonListToRecogniseAdapter extends PagerAdapter {
         });
 
         view.setOnLongClickListener(new View.OnLongClickListener() {
-            
+
             @Override
             public boolean onLongClick(View v) {
                 if (act.currentMan != null && act.currentMan == manId) {
                     if (act.adapterFaces.checked.isEmpty()) {
-                        for (int i = 0; i < act.adapterFaces.getCount(); i++) {
+                        for (int i = 0; i < act.adapterFaces.faces.size(); i++) {
                             act.adapterFaces.checked.add(i);
                         }
                     } else {
                         act.adapterFaces.checked.clear();
                     }
                     act.adapterFaces.notifyDataSetChanged();
-                    
+
                 }
                 return false;
             }
@@ -142,9 +142,11 @@ public class PersonListToRecogniseAdapter extends PagerAdapter {
         Set<Integer> facesRemove = new HashSet<Integer>();
         Integer currMan = act.currentMan;
         for (int positionid : act.adapterFaces.checked) {
-            int faceId = act.adapterFaces.faces.get(positionid);
-            dbHelper.addFaceToPerson(faceId, manId);
-            facesRemove.add(faceId);
+            if (positionid < act.adapterFaces.faces.size()) {
+                int faceId = act.adapterFaces.faces.get(positionid);
+                dbHelper.addFaceToPerson(faceId, manId);
+                facesRemove.add(faceId);
+            }
         }
         for (int faceId : facesRemove) {
             act.adapterFaces.remove(faceId);

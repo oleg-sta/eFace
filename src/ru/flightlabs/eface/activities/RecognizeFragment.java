@@ -213,7 +213,7 @@ public class RecognizeFragment extends Fragment {
                 Log.i("RecognizeFragment", "setOnLongClickListener");
                 if (currentMan == null) {
                     if (adapterFaces.checked.isEmpty()) {
-                        for (int i = 0; i < adapterFaces.getCount(); i++) {
+                        for (int i = 0; i < adapterFaces.faces.size(); i++) {
                             adapterFaces.checked.add(i);
                         }
                     } else {
