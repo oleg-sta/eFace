@@ -2,7 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#E4D3E4">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -14,68 +15,84 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/toolbar"
         android:orientation="vertical"
         android:paddingLeft="5dip"
         android:paddingRight="5dip">
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_header"
+                    android:layout_marginTop="10dp"
+                    android:textColor="#000000"
+                    style="@style/tutorialTextStyle" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_main"
+                    android:textColor="#000000"
+                    android:layout_marginTop="10dp"
+                    style="@style/tutorialTextStyle" />
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dip"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="#000000"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_feedback"
+                    android:layout_marginTop="10dp"
+                    android:textColor="#000000"
+                    style="@style/tutorialTextStyle" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_feedback_mail"
+                    android:clickable="true"
+                    android:onClick="mailTo"
+                    android:textColor="#FF0000"
+                    style="@style/tutorialTextStyle" />
+
+            </LinearLayout>
+        </ScrollView>
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="eFace 1.0"
+            android:text="@string/about_year"
             android:textColor="#000000"
-            android:textSize="32sp" />
-
+            android:gravity="center_horizontal"
+            style="@style/tutorialTextStyle" />
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="flightlabs"
-            android:textSize="26sp" />
-
-        <View
+            android:text="@string/about_version"
+            android:textColor="#000000"
+            android:gravity="center_horizontal"
+            style="@style/tutorialTextStyle" />
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:clickable="true"
-            android:onClick="mailTo"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="@string/feedback"
-                android:textSize="28sp" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:clickable="true"
-            android:onClick="rateUs"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="@string/rate_us"
-                android:textSize="28sp" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
+            android:layout_height="wrap_content"
+            android:text="@string/about_by"
+            android:textColor="#000000"
+            android:gravity="center_horizontal"
+            style="@style/tutorialTextStyle" />
     </LinearLayout>
 </RelativeLayout>
