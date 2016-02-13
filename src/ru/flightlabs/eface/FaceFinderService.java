@@ -134,15 +134,10 @@ public class FaceFinderService extends IntentService {
             wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
             wakeLock.acquire();
             
-            Notification note = new Notification(R.drawable.stat_notify_chat, getString(R.string.proceesing_photo_started),
-                    System.currentTimeMillis());
             Intent i2 = new Intent(this, NavigationDrawer.class);
             i2.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            PendingIntent pi = PendingIntent.getActivity(this, 0, i2, 0);
-            note.setLatestEventInfo(this, getString(R.string.photo_processing), getString(R.string.waittt), pi);
-            note.flags |= Notification.FLAG_NO_CLEAR;
-            startForeground(notif_id, note);
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+            mBuilder.setAutoCancel(true);
             
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, NavigationDrawer.class), 0);
             NotificationManager mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -154,9 +149,6 @@ public class FaceFinderService extends IntentService {
             int threadsNum = info.availableProcessors();
                         
             Log.d(TAG, "onHandleIntent threads " + threadsNum);
-
-            // find faces on photos
-            //List<String> photos = dbHelper.getAllPhotosToBeProcessed();
             Log.d(TAG, "onHandleIntent photos " + allPhotos.size());
             if (allPhotos.size() == 0) {
                 Log.d(TAG, "zero photos ");
@@ -282,11 +274,8 @@ public class FaceFinderService extends IntentService {
                     mBuilder.setContentText(String.format(getString(R.string.status_process), DataHolder.photoProcessedCount, DataHolder.photoCount));
                     mBuilder.setProgress(DataHolder.photoCount, DataHolder.photoProcessedCount, false);
                     Notification not = mBuilder.build();
-                    //not.flags = not.flags | Notification.FLAG_INSISTENT;
                     not.flags = not.flags | Notification.FLAG_ONGOING_EVENT;
                     mNotifyManager.notify(notif_id, not);
-
-
                  } catch (Exception e) {
                     Log.d(TAG, "error" + e.getMessage());
                     e.printStackTrace();
