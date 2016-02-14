@@ -59,12 +59,12 @@ JNIEXPORT jobjectArray JNICALL Java_ru_flightlabs_eface_jni_Computations_findFac
 	__android_log_print(ANDROID_LOG_INFO, "Computations", "size %d %d", gray_image.rows, gray_image.cols);
 	std::vector<cv::Rect> faces;
 	std::vector<float> floats;
-	face_cascade.detectMultiScale( gray_image, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(32, 32) );
+	face_cascade.detectMultiScale( gray_image, faces, 1.25, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(32, 32) );
 	int sd = faces.size();
 	__android_log_print(ANDROID_LOG_INFO, "Computations", "faces %d", sd);
 	// применяем второй алгоритм
 	for (int i = 0; i < sd; i++) {
-		float faceMore = 0.5;
+		float faceMore = 0;
 		int x1 = faces[i].x - faces[i].width * faceMore / 2;
 		int y1 = faces[i].y - faces[i].height * faceMore / 2;
 		int x2 = faces[i].x + faces[i].width * (1 + faceMore / 2);
@@ -78,14 +78,16 @@ JNIEXPORT jobjectArray JNICALL Java_ru_flightlabs_eface_jni_Computations_findFac
 		cv::Rect myROI(x1, y1, x2 - x1, y2  - y1);
 		cv::Mat croppedImage = gray_image(myROI);
 
-		cv::resize(croppedImage, croppedImage, cv::Size(48, 48));
+		cv::resize(croppedImage, croppedImage, cv::Size(36, 36));
 
 		std::vector<cv::Rect> faces2;
 		//face_cascade2.detectMultiScale( croppedImage, faces2, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size());
-		face_cascade2.detectMultiScale( croppedImage, faces2, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(32, 32));
+		face_cascade2.detectMultiScale( croppedImage, faces2, 1.1, 1, 0|CV_HAAR_SCALE_IMAGE, cv::Size(32, 32));
 		if (faces2.size() > 0) {
 			int sd2 = faces2.size();
 			__android_log_print(ANDROID_LOG_INFO, "Computations", "face true %d", sd2);
+			cv::Rect r1 = faces2[0];
+			__android_log_print(ANDROID_LOG_INFO, "Computations", "face1 %d %d %d %d", r1.x, r1.y, r1.width, r1.height);
 			floats.insert(floats.begin()+i, 1.0f);
 		} else {
 			__android_log_print(ANDROID_LOG_INFO, "Computations", "face false");
