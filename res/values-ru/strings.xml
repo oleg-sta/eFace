@@ -5,7 +5,7 @@
     <string name="app_rater_remind_later">Напомнить позже</string>
     <string name="app_rater_name_dialog">Оцените приложение</string>
     <string name="app_rater_message">Если Вам понравилось приложение eFace, пожалуйста, оцените его!</string>
-    <string name="apo_rater_rate_now">Оценить сейчас</string>
+    <string name="app_rater_rate_now">Оценить сейчас</string>
     <string name="enter_name">Введите имя</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>

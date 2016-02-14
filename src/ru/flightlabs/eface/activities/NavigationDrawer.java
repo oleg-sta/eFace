@@ -84,7 +84,7 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
             startActivity(new Intent(this, TutorialActivity.class));
         }
 
-        AppRater.appLaunched(this);
+        AppRater.appLaunched(this, this);
     }
     
     public static class AppSectionsPagerAdapter extends FragmentPagerAdapter {
@@ -170,7 +170,7 @@ public class NavigationDrawer extends AppCompatActivity  implements MaterialTabL
                 DataHolder.debugMode = !DataHolder.debugMode;
                 return true;
             case R.id.rate_dialog:
-                AppRater.appLaunched(this, true);
+                AppRater.appLaunched(this, this, true);
             default:
                 return super.onOptionsItemSelected(item);
         }

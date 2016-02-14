@@ -1,5 +1,6 @@
 package ru.flightlabs.eface.activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,6 +8,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.view.View;
 
 import ru.flightlabs.eface.R;
 
@@ -19,11 +21,11 @@ public class AppRater {
     private final static int DAYS_UNTIL_PROMPT = 7;
     private final static int LAUNCHES_UNTIL_PROMPT = 7;
 
-    public static void appLaunched(Context mContext) {
-        appLaunched(mContext, false);
+    public static void appLaunched(Activity act, Context mContext) {
+        appLaunched(act, mContext, false);
     }
 
-    public static void appLaunched(Context mContext, boolean forcible) {
+    public static void appLaunched(Activity act, Context mContext, boolean forcible) {
         SharedPreferences prefs = mContext.getSharedPreferences("apprater", Context.MODE_PRIVATE);
         if (prefs.getBoolean(DONT_SHOW_AGAIN, false) && !forcible) {
             return;
@@ -41,19 +43,25 @@ public class AppRater {
 
         if (launch_count >= LAUNCHES_UNTIL_PROMPT || forcible) {
             if (System.currentTimeMillis() >= dateFirstLaunch + (DAYS_UNTIL_PROMPT * 24 * 60 * 60 * 1000) || forcible) {
-                showRateDialog(mContext, editor);
+                showRateDialog(act, mContext, editor);
             }
         }
 
         editor.commit();
     }
 
-    public static void showRateDialog(final Context context, final SharedPreferences.Editor editor) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+    public static void showRateDialog(Activity act, final Context context, final SharedPreferences.Editor editor) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        View customView = act.getLayoutInflater().inflate(R.layout.custom_dialog_rater, null);
+        builder.setView(customView);
         builder.setTitle(R.string.app_rater_name_dialog);
         builder.setMessage(R.string.app_rater_message);
-        builder.setPositiveButton(R.string.apo_rater_rate_now, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
+
+        final AlertDialog alertDialog = builder.create();
+        customView.findViewById(R.id.rate_now).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id="
                         + context.getPackageName()));
                 context.startActivity(intent);
@@ -63,8 +71,10 @@ public class AppRater {
                 }
             }
         });
-        builder.setNeutralButton(R.string.app_rater_remind_later, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
+        customView.findViewById(R.id.rate_later).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
                 clearSharedPreferences(context, editor);
             }
         });
@@ -73,7 +83,7 @@ public class AppRater {
                 clearSharedPreferences(context, editor);
             }
         });
-        builder.create().show();
+        alertDialog.show();
     }
 
     private static void clearSharedPreferences(Context context, final SharedPreferences.Editor editor) {

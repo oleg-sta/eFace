@@ -10,7 +10,7 @@
     <string name="app_rater_remind_later">Remind later</string>
     <string name="app_rater_name_dialog">Rate our app!</string>
     <string name="app_rater_message">If you like our app, rate it!</string>
-    <string name="apo_rater_rate_now">Rate now!</string>
+    <string name="app_rater_rate_now">Rate now!</string>
     <string name="enter_name">Enter a name</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
