@@ -47,6 +47,13 @@
                     android:layout_marginTop="10dp"
                     style="@style/tutorialTextStyle" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_main_2"
+                    android:textColor="#000000"
+                    android:layout_marginTop="10dp"
+                    style="@style/tutorialTextStyle" />
 
                 <View
                     android:layout_width="match_parent"

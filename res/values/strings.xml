@@ -69,10 +69,11 @@
     <string name="no_faces">To start face search, please, tap the button Play</string>
     <string name="trash_message">Photo not deleted, only marked irrelevant</string>
     <string name="about_header">Our Project</string>
-    <string name="about_main">eFace expands the limits of traditional photo galleries, and makes life easier and more funny for those who like making photos with their smartphones. Equiped with our unique algorythm, eFace analyses photos stored on your smartphone and automatically detects human faces. You can easily collect photos of your friends and relatives in one place and sort them into categories! Make technologies to serve you with eFace!</string>
+    <string name="about_main">eFace expands the limits of traditional photo galleries, and makes life easier and and more funny for those who like making photos with their smartphones. Equiped with our unique algorithm, eFace analyzes photos stored on your smartphone and automatically detects human faces. You can easily collect photos of your friends and relatives in one place, and access them whenever you like!</string>
     <string name="about_feedback">Your comments are welcome:</string>
     <string name="about_feedback_mail" translatable="false">feedback@flightlabs.ru</string>
     <string name="about_year" translatable="false">2016</string>
     <string name="about_version">Version 1.0</string>
     <string name="about_by">By FlightLabs</string>
+    <string name="about_main_2">Make technologies serve you with eFace!</string>
 </resources>
